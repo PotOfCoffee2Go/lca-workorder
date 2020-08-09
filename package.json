@@ -1,0 +1,11 @@
+{
+  "name": "lca",
+  "version": "0.1.0",
+  "description": "LCA Work Orders",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "PotOfCoffee2Go",
+  "license": "MIT"
+}
