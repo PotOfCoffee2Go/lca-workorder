@@ -1,0 +1,135 @@
+
+This defines the page layout of the site pages.
+The page is composed in blocks:
+
+    ---------------------
+    |  Navigation Bar   |
+    ---------------------
+    |    (Settings)     |
+    ---------------------
+    |    (Doc Info)     |
+    ---------------------
+    |     Header        |
+    ---------------------
+    | Content | (links) |
+    |         -----------
+    |                   |
+    ---------------------
+    |     Footer        |
+    ---------------------
+
+Blocks in (parens) are hidden/visible based on
+ user interaction with the page.
+
+HTML in this page along with the content are loaded
+ into the id="panel" div defined in index.html.
+ 
+Content of this page is loaded dynamically with a fetch() and
+ processed client-side. 
+
+
+{{=<% %>=}}
+
+
+<%#navDiv%>
+<div id="navDiv" class="section">
+    <button class="btn textBtn" id="btnContents" type="button"><i class="material-icons">list_alt</i></button>
+  <span class="navBar">
+    <a class="btn" href="?md=index">Index</a>
+    <a class="btn" href="?md=pages/dc/welcome">Welcome</a>
+    <a class="btn" href="?md=pages/dc/help">Help</a>
+    <button class="btn textBtn" id="btnSettings" type="button"><i class="material-icons">settings</i></button>
+    <span>
+      <input id="textSize" class="ranges" value=20 min=0 max=200 name="textSize" type="range">
+    </span>
+    <span id="pageNavBar"></span>
+  </span>
+</div>
+
+<div id="toc" style="display:none;">
+  <div id="anchorlinks"></div>
+</div>
+<%/navDiv%>
+
+<%#settingsDiv%>
+<div id="settingsDiv" class="section" style="display: none;width:50%;">
+  <span>
+    <label for="textSpace" class="rnglbl">Spacing</label>
+    <input id="textSpace" class="ranges" value=40 min=5 max=100 name="textSpace" type="range">
+  </span>
+  <span>
+    <label for="textOffset" class="rnglbl">Margin</label>
+    <input id="textOffset" class="ranges" value=0 min=0 max=100 name="textOffset" type="range">
+  </span>
+  <br><br>
+  <span>
+    <label for="clrbackgrnd">Colors Back</label>
+    <input id="clrbackgrnd" name="clrbackgrnd" type="color">
+  </span>
+  <span>
+    <label for="clrtext">Text</label>
+    <input id="clrtext" name="clrtext" type="color">
+  </span>
+  <span>
+    <label for="clrheading">Headings</label>
+    <input id="clrheading" name="clrheading" type="color">
+  </span>
+  <br>
+  <span>
+    <label for="clrborder">Borders</label>
+    <input id="clrborder" name="clrborder" type="color">
+  </span>
+  <span>
+    <label for="clricon">Icons</label>
+    <input id="clricon" name="clricon" type="color">
+  </span>
+  <br><br>
+    <script type="text/doc-canvas-rendered">
+      return (new Database).highlightjs.buildSelect();
+    </script>
+  <br><br>
+  <div>
+    <button id="btnShowMe" type="button">Show</button>
+    <button id="btnReadTheme" type="button">Import</button>
+    <input id="readThemeFile" type="file" style="display:none">
+    <button id="btnSaveTheme" type="button">Export</button>
+    <a id="saveThemeFile" download="TBD.txt" href="#" style="display:none"> </a>
+    {{#button}}Reset Settings{{/button}} 
+  </div>
+</div>
+<%/settingsDiv%>
+
+<%#headerDiv%>
+<div id="showme" class="section" style="display: none;">hi me!</div>
+
+<div id="headerDiv" class="section">
+  <br />
+  <h1 id="title">{{title}}</h1>
+  <hr>
+  <div id="docinfo" class="stamp dim"> {{{docinfo}}}
+    <a class="navBar right dim" href="?text={{filepath}}">{{filepath}}</a>
+  </div>
+</div>
+
+<div>
+  <article>
+<%/headerDiv%>
+
+The site content will be inserted here...
+ from the .md or .html file in url querystring
+ md=ContentFilepath
+
+<%#footerDiv%>
+  </article>
+  <hr>
+</div>
+
+<div id="footerDiv" class="section"">
+
+Images by:<br />
+<a href="https://pixabay.com">OpenClipart-Vectors</a>
+<br />
+<a href="https://pixabay.com/users/Clker-Free-Vector-Images-3736/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=34133">Clker-Free-Vector-Images</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=34133">Pixabay</a>
+
+</div>
+<%/footerDiv%>

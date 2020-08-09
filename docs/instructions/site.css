@@ -1,0 +1,66 @@
+/*
+  Each class will become a doc-canvas CSS instruction 
+  Note:
+   Only define classes in this stylesheet
+   Must be a single class (ie: no commas)
+   Follow syntax of those already defined! - life is good
+
+  To define HTML instructions See instructions/site.html
+  To define Javascript instructions See instructions/site.js
+*/
+
+.blue {
+  color: aliceblue;
+  background-color: darkblue;
+  border-radius: 15px;
+  padding: 0 6px 0 4px;
+  font-style: normal;
+}
+
+.comment { display: none; }
+.up { margin-top: 0em; }
+.down { border-top: 1em solid transparent; }
+.left { float: left; }
+.right { float: right; }
+.clear { clear: both; }
+
+.wrap { white-space: pre-wrap; }
+.tree { line-height: .85em; }
+
+.tx-left { text-align: left; }
+.tx-center { text-align: center; }
+.tx-right { text-align: right; }
+.tx-justify { text-align: center; }
+
+.center {
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.box {
+  border: 1px solid #888;
+  border-radius: 15px;
+  padding: .5em .5em .5em .5em;
+}
+
+.top-left-border {
+  border-radius: 20px;
+  border-left: 1px solid white;
+  border-top: 1px solid white;
+  padding: 0 6px 0 6px;
+ }
+
+.hflip {
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+.vflip {
+    -moz-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    transform: scaleY(-1);
+}

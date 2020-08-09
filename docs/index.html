@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Doc-canvas</title>
+
+  <link href="design/theme.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js" integrity="sha256-MPgtcamIpCPKRRm1ppJHkvtNBAuE71xcOM+MmQytXi8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
+
+</head>
+
+<body>
+  <div id="spinner"></div>
+  <div id="panel"></div>
+
+  <script src="core/spinner.js"></script>
+  <script src="core/namespace.js"></script>
+  <script src="design/database.js"></script>
+  <script src="core/fetch.js"></script>
+  <script src="core/parse.js"></script>
+  <script src="core/render.js"></script>
+  <script src="core/inject.js"></script>
+  <script src="core/styles.js"></script>
+  <script src="instructions/site.js"></script>
+  <script src="design/listeners.js"></script>
+
+  <script>
+  // Initialize our namespace
+  const poc2go = new Poc2go((new Database).config);
+
+  // Page is ready - fetch the doc-canvas document
+  window.onload = () => {
+    poc2go.fetchDocument();
+  }
+  </script>
+
+</body>
+</html>
+

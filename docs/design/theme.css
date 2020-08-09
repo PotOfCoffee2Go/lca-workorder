@@ -1,0 +1,39 @@
+/* Import fonts and site styles */
+@import url('https://fonts.googleapis.com/css?family=Handlee|Dancing+Script&display=swap');
+@import "site.css";
+
+html, body,
+ #navDiv, #panel,
+ #toc, #settingsDiv {
+  background-color: var(--clrbackgrnd);
+}
+
+body,
+ button {
+ color: var(--clrtext)
+}
+
+button {
+  border-color: var(--clrtext);
+}
+
+/*div {border: 1px solid var(--clrborder);}*/
+hr {border-color: var(--clrheading);}
+em {color: var(--clrtext);}
+h1,h2,h3,h4 {color: var(--clrheading);}
+
+a:link, a:visited, a:hover, a:active {
+  color:var(--clrheading);
+}
+a:focus, button:focus, input:focus {
+  outline: 1px solid var(--clrtext);
+}
+
+.svg-icon path,
+ .svg-icon polygon,
+ .svg-icon rect {
+  fill: var(--clricon);
+}
+.svg-icon circle {
+  stroke: var(--clricon);
+}

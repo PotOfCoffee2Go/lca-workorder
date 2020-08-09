@@ -1,0 +1,6 @@
+Switch Mustache.js delimiters to <% %>
+{{=<% %>=}}
+
+
+Switch Mustache.js delimiters back to normal {{ }}
+<%={{ }}=%>
