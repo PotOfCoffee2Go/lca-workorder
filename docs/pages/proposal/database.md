@@ -14,17 +14,19 @@ button.btn-enabled { opacity: 1; }
 
 </style>
 
+::blue tx-center box:: Company Records
+
 ## Contact
 A contact contains information about any person that Lowcountry Aviation might want to, well... contact. Contacts are usually assigned to a [Company](#company) record.
 
-::box::<div>Information about current workorder</div>
+::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
 <form id="contact-form" class="settings">
 	<label for="contact-name">Name</label>
 	<input name="contact-name" type="text" value="Frank" /> 
 	<label for="contact-address">Address</label>
-	<input name="contact-address" type="text" value="111 Some Street" /> 
+	<input name="contact-address" type="text" value="111 Dead End Ave." /> 
 	<label for="contact-city">City</label>
 	<input name="contact-city" type="text" value="Cottageville" /> 
 	<label for="contact-state">State</label>
@@ -60,102 +62,8 @@ A contact contains information about any person that Lowcountry Aviation might w
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
-## Associate
-An associate is someone who is responsible for performing tasks that have been assigned to a workorder. The task can have multiple associates assigned to the task, such as a mechanic doing work, an inspector, a person that signs off work as completed. See [Task](#task) below.
-
-Normally an associate is an employee, or a company contracted for labor, an inspector,
-or a government regulator.
-
-::box::<div>Information about current workorder</div>
-
-::left box margin-0-1::<div>
-   <form id="associate-form" class="settings">
-	<label for="associate-name">Name</label>
-	<input name="associate-name" type="text" value="Frank" /> 
-	<label for="associate-address">Address</label>
-	<input name="associate-address" type="text" value="111 Some Street" /> 
-	<label for="associate-city">City</label>
-	<input name="associate-city" type="text" value="Cottageville" /> 
-	<label for="associate-state">State</label>
-	<input name="associate-state" type="text" value="SC" /> 
-	<label for="associate-zip">Zip</label>
-	<input name="associate-zip" type="text" value="29435" /> 
-	<label for="associate-phone">Phone</label>
-	<input name="associate-phone" type="text" value="8435551212" /> 
-	<label for="associate-email">Email</label>
-	<input name="associate-email" type="text" value="silly@mailserver.com" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="associate-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
-	<hr>
-	<button id="btn-associate-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
-	<button id="btn-associate-find" class="btn-enabled" type="button" value="Find">Find</button>
-	<button id="btn-associate-add" type="button" value="Add">Add</button>
-	<button id="btn-associate-update" type="button" value="Update">Update</button>
-	<button id="btn-associate-delete" type="button" value="Delete">Delete</button>
-	<br />
-	<button id="btn-associate-back" type="button" value="Back">Back</button>
-	<button id="btn-associate-prev" type="button" value="Prev">Prev</button>
-	<button id="btn-associate-next" type="button" value="Next">Next</button>
-	<br />
-	<button id="btn-associate-attach" type="button" value="Attach">Attach</button>
-	<button id="btn-associate-detach" type="button" value="Detach">Detach</button>
-</div>
-
-::left margin-.1 box::<pre><code id="schema-associate"></code></pre>
-
-::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
-
-## Company
-::box::<div>Information about current workorder</div>
-
-::left box margin-0-1::<div>
-   <form id="company-form" class="settings">
-	<label for="company-name">Name</label>
-	<input name="company-name" type="text" value="Frank" /> 
-	<label for="company-address">Address</label>
-	<input name="company-address" type="text" value="111 Some Street" /> 
-	<label for="company-city">City</label>
-	<input name="company-city" type="text" value="Cottageville" /> 
-	<label for="company-state">State</label>
-	<input name="company-state" type="text" value="SC" /> 
-	<label for="company-zip">Zip</label>
-	<input name="company-zip" type="text" value="29435" /> 
-	<label for="company-phone">Phone</label>
-	<input name="company-phone" type="text" value="8435551212" /> 
-	<label for="company-email">Email</label>
-	<input name="company-email" type="text" value="silly@mailserver.com" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="company-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
-	<button id="btn-company-contacts" type="button" value="Contacts">Contacts</button>
-	<hr>
-	<button id="btn-company-clear"  class="btn-enabled" type="button" value="Clear">Clear</button>
-	<button id="btn-company-find" class="btn-enabled" type="button" value="Find">Find</button>
-	<button id="btn-company-add" type="button" value="Add">Add</button>
-	<button id="btn-company-update" type="button" value="Update">Update</button>
-	<button id="btn-company-delete" type="button" value="Delete">Delete</button>
-	<br />
-	<button id="btn-company-back" type="button" value="Back">Back</button>
-	<button id="btn-company-prev" type="button" value="Prev">Prev</button>
-	<button id="btn-company-next" type="button" value="Next">Next</button>
-	<br />
-	<button id="btn-company-attach" type="button" value="Attach">Attach</button>
-	<button id="btn-company-detach" type="button" value="Detach">Detach</button>
-</div>
-
-::left margin-.1 box::<pre><code id="schema-company"></code></pre>
-
-::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
-
 ## Engine
-::box::<div>Information about current workorder</div>
+::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
    <form id="engine-form" class="settings">
@@ -197,7 +105,7 @@ or a government regulator.
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ## Aircraft
-::box::<div>Information about current workorder</div>
+::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
    <form id="aircraft-form" class="settings">
@@ -237,8 +145,106 @@ or a government regulator.
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
+## Company
+::box::<div>Information about current workorder/company/aircraft</div>
+
+::left box margin-0-1::<div>
+   <form id="company-form" class="settings">
+	<label for="company-name">Name</label>
+	<input name="company-name" type="text" value="Fly by Night, LLC" /> 
+	<label for="company-address">Address</label>
+	<input name="company-address" type="text" value="999 Ut-Oh Way" /> 
+	<label for="company-city">City</label>
+	<input name="company-city" type="text" value="Cottageville" /> 
+	<label for="company-state">State</label>
+	<input name="company-state" type="text" value="SC" /> 
+	<label for="company-zip">Zip</label>
+	<input name="company-zip" type="text" value="29435" /> 
+	<label for="company-phone">Phone</label>
+	<input name="company-phone" type="text" value="8435551212" /> 
+	<label for="company-email">Email</label>
+	<input name="company-email" type="text" value="freestick@mailserver.com" /> 
+	<!-- select>
+		<option selected="selected" value="1">Yes</option>
+		<option value="2">No</option>
+	</select>
+	<input name="company-democheckbox" type="checkbox" value="1" /> Checkbox -->
+</form>
+	<button id="btn-company-contacts" type="button" value="Contacts">Contacts</button>
+	<button id="btn-company-aircrafts" type="button" value="Aircrafts">Aircrafts</button>
+	<button id="btn-company-workorders" type="button" value="Workorders">Workorders</button>
+	<hr>
+	<button id="btn-company-clear"  class="btn-enabled" type="button" value="Clear">Clear</button>
+	<button id="btn-company-find" class="btn-enabled" type="button" value="Find">Find</button>
+	<button id="btn-company-add" type="button" value="Add">Add</button>
+	<button id="btn-company-update" type="button" value="Update">Update</button>
+	<button id="btn-company-delete" type="button" value="Delete">Delete</button>
+	<br />
+	<button id="btn-company-back" type="button" value="Back">Back</button>
+	<button id="btn-company-prev" type="button" value="Prev">Prev</button>
+	<button id="btn-company-next" type="button" value="Next">Next</button>
+	<br />
+	<button id="btn-company-attach" type="button" value="Attach">Attach</button>
+	<button id="btn-company-detach" type="button" value="Detach">Detach</button>
+</div>
+
+::left margin-.1 box::<pre><code id="schema-company"></code></pre>
+
+::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
+
+::blue tx-center box:: Workorder Records
+
+## Associate
+An associate is someone who is responsible for performing tasks that have been assigned to a workorder. The task can have multiple associates assigned to the task, such as a mechanic doing work, an inspector, a person that signs off work as completed. See [Task](#task) below.
+
+Normally an associate is an employee, or a company contracted for labor, an inspector,
+or a government regulator.
+
+::box::<div>Information about current workorder/company/aircraft</div>
+
+::left box margin-0-1::<div>
+   <form id="associate-form" class="settings">
+	<label for="associate-name">Name</label>
+	<input name="associate-name" type="text" value="Bob Toolbelt" /> 
+	<label for="associate-address">Address</label>
+	<input name="associate-address" type="text" value="123 Right Turn Street" /> 
+	<label for="associate-city">City</label>
+	<input name="associate-city" type="text" value="Cottageville" /> 
+	<label for="associate-state">State</label>
+	<input name="associate-state" type="text" value="SC" /> 
+	<label for="associate-zip">Zip</label>
+	<input name="associate-zip" type="text" value="29435" /> 
+	<label for="associate-phone">Phone</label>
+	<input name="associate-phone" type="text" value="8435551212" /> 
+	<label for="associate-email">Email</label>
+	<input name="associate-email" type="text" value="sillybob@mailserver.com" /> 
+	<!-- select>
+		<option selected="selected" value="1">Yes</option>
+		<option value="2">No</option>
+	</select>
+	<input name="associate-democheckbox" type="checkbox" value="1" /> Checkbox -->
+</form>
+	<hr>
+	<button id="btn-associate-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
+	<button id="btn-associate-find" class="btn-enabled" type="button" value="Find">Find</button>
+	<button id="btn-associate-add" type="button" value="Add">Add</button>
+	<button id="btn-associate-update" type="button" value="Update">Update</button>
+	<button id="btn-associate-delete" type="button" value="Delete">Delete</button>
+	<br />
+	<button id="btn-associate-back" type="button" value="Back">Back</button>
+	<button id="btn-associate-prev" type="button" value="Prev">Prev</button>
+	<button id="btn-associate-next" type="button" value="Next">Next</button>
+	<br />
+	<button id="btn-associate-attach" type="button" value="Attach">Attach</button>
+	<button id="btn-associate-detach" type="button" value="Detach">Detach</button>
+</div>
+
+::left margin-.1 box::<pre><code id="schema-associate"></code></pre>
+
+::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
+
 ## Task
-::box::<div>Information about current workorder</div>
+::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
    <form id="task-form" class="settings">
@@ -287,12 +293,14 @@ or a government regulator.
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ## Workorder
-::box::<div>Information about current workorder</div>
+::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
    <form id="workorder-form" class="settings">
+	<label for="workorder-no">Workorder No</label>
+	<input name="workorder-no" type="text" value="LCA-1234" /> 
 	<label for="workorder-date">Date</label>
-	<input name="workorder-date" type="text" value="A big boy" /> 
+	<input name="workorder-date" type="text" value="08/11/2020" /> 
 	<label for="workorder-preliminary-inspection">Preliminary Inspection</label>
 	<input name="workorder-preliminary-inspection" type="text" value="Torked" /> 
 	<label for="workorder-hidden-damage-inspection">Hidden Damage Inspection</label>
@@ -312,6 +320,7 @@ or a government regulator.
 	<input name="workorder-democheckbox" type="checkbox" value="1" /> Checkbox -->
 </form>
 	<button id="btn-workorder-company" type="button" value="Company">Company</button>
+	<button id="btn-workorder-aircraft" type="button" value="Aircraft">Aircraft</button>
 	<button id="btn-workorder-tasks" type="button" value="Tasks">Tasks</button>
 	<hr>
 	<button id="btn-workorder-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
