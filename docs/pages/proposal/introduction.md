@@ -44,104 +44,10 @@ The script will insert work order info inside the div. There are properties that
 ## Web host
 Development is using [github][] as a web host. Lowcountry Aviation will probably wish to host the code and data on their own web host. This is easily done using ::tx-aqua::_`git clone git@github.com:PotOfCoffee2Go/lca-workorder.git`_ command to download onto their host server. The host server will require [nodejs][] installed to store the work order data.
 
-## Database records
 
-<style>
-form.settings {
-    display:grid;
-    grid-template-columns: max-content max-content;
-    grid-gap:5px;
-}
-form.settings label       { text-align:right; }
-form.settings label:after { content: ":"; }
-
-</style>
-
-### Contact
-A contact contains information about any person that Lowcountry Aviation might want to, well... contact. Contacts are usually assigned to a [Company](#company) record.
-
-::left margin-.1-1 box::<pre><code id="schema-contact"></code></pre>
-
-<form class="settings" accept-charset="UTF-8" action="action_page.php" autocomplete="off" method="GET" target="_blank">
-	<label for="name">Name</label>
-	<input name="name" type="text" value="Frank" /> 
-	<label for="address">Address</label>
-	<input name="address" type="text" value="111 Some Street" /> 
-	<label for="city">City</label>
-	<input name="city" type="text" value="Cottageville" /> 
-	<label for="state">State</label>
-	<input name="state" type="text" value="SC" /> 
-	<label for="zip">Zip</label>
-	<input name="zip" type="text" value="29435" /> 
-	<label for="phone">Phone</label>
-	<input name="phone" type="text" value="8435551212" /> 
-	<label for="email">Email</label>
-	<input name="email" type="text" value="silly@mailserver.com" /> 
-	<select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="democheckbox" type="checkbox" value="1" /> Checkbox
-	<button type="submit" value="Submit">Submit</button>
-</form>
-
-::clear padding-1::<hr>
-
-### Associate
-An associate is someone who is responsible for performing tasks that have been assigned to a workorder. The task can have multiple associates assigned to the task, such as a mechanic doing work, an inspector, a person that signs off work as completed. See [Task](#task) below.
-
-::left margin-.1-1 box::<pre><code id="schema-associate"></code></pre>
-
-Normally an associate is an employee, or a company contracted for labor, an inspector,
-or a government regulator.
-
-::clear padding-1::<hr>
-
-### Company
-::left margin-.1-1 box::<pre><code id="schema-company"></code></pre>
-
-::clear padding-1::<hr>
-
-### Engine
-::left margin-.1-1 box::<pre><code id="schema-engine"></code></pre>
-
-::clear padding-1::<hr>
-
-### Craft
-::left margin-.1-1 box::<pre><code id="schema-craft"></code></pre>
-
-::clear padding-1::<hr>
-
-### Task
-::left margin-.1-1 box::<pre><code id="schema-task"></code></pre>
-
-::clear padding-1::<hr>
-
-### Workorder
-::left margin-.1-1 box::<pre><code id="schema-workorder"></code></pre>
-
-::clear padding-1::<hr>
-
-<script>
-   poc2go.fetch.json('http://localhost:8000/schema')
-   .then(json => {
-     document.getElementById('schema-associate').innerHTML = 
-      hljs.highlight('json', JSON.stringify(json.schema.associate, null, 2)).value;
-     document.getElementById('schema-contact').innerHTML = 
-      hljs.highlight('json', JSON.stringify(json.schema.contact, null, 2)).value;
-     document.getElementById('schema-company').innerHTML = 
-      hljs.highlight('json', JSON.stringify(json.schema.company, null, 2)).value;
-     document.getElementById('schema-engine').innerHTML = 
-      hljs.highlight('json', JSON.stringify(json.schema.engine, null, 2)).value;
-     document.getElementById('schema-craft').innerHTML = 
-      hljs.highlight('json', JSON.stringify(json.schema.craft, null, 2)).value;
-     document.getElementById('schema-task').innerHTML = 
-      hljs.highlight('json', JSON.stringify(json.schema.task, null, 2)).value;
-     document.getElementById('schema-workorder').innerHTML = 
-      hljs.highlight('json', JSON.stringify(json.schema.workorder, null, 2)).value;
-
-   });
-</script>
-
+Author: PotOfCoffee2Go
+Created: Aug. 9, 2020
+Updated: Aug. 11, 2020
+License: MIT
 
 [JSON]: https://www.json.org
