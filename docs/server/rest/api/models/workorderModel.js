@@ -59,7 +59,7 @@ aircraft: {
   "_id": "",
   "_timestamp": "",
   "_type": "aircraft",
-  "_engine_id": "",
+  "_engine_ids": [],
   "model": "",
   "make": "",
   "serial_no": "",

@@ -125,7 +125,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	</select>
 	<input name="aircraft-democheckbox" type="checkbox" value="1" /> Checkbox -->
 </form>
-	<button id="btn-aircraft-engine" type="button" value="Engine">Engine</button>
+	<button id="btn-aircraft-engines" type="button" value="Engines">Engines</button>
 	<hr>
 	<button id="btn-aircraft-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
 	<button id="btn-aircraft-find" class="btn-enabled" type="button" value="Find">Find</button>
