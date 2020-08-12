@@ -8,6 +8,6 @@
   - [LCA Database Server](?md=pages/dc/code/server.md)
 
 ## pages/proposal
-  - [Proposed Database records](?md=pages/proposal/database.md)
+  - [Proposed Database Records](?md=pages/proposal/database.md)
   - [LCA Work Order Flow Proposal](?md=pages/proposal/introduction.md)
 

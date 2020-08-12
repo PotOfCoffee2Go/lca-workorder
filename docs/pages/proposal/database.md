@@ -1,18 +1,6 @@
-# Proposed Database records
+# Proposed Database Records
 
-<style>
-form.settings {
-  display:grid;
-  grid-template-columns: max-content max-content;
-  grid-gap:5px;
-  margin-bottom: 1em;  
-}
-form.settings label       { text-align:right; }
-form.settings label:after { content: ":"; }
-
-button.btn-enabled { opacity: 1; }
-
-</style>
+::tx-.7::<input id="show-records" type="button" value="Show DB Records"/>
 
 ::blue tx-center box:: Company Records
 
@@ -22,7 +10,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
-<form id="contact-form" class="settings">
+<div id="contact-form" class="settings">
 	<label for="contact-name">Name</label>
 	<input name="contact-name" type="text" value="Frank" /> 
 	<label for="contact-address">Address</label>
@@ -37,12 +25,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	<input name="contact-phone" type="text" value="8435551212" /> 
 	<label for="contact-email">Email</label>
 	<input name="contact-email" type="text" value="silly@mailserver.com" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="contact-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
+</div>
 	<hr>
 	<button id="btn-contact-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
 	<button id="btn-contact-find" class="btn-enabled" type="button" value="Find">Find</button>
@@ -58,7 +41,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	<button id="btn-contact-detach" type="button" value="Detach">Detach</button>
 </div>
 
-::left margin-.1 box::<pre><code id="schema-contact"></code></pre>
+::left margin-.1 box cl-schema::<pre><code id="schema-contact"></code></pre>
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
@@ -66,7 +49,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
-   <form id="engine-form" class="settings">
+<div id="engine-form" class="settings">
 	<label for="engine-model">Model</label>
 	<input name="engine-model" type="text" value="A big boy" /> 
 	<label for="engine-make">Make</label>
@@ -79,12 +62,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	<input name="engine-time-in-service" type="text" value="6543.1" /> 
 	<label for="engine-time-since-overhaul">Time since overhaul</label>
 	<input name="engine-time-since-overhaul" type="text" value="876.2" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="engine-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
+</div>
 	<hr>
 	<button id="btn-engine-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
 	<button id="btn-engine-find" class="btn-enabled" type="button" value="Find">Find</button>
@@ -100,7 +78,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	<button id="btn-engine-detach" type="button" value="Detach">Detach</button>
 </div>
 
-::left margin-.1 box::<pre><code id="schema-engine"></code></pre>
+::left margin-.1 box cl-schema::<pre><code id="schema-engine"></code></pre>
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
@@ -108,7 +86,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
-   <form id="aircraft-form" class="settings">
+<div id="aircraft-form" class="settings">
 	<label for="aircraft-model">Model</label>
 	<input name="aircraft-model" type="text" value="A big boy" /> 
 	<label for="aircraft-make">Make</label>
@@ -119,12 +97,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	<input name="aircraft-registration-no" type="text" value="abc-123" /> 
 	<label for="aircraft-time-in-service">Time in service</label>
 	<input name="aircraft-time-in-service" type="text" value="6543.1" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="aircraft-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
+</div>
 	<button id="btn-aircraft-engines" type="button" value="Engines">Engines</button>
 	<hr>
 	<button id="btn-aircraft-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -141,7 +114,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	<button id="btn-aircraft-detach" type="button" value="Detach">Detach</button>
 </div>
 
-::left margin-.1 box::<pre><code id="schema-aircraft"></code></pre>
+::left margin-.1 box cl-schema::<pre><code id="schema-aircraft"></code></pre>
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
@@ -149,7 +122,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
-   <form id="company-form" class="settings">
+<div id="company-form" class="settings">
 	<label for="company-name">Name</label>
 	<input name="company-name" type="text" value="Fly by Night, LLC" /> 
 	<label for="company-address">Address</label>
@@ -164,12 +137,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	<input name="company-phone" type="text" value="8435551212" /> 
 	<label for="company-email">Email</label>
 	<input name="company-email" type="text" value="freestick@mailserver.com" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="company-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
+</div>
 	<button id="btn-company-contacts" type="button" value="Contacts">Contacts</button>
 	<button id="btn-company-aircrafts" type="button" value="Aircrafts">Aircrafts</button>
 	<button id="btn-company-workorders" type="button" value="Workorders">Workorders</button>
@@ -188,7 +156,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 	<button id="btn-company-detach" type="button" value="Detach">Detach</button>
 </div>
 
-::left margin-.1 box::<pre><code id="schema-company"></code></pre>
+::left margin-.1 box cl-schema::<pre><code id="schema-company"></code></pre>
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
@@ -203,7 +171,7 @@ or a government regulator.
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
-   <form id="associate-form" class="settings">
+<div id="associate-form" class="settings">
 	<label for="associate-name">Name</label>
 	<input name="associate-name" type="text" value="Bob Toolbelt" /> 
 	<label for="associate-address">Address</label>
@@ -218,12 +186,7 @@ or a government regulator.
 	<input name="associate-phone" type="text" value="8435551212" /> 
 	<label for="associate-email">Email</label>
 	<input name="associate-email" type="text" value="sillybob@mailserver.com" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="associate-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
+</div>
 	<hr>
 	<button id="btn-associate-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
 	<button id="btn-associate-find" class="btn-enabled" type="button" value="Find">Find</button>
@@ -239,7 +202,7 @@ or a government regulator.
 	<button id="btn-associate-detach" type="button" value="Detach">Detach</button>
 </div>
 
-::left margin-.1 box::<pre><code id="schema-associate"></code></pre>
+::left margin-.1 box cl-schema::<pre><code id="schema-associate"></code></pre>
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
@@ -247,7 +210,7 @@ or a government regulator.
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
-   <form id="task-form" class="settings">
+<div id="task-form" class="settings">
 	<label for="task-discrepancy">Discrepancy</label>
 	<input name="task-discrepancy" type="text" value="An editor will open" /> 
 	<label for="task-removed-pn">Removed PN</label>
@@ -266,12 +229,7 @@ or a government regulator.
 	<input name="task-corrected-by" type="text" value="Bugs Bunny" /> 
 	<label for="task-inspected-by">Inspected by</label>
 	<input name="task-inspected-by" type="text" value="Bugs Bunny" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="task-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
+</div>
 	<button id="btn-task-associates" type="button" value="Associates">Associates</button>
 	<hr>
 	<button id="btn-task-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -288,7 +246,7 @@ or a government regulator.
 	<button id="btn-task-detach" type="button" value="Detach">Detach</button>
 </div>
 
-::left margin-.1 box::<pre><code id="schema-task"></code></pre>
+::left margin-.1 box cl-schema::<pre><code id="schema-task"></code></pre>
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
@@ -296,7 +254,7 @@ or a government regulator.
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
-   <form id="workorder-form" class="settings">
+<div id="workorder-form" class="settings">
 	<label for="workorder-no">Workorder No</label>
 	<input name="workorder-no" type="text" value="LCA-1234" /> 
 	<label for="workorder-date">Date</label>
@@ -313,12 +271,7 @@ or a government regulator.
 	<input name="workorder-completed-date" type="text" value="6543.1" /> 
 	<label for="workorder-signed-date">Signed Date</label>
 	<input name="workorder-signed-date" type="text" value="" /> 
-	<!-- select>
-		<option selected="selected" value="1">Yes</option>
-		<option value="2">No</option>
-	</select>
-	<input name="workorder-democheckbox" type="checkbox" value="1" /> Checkbox -->
-</form>
+</div>
 	<button id="btn-workorder-company" type="button" value="Company">Company</button>
 	<button id="btn-workorder-aircraft" type="button" value="Aircraft">Aircraft</button>
 	<button id="btn-workorder-tasks" type="button" value="Tasks">Tasks</button>
@@ -333,11 +286,47 @@ or a government regulator.
 	<button id="btn-workorder-next" type="button" value="Next">Next</button>
 </div>
 
-::left margin-.1 box::<pre><code id="schema-workorder"></code></pre>
+::left margin-.1 box cl-schema::<pre><code id="schema-workorder"></code></pre>
 
 ::clear box::This area will contain information, confirmations, and error messages about activities done on the form.
 
+<style>
+div.settings {
+  display:grid;
+  grid-template-columns: max-content max-content;
+  grid-gap:5px;
+  margin-bottom: 1em;  
+}
+div.settings label       { text-align:right; }
+div.settings label:after { content: ":"; }
+
+button.btn-enabled { opacity: 1; }
+
+.schema { display: none; }
+</style>
+
 <script>
+  document.getElementById("show-records").addEventListener("click", () => {
+		var allDbSchema = document.querySelectorAll('.schema');
+		for (var i=0, len=allDbSchema.length|0; i<len; i=i+1|0) {
+			if (allDbSchema[i].style.display === 'block') {
+				allDbSchema[i].style.display = 'none';
+        document.getElementById('show-records').value = "Show DB Records"
+			} else {
+				allDbSchema[i].style.display = 'block';
+        document.getElementById('show-records').value = "Hide DB Records"
+			}
+		}
+  }, false);
+  
+	const buttons = document.querySelectorAll("div button")
+	for (const button of buttons) {
+		button.addEventListener('click', function(evt) {
+			alert(evt.target.id);
+		})
+	}  
+  
+
    poc2go.fetch.json('server/rest/api/models/workorderModel.json')
    .then(json => {
      document.getElementById('schema-associate').innerHTML = 
@@ -354,12 +343,13 @@ or a government regulator.
       hljs.highlight('json', JSON.stringify(json.schema.task, null, 2)).value;
      document.getElementById('schema-workorder').innerHTML = 
       hljs.highlight('json', JSON.stringify(json.schema.workorder, null, 2)).value;
-
    });
-</script>
 
+
+
+</script>
 
 Author: PotOfCoffee2Go
 Created: Aug. 9, 2020
-Updated: Aug. 11, 2020
+Updated: Aug. 12, 2020
 License: MIT
