@@ -19,6 +19,45 @@ exports.list_all_customers = function(req, res) {
   res.json({_id: 'xyz', name: 'kim'});
 }
 
+exports.find_query = function(req, res) {
+  let apireq = req.body;
+  let query = {};
+  Object.assign(query, apireq);
+  db.find(query.find, (err, fndDocs) => {
+    if (err) { res.send(err); }
+    res.json(fndDocs);
+  });
+}
+
+exports.add_query = function(req, res) {
+  let apireq = req.body;
+  let query = {};
+  Object.assign(query, apireq);
+
+  db.insert(query.add, (err, newDoc) => {
+    if (err) { res.send(err); }
+    db.find({_id: newDoc._id}, (err, fndDocs) => {
+      if (err) { res.send(err); }
+      res.json(fndDocs);
+    });
+  });
+}
+
+exports.update_query = function(req, res) {
+  let apireq = req.body;
+  let query = {};
+  Object.assign(query, apireq);
+
+  db.update(query.find, {$set: query.update}, {}, (err, numReplaced) => {
+    if (err) { res.send(err); }
+    db.find(query.find, (err, fndDocs) => {
+      if (err) { res.send(err); }
+      res.json(fndDocs);
+    });
+  });
+}
+
+
 exports.list_all_tasks = function(req, res) {
   Task.find({}, function(err, task) {
     if (err)

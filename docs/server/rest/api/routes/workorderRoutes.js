@@ -11,6 +11,17 @@ module.exports = function(app) {
 		.get(workorder.list_all_customers);
 //		.post(workorder.create_a_task);
 
+	app.route('/find')
+//		.get(workorder.list_all_customers);
+		.post(workorder.find_query);
+
+	app.route('/add')
+//		.get(workorder.list_all_customers);
+		.post(workorder.add_query);
+
+	app.route('/update')
+//		.get(workorder.list_all_customers);
+		.post(workorder.update_query);
 
 
 	// workorder Routes
