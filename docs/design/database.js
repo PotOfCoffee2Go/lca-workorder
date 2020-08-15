@@ -80,6 +80,9 @@ this.config = {
             'cdn-release@9.18.0/build/styles/' },
     codemirror: { css: '//cdn.jsdelivr.net/npm/' +
             'codemirror@5.52.0/theme/' },
+  },
+  lca: {
+    workorderDb: 'http://poc2go.com/9000/'
   }
 }
 

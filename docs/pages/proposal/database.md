@@ -585,7 +585,7 @@ button.btn-enabled { opacity: 1; }
   }
 
   function apiRequest(apireq) {
-    postData('http://localhost:8000/', apireq)
+    postData(poc2go.config.lca.workorderDb, apireq)
     .then(data => {
       let msg = ns.dom[`msg-${apireq.api_type}`];
       if (!Array.isArray(data)) {
@@ -613,7 +613,7 @@ button.btn-enabled { opacity: 1; }
       projection: projection ? projection : { _id : 1 },
     }
 
-    postData('http://localhost:8000/', apireq)
+    postData(poc2go.config.lca.workorderDb, apireq)
     .then(data => {
       ns.list[type] = data;
     });
