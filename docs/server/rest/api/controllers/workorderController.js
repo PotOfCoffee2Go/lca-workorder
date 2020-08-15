@@ -15,8 +15,14 @@ exports.read_schema = function(req, res) {
   //res.json({schema: dbs.schema});
 }
 
-exports.list_all_customers = function(req, res) {
-  res.json({_id: 'xyz', name: 'kim'});
+exports.list_query = function(req, res) {
+  let apireq = req.body;
+  let query = {};
+  Object.assign(query, apireq);
+  db.find(query.find, query.projection, (err, fndDocs) => {
+    if (err) { res.send(err); }
+    res.json(fndDocs);
+  });
 }
 
 exports.find_query = function(req, res) {

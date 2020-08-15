@@ -2,76 +2,85 @@
 
 exports.schema = {
 
-associate: {
-  "_id": "",
-  "_timestamp": "",
-  "_type": "associate",
-  "name": "",
-  "address": "",
-  "city": "",
-  "state": "",
-  "zip": "",
-  "phone": "",
-  "email": ""
-},
-
-contact: {
-  "_id": "",
-  "_timestamp": "",
-  "_type": "contact",
-  "name": "",
-  "address": "",
-  "city": "",
-  "state": "",
-  "zip": "",
-  "phone": "",
-  "email": ""
-  },
-
-company: {
+"company": {
   "_id": "",
   "_timestamp": "",
   "_type": "company",
-  "_contact_ids": [],
-  "_aircraft_ids": [],
   "name": "",
   "address": "",
   "city": "",
   "state": "",
   "zip": "",
   "phone": "",
-  "email": ""
+  "email": "",
+  "notes": ""
   },
 
-engine: {
+"associate": {
+  "_id": "",
+  "_timestamp": "",
+  "_type": "associate",
+  "_task_ids": [],
+  "name": "",
+  "address": "",
+  "city": "",
+  "state": "",
+  "zip": "",
+  "phone": "",
+  "email": "",
+  "notes": ""
+},
+
+"contact": {
+  "_id": "",
+  "_timestamp": "",
+  "_type": "contact",
+  "_company_ids": [],
+  "name": "",
+  "address": "",
+  "city": "",
+  "state": "",
+  "zip": "",
+  "phone": "",
+  "email": "",
+  "notes": ""
+ },
+
+"engine": {
   "_id": "",
   "_timestamp": "",
   "_type": "engine",
+  "_aircraft_id": "",
+  "name": "",
   "model": "",
   "make": "",
   "serial_no": "",
   "registration_no": "",
   "time_in_service": "",
-  "time_since_overhaul": ""
-  },
+  "time_since_overhaul": "",
+  "notes": ""
+ },
 
-aircraft: {
+"aircraft": {
   "_id": "",
   "_timestamp": "",
   "_type": "aircraft",
-  "_engine_ids": [],
+  "_company_id": "",
+  "name": "",
   "model": "",
   "make": "",
   "serial_no": "",
   "registration_no": "",
-  "time_in_service": ""
+  "time_in_service": "",
+  "notes": ""
   },
 
-task: {
+"task": {
   "_id": "",
   "_timestamp": "",
   "_type": "task",
-  "_associate_ids": [],
+  "_workorder_id": "",
+  "name": "",
   "discrepancy": "",
   "removed_pn": "",
   "removed_sn": "",
@@ -80,16 +89,17 @@ task: {
   "installed_sn": "",
   "time": "",
   "corrected_by": "",
-  "inspected_by": ""
+  "inspected_by": "",
+  "notes": ""
   },
   
-workorder: {
+"workorder": {
   "_id": "",
   "_timestamp": "",
   "_type": "workorder",
   "_company_id": "",
   "_aircraft_id": "",
-  "_task_ids": [],
+  "name": "",
   "workorder_no": "",
   "date": "",
   "preliminary_inspection": "",
@@ -97,6 +107,7 @@ workorder: {
   "in_progress_inspection": "",
   "start_date": "",
   "completed_date": "",
-  "signed_date": ""
+  "signed_date": "",
+  "notes": ""
   }
 }

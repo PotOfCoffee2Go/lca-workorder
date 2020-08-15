@@ -44,7 +44,6 @@ The script will insert work order info inside the div. There are properties that
 ## Web host
 Development is using [github][] as a web host. Lowcountry Aviation will probably wish to host the code and data on their own web host. This is easily done using ::tx-aqua::_`git clone git@github.com:PotOfCoffee2Go/lca-workorder.git`_ command to download onto their host server. The host server will require [nodejs][] installed to store the work order data.
 
-
 Author: PotOfCoffee2Go
 Created: Aug. 9, 2020
 Updated: Aug. 11, 2020

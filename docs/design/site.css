@@ -82,6 +82,7 @@ p {
 h2[id]:before,
 h3[id]:before,
 h4[id]:before,
+h5[id]:before,
 a[name]:before {
   display: block;
   content: " ";
@@ -143,7 +144,7 @@ button {
   margin: 0 6px 0 0;
 }
 
-h1,h2,h3,h4 {
+h1,h2,h3,h4,h5 {
   font-family: 'Dancing Script';
   font-weight: normal;
 }
@@ -152,7 +153,7 @@ h1 {font-size: 2.3em; text-align: center;}
 h2 {font-size: 2.0em;}
 h3 {font-size: 1.7em;}
 h4 {font-size: 1.4em;}
-h5 {font-size: 1.0em;}
+h5 {font-size: 1.4em;}
 
 code {
   font-size: 0.8em;

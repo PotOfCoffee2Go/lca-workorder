@@ -7,9 +7,9 @@ module.exports = function(app) {
 		.get(workorder.read_schema);
 
 	// workorder Routes
-	app.route('/customers')
-		.get(workorder.list_all_customers);
-//		.post(workorder.create_a_task);
+	app.route('/list')
+//		.get(workorder.list_all_customers);
+		.post(workorder.list_query);
 
 	app.route('/find')
 //		.get(workorder.list_all_customers);
