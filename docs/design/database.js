@@ -82,7 +82,7 @@ this.config = {
             'codemirror@5.52.0/theme/' },
   },
   lca: {
-    workorderDb: 'http://poc2go.com:9000/'
+    workorderDb: '//poc2go.com/lcadb/'
   }
 }
 
