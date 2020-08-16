@@ -3,7 +3,7 @@
 const express = require('express'),
   cors = require('cors'),
   app = express(),
-//  port = process.env.PORT || 9000,
+  port = process.env.PORT || 9000,
   bodyParser = require('body-parser');
 
 app.use(cors());
@@ -23,6 +23,5 @@ app.use(function(req, res) {
   res.status(404).send({url: req.originalUrl + ' not found'})
 });
 
-//app.listen(port);
-app.listen();
-console.log('Workorder API server started');
+app.listen(port);
+console.log('Workorder API server started port ' + port);

@@ -208,8 +208,8 @@ Engine Staging area
     <option value="a11y-dark" selected>a11y-dark</option>
     <option value="a11y-light">a11y-light</option>
   </select>
-  <label for="workorder-no">*Workorder No</label>
-  <input name="workorder-no" type="text" value="LCA_1234" /> 
+  <label for="workorder-workorder_no">*Workorder No</label>
+  <input name="workorder-workorder_no" type="text" value="LCA_1234" /> 
   <label for="workorder-name">*Name</label>
   <input name="workorder-name" type="text" value="LCA_1234" /> 
   <label for="workorder-date">Date</label>
@@ -516,6 +516,7 @@ button.btn-enabled { opacity: 1; }
     }
     else if (btn === 'add') {
       apireq.add = {};
+      console.log(ns.schema)
       let dbfields = Object.keys(ns.schema[type]);
       for (const dbfield of dbfields) {
         if (dbfield[0] === '_') {
@@ -620,6 +621,28 @@ button.btn-enabled { opacity: 1; }
   }
 
   listQuery('company', { _id: 1, name : 1} );
+
+   poc2go.fetch.json('server/rest/api/models/workorderModel.json')
+   .then(json => {
+		ns.schema = json.schema;
+/*
+     document.getElementById('schema-associate').innerHTML = 
+      hljs.highlight('json', JSON.stringify(ns.schema.associate, null, 2)).value;
+     document.getElementById('schema-contact').innerHTML = 
+      hljs.highlight('json', JSON.stringify(ns.schema.contact, null, 2)).value;
+     document.getElementById('schema-company').innerHTML = 
+      hljs.highlight('json', JSON.stringify(ns.schema.company, null, 2)).value;
+     document.getElementById('schema-engine').innerHTML = 
+      hljs.highlight('json', JSON.stringify(ns.schema.engine, null, 2)).value;
+     document.getElementById('schema-aircraft').innerHTML = 
+      hljs.highlight('json', JSON.stringify(ns.schema.aircraft, null, 2)).value;
+     document.getElementById('schema-task').innerHTML = 
+      hljs.highlight('json', JSON.stringify(ns.schema.task, null, 2)).value;
+     document.getElementById('schema-workorder').innerHTML = 
+      hljs.highlight('json', JSON.stringify(ns.schema.workorder, null, 2)).value;
+*/
+   });
+
 
   async function postData(url, data = {}) {
     // Default options are marked with *

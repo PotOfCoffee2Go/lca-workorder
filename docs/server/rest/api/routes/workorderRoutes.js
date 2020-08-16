@@ -6,6 +6,9 @@ module.exports = function(app) {
 	app.route('/schema')
 		.get(workorder.read_schema);
 
+	app.route('/all')
+		.get(workorder.read_all);
+
 	// workorder Routes
 	app.route('/list')
 //		.get(workorder.list_all_customers);

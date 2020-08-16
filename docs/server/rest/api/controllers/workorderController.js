@@ -15,6 +15,15 @@ exports.read_schema = function(req, res) {
   //res.json({schema: dbs.schema});
 }
 
+exports.read_all = function(req, res) {
+  let apireq = req.body;
+  let query = {};
+  db.find({}, (err, fndDocs) => {
+    if (err) { res.send(err); }
+    res.json(fndDocs);
+  });
+}
+
 exports.list_query = function(req, res) {
   let apireq = req.body;
   let query = {};
