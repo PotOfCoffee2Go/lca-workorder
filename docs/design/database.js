@@ -82,7 +82,7 @@ this.config = {
             'codemirror@5.52.0/theme/' },
   },
   lca: {
-    workorderDb: 'http://lca.ngrok.io/'
+    workorderDb: 'https://lca.ngrok.io/'
   }
 }
 
