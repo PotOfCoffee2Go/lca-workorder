@@ -20,7 +20,9 @@ exports.read_all = function(req, res) {
   let query = {};
   db.find({}, (err, fndDocs) => {
     if (err) { res.send(err); }
-    res.json(fndDocs);
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(fndDocs, null, 2));
+// res.json(fndDocs);
   });
 }
 

@@ -1,2 +1,2 @@
-{"_timestamp":"","_type":"company","name":"Fly by Night, LLC","address":"999 Ut-Oh Way","city":"Cottageville","state":"SC","zip":"29435","phone":"8435551212","email":"freestick@mailserver.com","notes":"","_id":"ogQCtlDa3udQAmaT"}
 {"_timestamp":"","_type":"contact","_company_ids":[],"name":"Frank","address":"111 Dead End Ave.","city":"Cottageville","state":"SC","zip":"29435","phone":"8435551212","email":"silly@mailserver.com","notes":"","_id":"6MFS4eVZ2nkErnvs"}
+{"_timestamp":"","_type":"company","name":"Fly by Night, LLC","address":"999 Ut-Oh Way","city":"Cottageville","state":"SC","zip":"29435","phone":"8435551212","email":"freestick@mailserver.com","notes":"","_id":"ogQCtlDa3udQAmaT"}
