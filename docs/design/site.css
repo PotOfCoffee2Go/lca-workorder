@@ -57,6 +57,7 @@ body, .textBtn  {
   top: 1.4em;
   left:4px;
   right: 4px;
+  border: 1px grey solid;
 }
 
 #toc {

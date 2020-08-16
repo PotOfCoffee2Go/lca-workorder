@@ -1,6 +1,12 @@
 # Proposed Database Records
 
+::comment:: Page  options and Editor theme list selector
+::id-editorOpts::<div>
+<script type="text/doc-canvas-rendered">
+  return (new Database).codemirror.buildCssSelect('cmCssSelector');
+</script>
 ::tx-.7::<input id="show-records" type="button" value="Show DB Records"/>
+</div>
 
 ::bg-blue tx-center box:: Company Records
 
@@ -46,7 +52,7 @@
 ::left margin-.1 box cl-schema::<pre><code id="schema-company"></code></pre>
 
 ::left margin-.1 box id-staged-company cl-staged::<div>
-Company Staging area
+Company Notes
 </div>
 
 ::clear box id-msg-company::This area will contain information, confirmations, and error messages about activities done on the form.
@@ -96,7 +102,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 ::left margin-.1 box cl-schema::<pre><code id="schema-contact"></code></pre>
 
 ::left margin-.1 box id-staged-contact cl-staged::<div>
-Contact Staging area
+Contact Notes
 </div>
 
 ::clear box id-msg-contact::This area will contain information, confirmations, and error messages about activities done on the form.
@@ -140,7 +146,7 @@ Contact Staging area
 ::left margin-.1 box cl-schema::<pre><code id="schema-aircraft"></code></pre>
 
 ::left margin-.1 box id-staged-aircraft cl-staged::<div>
-Aircraft Staging area
+Aircraft Notes
 </div>
 
 ::clear box id-msg-aircraft::This area will contain information, confirmations, and error messages about activities done on the form.
@@ -184,7 +190,7 @@ Aircraft Staging area
 ::left margin-.1 box cl-schema::<pre><code id="schema-engine"></code></pre>
 
 ::left margin-.1 box id-staged-engine cl-staged::<div>
-Engine Staging area
+Engine Notes
 </div>
 
 ::clear box id-msg-engine::This area will contain information, confirmations, and error messages about activities done on the form.
@@ -246,7 +252,7 @@ Engine Staging area
 ::left margin-.1 box cl-schema::<pre><code id="schema-workorder"></code></pre>
 
 ::left margin-.1 box id-staged-workorder cl-staged::<div>
-Workorder Staging area
+Workorder Notes
 </div>
 
 ::clear box id-msg-workorder::This area will contain information, confirmations, and error messages about activities done on the form.
@@ -298,7 +304,7 @@ Workorder Staging area
 ::left margin-.1 box cl-schema::<pre><code id="schema-task"></code></pre>
 
 ::left margin-.1 box id-staged-task cl-staged::<div>
-Tasks Staging area
+Tasks Notes
 </div>
 
 ::clear box id-msg-task::This area will contain information, confirmations, and error messages about activities done on the form.
@@ -351,7 +357,7 @@ or a government regulator.
 ::left margin-.1 box cl-schema::<pre><code id="schema-associate"></code></pre>
 
 ::left margin-.1 box id-staged-associate cl-staged::<div>
-Associate Staging area
+Associate Notes
 </div>
 
 ::clear box id-msg-associate::This area will contain information, confirmations, and error messages about activities done on the form.
@@ -440,9 +446,9 @@ button.btn-enabled { opacity: 1; }
   let editors = Object.keys(ns.editors);
   for (let editor of editors) {
     ns.editors[editor] = CodeMirror(poc2go.dom[`staged-${editor}`],{
-        lineWrapping: true,
+      lineWrapping: true,
       lineNumbers: true,
-   //   theme: poc2go.store.db.codemirror.name,
+      theme: poc2go.store.db.codemirror.name,
       viewportMargin: Infinity
     });
   }
@@ -465,7 +471,7 @@ button.btn-enabled { opacity: 1; }
     button.addEventListener('click', function(evt) {
       // alert(evt.target.id);
       let btnpress = /(.*)-(.*)-(.*)/.exec(evt.target.id);
-      if (btnpress.length !== 4 || btnpress[1] !== 'btn') { return; }
+      if (!btnpress || btnpress.length !== 4 || btnpress[1] !== 'btn') { return; }
       formBtn(btnpress[2], btnpress[3]);
     })
   }
@@ -661,6 +667,21 @@ button.btn-enabled { opacity: 1; }
     });
     return response.json(); // parses JSON response into native JavaScript objects
   }
+
+ // CodeMirror style selector dropdown box
+  const cmStylesheet = new CodeMirrorCss;
+  ns.dom.cmCssSelector.value = poc2go.store.db.codemirror.name;
+  cmStylesheet.get(ns.dom.cmCssSelector.value);
+
+  ns.dom.cmCssSelector.addEventListener("input", () => {
+    cmStylesheet.get(ns.dom.cmCssSelector.value)
+    .then(() => {
+			let editors = Object.keys(ns.editors);
+			for (let editor of editors) {
+				ns.editors[editor].setOption("theme", ns.dom.cmCssSelector.value);
+			}
+		})
+  }, false);
 
 </script>
 
