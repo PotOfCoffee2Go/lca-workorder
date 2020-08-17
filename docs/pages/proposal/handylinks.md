@@ -12,3 +12,14 @@
  
  [Code repository](https://github.com/PotOfCoffee2Go/lca-workorder)
 
+-----
+
+Database schema
+
+[schema](https://lca.ngrok.io/schema)
+
+Database records
+
+[All records](https://lca.ngrok.io/all)
+
+
