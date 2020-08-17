@@ -1,6 +1,6 @@
 # LCA Work Order Flow Proposal
 
-Lowcountry Aviation is currently using Adobe ::blue::_pdf_ forms to record and process work orders. Microsoft ::blue::_docx_ files are used to report the current status of the work orders. The overhead of filling out and maintaining the forms has become burdensome for the company. This proposal is to discuss a web based, open sourse solution to streamline and track Lowcountry Aviation's work order flow processing.
+Lowcountry Aviation is currently using Adobe ::tx-aqua::_pdf_ forms to record and process work orders. Microsoft ::tx-aqua::_docx_ files are used to report the current status of the work orders. The overhead of filling out and maintaining the forms has become burdensome for the company. This proposal is to discuss a web based, open sourse solution to streamline and track Lowcountry Aviation's work order flow processing.
 
 ## Web based access
 Individuals with proper credentials will be able to access, add, update, and resolve open work orders. The four levels of security are:
@@ -20,6 +20,7 @@ For performance and scalability the data storage is divided into two databases:
    - Info can be used to generate new work order
  
 Basically, once a work order has been flagged as closed it can not be ::tx-pink::_unclosed_. However, a new work order can be generated auto-filling fields from the closed work order.
+
 > ::tx-gray::Note that the ability to generate a new work order from an existing work order is key to reducing redundant data entry. The work order company, address, aircraft, etc. is automatically filled in. 
 
 ## Work order transactions
@@ -30,23 +31,29 @@ A transaction represents a distinct unit of work. A work order is a group of tra
 Each transaction requires a custmer account number and work order id. Any number of transactions can be applied to a work order. Other than a valid customer/workorderId, the storage system does not verify the data being stored. This allows new data fields to be added or obsolete fields to be removed without requiring changes to the storage system.
 
 ## Implementation
-Work order forms can be inserted onto any web page by adding a script like :
-``` html
+Work order forms can be inserted onto any web page by adding a script like
+
+```html
   <script src="https://lowcountryaviation.com/js/workorders.js"></script>
 ```
 
-and a `<div>` where the work order is to appear on the page:
-``` html
+and a `<div>` where the work order is to appear on the page
+
+```html
   <div id="lca-workorder"></div>
 ```
+
 The script will insert work order info inside the div. There are properties that can be included in the `<div>` statement to refine the work orders to be displayed.
 
 ## Web host
-Development is using [github][] as a web host. Lowcountry Aviation will probably wish to host the code and data on their own web host. This is easily done using ::tx-aqua::_`git clone git@github.com:PotOfCoffee2Go/lca-workorder.git`_ command to download onto their host server. The host server will require [nodejs][] installed to store the work order data.
+Development is using [github][] as a web host. Lowcountry Aviation will probably wish to host the code and data on their own web host. This is easily done using ::tx-aqua::_git clone git@github.com:PotOfCoffee2Go/lca-workorder.git_ command to download onto their host server. The host server will require [nodejs][] installed to store the work order data.
 
 Author: PotOfCoffee2Go
 Created: Aug. 9, 2020
 Updated: Aug. 11, 2020
 License: MIT
 
+
+[github]: https://www.github.com
+[nodejs]: https://www.nodejs.org
 [JSON]: https://www.json.org

@@ -14,6 +14,12 @@
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
+  <button id="btn-company-clear"  class="btn-enabled" type="button" value="Clear">Clear</button>
+  <button id="btn-company-find" class="btn-enabled" type="button" value="Find">Find</button>
+  <button id="btn-company-next" type="button" value="Next">Next</button>
+  <button id="btn-company-prev" type="button" value="Prev">Prev</button>
+  <button id="btn-company-stage" type="button" value="Stage">Stage</button>
+  <hr>
 <div id="company-form" class="settings">
   <label for="company-name">*Name</label><input name="company-name" type="text" value="Fly by Night, LLC" /> 
   <label for="company-address">Address</label><input name="company-address" type="text" value="999 Ut-Oh Way" /> 
@@ -24,21 +30,15 @@
   <label for="company-email">Email</label><input name="company-email" type="text" value="freestick@mailserver.com" /> 
   <label for="company-notes">Notes</label><input name="company-notes" type="text" value="" /> 
 </div>
-  <button id="btn-company-contact" type="button" value="Contacts">Contacts</button>
-  <button id="btn-company-aircraft" type="button" value="Aircrafts">Aircrafts</button>
-  <br />
-  <button id="btn-company-clear"  class="btn-enabled" type="button" value="Clear">Clear</button>
-  <button id="btn-company-find" class="btn-enabled" type="button" value="Find">Find</button>
-  <button id="btn-company-next" type="button" value="Next">Next</button>
-  <button id="btn-company-prev" type="button" value="Prev">Prev</button>
-  <button id="btn-company-stage" type="button" value="Stage">Stage</button>
-  <hr>
   <button id="btn-company-add" type="button" value="Add">Add</button>
   <button id="btn-company-update" type="button" value="Update">Update</button>
-  <button id="btn-company-delete" type="button" value="Delete">Delete</button>
-  <br />
+  <hr>
+  <button id="btn-company-contact" type="button" value="Contacts">Contacts</button>
+  <button id="btn-company-aircraft" type="button" value="Aircrafts">Aircrafts</button>
+	<hr>
   <button id="btn-company-attach" type="button" value="Attach">Attach</button>
   <button id="btn-company-detach" type="button" value="Detach">Detach</button>
+  <button id="btn-company-delete" type="button" value="Delete">Delete</button>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-company"></code></pre>
@@ -59,7 +59,18 @@ A contact contains information about any person that Lowcountry Aviation might w
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
+  <button id="btn-contact-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
+  <button id="btn-contact-find" class="btn-enabled" type="button" value="Find">Find</button>
+  <button id="btn-contact-next" type="button" value="Next">Next</button>
+  <button id="btn-contact-prev" type="button" value="Prev">Prev</button>
+  <button id="btn-contact-stage" type="button" value="Stage">Stage</button>
+  <hr>
 <div id="contact-form" class="settings">
+  <label for="contact-company_id">*Company</label><select name="contact-company_id">
+    <option value="default">default</option>
+    <option value="a11y-dark">a11y-dark</option>
+    <option value="a11y-light">a11y-light</option>
+  </select>
   <label for="contact-name">*Name</label><input name="contact-name" type="text" value="Frank" /> 
   <label for="contact-address">Address</label><input name="contact-address" type="text" value="111 Dead End Ave." /> 
   <label for="contact-city">City</label><input name="contact-city" type="text" value="Cottageville" /> 
@@ -69,18 +80,12 @@ A contact contains information about any person that Lowcountry Aviation might w
   <label for="contact-email">Email</label><input name="contact-email" type="text" value="silly@mailserver.com" /> 
   <label for="contact-notes">Notes</label><input name="contact-notes" type="text" value="" /> 
 </div>
-  <button id="btn-contact-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
-  <button id="btn-contact-find" class="btn-enabled" type="button" value="Find">Find</button>
-  <button id="btn-contact-next" type="button" value="Next">Next</button>
-  <button id="btn-contact-prev" type="button" value="Prev">Prev</button>
-  <button id="btn-contact-stage" type="button" value="Stage">Stage</button>
-  <hr>
   <button id="btn-contact-add" type="button" value="Add">Add</button>
   <button id="btn-contact-update" type="button" value="Update">Update</button>
-  <button id="btn-contact-delete" type="button" value="Delete">Delete</button>
-  <br />
+  <hr>
   <button id="btn-contact-attach" type="button" value="Attach">Attach</button>
   <button id="btn-contact-detach" type="button" value="Detach">Detach</button>
+  <button id="btn-contact-delete" type="button" value="Delete">Delete</button>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-contact"></code></pre>
@@ -95,7 +100,18 @@ Contact Notes
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
+  <button id="btn-aircraft-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
+  <button id="btn-aircraft-find" class="btn-enabled" type="button" value="Find">Find</button>
+  <button id="btn-aircraft-next" type="button" value="Next">Next</button>
+  <button id="btn-aircraft-prev" type="button" value="Prev">Prev</button>
+  <button id="btn-aircraft-stage" type="button" value="Stage">Stage</button>
+  <hr>
 <div id="aircraft-form" class="settings">
+  <label for="aircraft-company_id">*Company</label><select name="aircraft-company_id">
+    <option value="default">default</option>
+    <option value="a11y-dark">a11y-dark</option>
+    <option value="a11y-light">a11y-light</option>
+  </select>
   <label for="aircraft-name">*Name</label><input name="aircraft-name" type="text" value="Blue with Yellow nose" /> 
   <label for="aircraft-model">Model</label><input name="aircraft-model" type="text" value="A big boy" /> 
   <label for="aircraft-make">Make</label><input name="aircraft-make" type="text" value="Torked" /> 
@@ -104,20 +120,14 @@ Contact Notes
   <label for="aircraft-time_in_service">Time in service</label><input name="aircraft-time_in_service" type="text" value="6543.1" /> 
   <label for="aircraft-notes">Notes</label><input name="aircraft-notes" type="text" value="" /> 
 </div>
-  <button id="btn-aircraft-engine" type="button" value="Engines">Engines</button>
-  <br />
-  <button id="btn-aircraft-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
-  <button id="btn-aircraft-find" class="btn-enabled" type="button" value="Find">Find</button>
-  <button id="btn-aircraft-next" type="button" value="Next">Next</button>
-  <button id="btn-aircraft-prev" type="button" value="Prev">Prev</button>
-  <button id="btn-aircraft-stage" type="button" value="Stage">Stage</button>
-  <hr>
   <button id="btn-aircraft-add" type="button" value="Add">Add</button>
   <button id="btn-aircraft-update" type="button" value="Update">Update</button>
-  <button id="btn-aircraft-delete" type="button" value="Delete">Delete</button>
-  <br />
+  <hr>
+  <button id="btn-aircraft-engine" type="button" value="Engines">Engines</button>
+  <hr>
   <button id="btn-aircraft-attach" type="button" value="Attach">Attach</button>
   <button id="btn-aircraft-detach" type="button" value="Detach">Detach</button>
+  <button id="btn-aircraft-delete" type="button" value="Delete">Delete</button>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-aircraft"></code></pre>
@@ -132,7 +142,18 @@ Aircraft Notes
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
+  <button id="btn-engine-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
+  <button id="btn-engine-find" class="btn-enabled" type="button" value="Find">Find</button>
+  <button id="btn-engine-next" type="button" value="Next">Next</button>
+  <button id="btn-engine-prev" type="button" value="Prev">Prev</button>
+  <button id="btn-engine-stage" type="button" value="Stage">Stage</button>
+  <hr>
 <div id="engine-form" class="settings">
+  <label for="engine-aircraft_id">*Aircraft</label><select name="engine-aircraft_id">
+    <option value="default">default</option>
+    <option value="a11y-dark">a11y-dark</option>
+    <option value="a11y-light">a11y-light</option>
+  </select>
   <label for="engine-name">*Name</label><input name="engine-name" type="text" value="Fuel-ish" /> 
   <label for="engine-model">Model</label><input name="engine-model" type="text" value="A big boy" /> 
   <label for="engine-make">Make</label><input name="engine-make" type="text" value="Torked" /> 
@@ -142,18 +163,12 @@ Aircraft Notes
   <label for="engine-time_since_overhaul">Time since overhaul</label><input name="engine-time_since_overhaul" type="text" value="876.2" /> 
   <label for="engine-notes">Notes</label><input name="engine-notes" type="text" value="" /> 
 </div>
-  <button id="btn-engine-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
-  <button id="btn-engine-find" class="btn-enabled" type="button" value="Find">Find</button>
-  <button id="btn-engine-next" type="button" value="Next">Next</button>
-  <button id="btn-engine-prev" type="button" value="Prev">Prev</button>
-  <button id="btn-engine-stage" type="button" value="Stage">Stage</button>
-  <hr>
   <button id="btn-engine-add" type="button" value="Add">Add</button>
   <button id="btn-engine-update" type="button" value="Update">Update</button>
-  <button id="btn-engine-delete" type="button" value="Delete">Delete</button>
-  <br />
+  <hr>
   <button id="btn-engine-attach" type="button" value="Attach">Attach</button>
   <button id="btn-engine-detach" type="button" value="Detach">Detach</button>
+  <button id="btn-engine-delete" type="button" value="Delete">Delete</button>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-engine"></code></pre>
@@ -170,8 +185,14 @@ Engine Notes
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
+  <button id="btn-workorder-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
+  <button id="btn-workorder-find" class="btn-enabled" type="button" value="Find">Find</button>
+  <button id="btn-workorder-next" type="button" value="Next">Next</button>
+  <button id="btn-workorder-prev" type="button" value="Prev">Prev</button>
+  <button id="btn-workorder-stage" type="button" value="Stage">Stage</button>
+  <hr>
 <div id="workorder-form" class="settings">
-  <label for="workorder-company_id">*Company</label><select name="workorder-company-id">
+  <label for="workorder-company_id">*Company</label><select name="workorder-company_id">
     <option value="default">default</option>
     <option value="a11y-dark">a11y-dark</option>
     <option value="a11y-light">a11y-light</option>
@@ -192,17 +213,15 @@ Engine Notes
   <label for="workorder-signed_date">Signed Date</label><input name="workorder-signed_date" type="text" value="" /> 
   <label for="workorder-notes">Notes</label><input name="workorder-notes" type="text" value="" /> 
 </div>
+  <button id="btn-workorder-add" type="button" value="Add">Add</button>
+  <button id="btn-workorder-update" type="button" value="Update">Update</button>
+  <hr>
   <button id="btn-workorder-company" type="button" value="Company">Company</button>
   <button id="btn-workorder-aircraft" type="button" value="Aircraft">Aircraft</button>
   <button id="btn-workorder-task" type="button" value="Tasks">Tasks</button>
-  <br />
-  <button id="btn-workorder-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
-  <button id="btn-workorder-find" class="btn-enabled" type="button" value="Find">Find</button>
-  <button id="btn-workorder-next" type="button" value="Next">Next</button>
-  <button id="btn-workorder-prev" type="button" value="Prev">Prev</button>
-  <hr>
-  <button id="btn-workorder-add" type="button" value="Add">Add</button>
-  <button id="btn-workorder-update" type="button" value="Update">Update</button>
+	<hr>
+  <button id="btn-workorder-attach" type="button" value="Attach">Attach</button>
+  <button id="btn-workorder-detach" type="button" value="Detach">Detach</button>
   <button id="btn-workorder-delete" type="button" value="Delete">Delete</button>
 </div>
 
@@ -218,8 +237,19 @@ Workorder Notes
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
+  <button id="btn-task-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
+  <button id="btn-task-find" class="btn-enabled" type="button" value="Find">Find</button>
+  <button id="btn-task-next" type="button" value="Next">Next</button>
+  <button id="btn-task-prev" type="button" value="Prev">Prev</button>
+  <button id="btn-task-stage" type="button" value="Stage">Stage</button>
+  <hr>
 <div id="task-form" class="settings">
-  <label for="task-name">*Name</label><input name="task-name" type="text" value="Broke thingmabob" /> 
+  <label for="task-workorder_id">*Workorder</label><select name="task-workorder_id">
+    <option value="default">default</option>
+    <option value="a11y-dark">a11y-dark</option>
+    <option value="a11y-light">a11y-light</option>
+  </select>
+   <label for="task-name">*Name</label><input name="task-name" type="text" value="Broke thingmabob" /> 
   <label for="task-discrepancy">*Discrepancy</label><input name="task-discrepancy" type="text" value="An editor will open" /> 
   <label for="task-removed_pn">Removed PN</label><input name="task-removed_pn" type="text" value="dfg-3e1" /> 
   <label for="task-removed_sn">Removed SN</label><input name="task-removed_sn" type="text" value="1234_xyz.42" /> 
@@ -231,20 +261,14 @@ Workorder Notes
   <label for="task-inspected_by">Inspected by</label><input name="task-inspected_by" type="text" value="Bugs Bunny" /> 
   <label for="task-notes">Notes</label><input name="task-notes" type="text" value="" /> 
 </div>
-  <button id="btn-task-associate" type="button" value="Associates">Associates</button>
-  <br />
-  <button id="btn-task-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
-  <button id="btn-task-find" class="btn-enabled" type="button" value="Find">Find</button>
-  <button id="btn-task-next" type="button" value="Next">Next</button>
-  <button id="btn-task-prev" type="button" value="Prev">Prev</button>
-  <button id="btn-task-stage" type="button" value="Stage">Stage</button>
-  <hr>
   <button id="btn-task-add" type="button" value="Add">Add</button>
   <button id="btn-task-update" type="button" value="Update">Update</button>
-  <button id="btn-task-delete" type="button" value="Delete">Delete</button>
-  <br />
+  <hr>
+  <button id="btn-task-associate" type="button" value="Associates">Associates</button>
+  <hr>
   <button id="btn-task-attach" type="button" value="Attach">Attach</button>
   <button id="btn-task-detach" type="button" value="Detach">Detach</button>
+  <button id="btn-task-delete" type="button" value="Delete">Delete</button>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-task"></code></pre>
@@ -268,7 +292,18 @@ or a government regulator.
 ::box::<div>Information about current workorder/company/aircraft</div>
 
 ::left box margin-0-1::<div>
+  <button id="btn-associate-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
+  <button id="btn-associate-find" class="btn-enabled" type="button" value="Find">Find</button>
+  <button id="btn-associate-next" type="button" value="Next">Next</button>
+  <button id="btn-associate-prev" type="button" value="Prev">Prev</button>
+  <button id="btn-associate-stage" type="button" value="Stage">Stage</button>
+  <hr>
 <div id="associate-form" class="settings">
+  <label for="associate-task_ids">Tasks</label><select name="associate-task_ids">
+    <option value="default">default</option>
+    <option value="a11y-dark">a11y-dark</option>
+    <option value="a11y-light">a11y-light</option>
+  </select>
   <label for="associate-name">*Name</label><input name="associate-name" type="text" value="Bob Toolbelt" /> 
   <label for="associate-address">Address</label><input name="associate-address" type="text" value="123 Right Turn Street" /> 
   <label for="associate-city">City</label><input name="associate-city" type="text" value="Cottageville" /> 
@@ -278,18 +313,12 @@ or a government regulator.
   <label for="associate-email">Email</label><input name="associate-email" type="text" value="sillybob@mailserver.com" /> 
   <label for="asssociate-notes">Notes</label><input name="associate-notes" type="text" value="" /> 
 </div>
-  <button id="btn-associate-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
-  <button id="btn-associate-find" class="btn-enabled" type="button" value="Find">Find</button>
-  <button id="btn-associate-next" type="button" value="Next">Next</button>
-  <button id="btn-associate-prev" type="button" value="Prev">Prev</button>
-  <button id="btn-associate-stage" type="button" value="Stage">Stage</button>
-  <hr>
   <button id="btn-associate-add" type="button" value="Add">Add</button>
   <button id="btn-associate-update" type="button" value="Update">Update</button>
-  <button id="btn-associate-delete" type="button" value="Delete">Delete</button>
-  <br />
+  <hr>
   <button id="btn-associate-attach" type="button" value="Attach">Attach</button>
   <button id="btn-associate-detach" type="button" value="Detach">Detach</button>
+  <button id="btn-associate-delete" type="button" value="Delete">Delete</button>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-associate"></code></pre>
@@ -333,4 +362,5 @@ button.btn-enabled { opacity: 1; }
 Author: PotOfCoffee2Go
 Created: Aug. 9, 2020
 Updated: Aug. 17, 2020
-License: MIT
+Copyright: (c) 2020 Lowcountry Aviation - All Rights reserved.
+::comment:: License:
