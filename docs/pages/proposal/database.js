@@ -77,6 +77,18 @@
     }
   }, false);
   
+  ns.dom['chk-admin'].addEventListener("click", () => {
+    var allAdminBtns = document.querySelectorAll('.admin-btns');
+    for (var i=0, len=allAdminBtns.length|0; i<len; i=i+1|0) {
+      if (allAdminBtns[i].style.display === 'block') {
+        allAdminBtns[i].style.display = 'none';
+        ns.dom['chk-admin'].checked = false;
+      } else {
+        allAdminBtns[i].style.display = 'block';
+        ns.dom['chk-admin'].checked = true;
+      }
+    }
+  }, false);
   const buttons = document.querySelectorAll('div button')
   for (const button of buttons) {
     button.addEventListener('click', function(evt) {

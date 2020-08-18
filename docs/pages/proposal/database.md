@@ -5,13 +5,15 @@
 <script type="text/doc-canvas-rendered">
   return (new Database).codemirror.buildCssSelect('cmCssSelector');
 </script>
+<input type="checkbox" id="chk-admin" name="chk-admin" checked><label for="chk-admin">Admin Buttons</label>
 ::tx-.7::<input id="show-records" type="button" value="Show DB Records"/>
+
 </div>
 
 ::bg-blue tx-center box:: Company Records
 
 ## Company
-::box::<div>Information about current workorder/company/aircraft</div>
+::box::<div>Information about current company/aircraft/workorder</div>
 
 ::left box margin-0-1::<div>
   <button id="btn-company-clear"  class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -35,10 +37,12 @@
   <hr>
   <button id="btn-company-contact" type="button" value="Contacts">Contacts</button>
   <button id="btn-company-aircraft" type="button" value="Aircrafts">Aircrafts</button>
+	::cl-admin-btns::<div>
 	<hr>
   <button id="btn-company-attach" type="button" value="Attach">Attach</button>
   <button id="btn-company-detach" type="button" value="Detach">Detach</button>
   <button id="btn-company-delete" type="button" value="Delete">Delete</button>
+  </div>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-company"></code></pre>
@@ -56,7 +60,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 
 </div>
 
-::box::<div>Information about current workorder/company/aircraft</div>
+::box::<div>Information about current company/aircraft/workorder</div>
 
 ::left box margin-0-1::<div>
   <button id="btn-contact-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -82,10 +86,12 @@ A contact contains information about any person that Lowcountry Aviation might w
 </div>
   <button id="btn-contact-add" type="button" value="Add">Add</button>
   <button id="btn-contact-update" type="button" value="Update">Update</button>
+	::cl-admin-btns::<div>
   <hr>
   <button id="btn-contact-attach" type="button" value="Attach">Attach</button>
   <button id="btn-contact-detach" type="button" value="Detach">Detach</button>
   <button id="btn-contact-delete" type="button" value="Delete">Delete</button>
+	</div>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-contact"></code></pre>
@@ -97,7 +103,7 @@ Contact Notes
 ::clear box id-msg-contact::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ### Aircrafts
-::box::<div>Information about current workorder/company/aircraft</div>
+::box::<div>Information about current company/aircraft/workorder</div>
 
 ::left box margin-0-1::<div>
   <button id="btn-aircraft-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -124,10 +130,12 @@ Contact Notes
   <button id="btn-aircraft-update" type="button" value="Update">Update</button>
   <hr>
   <button id="btn-aircraft-engine" type="button" value="Engines">Engines</button>
+	::cl-admin-btns::<div>
   <hr>
   <button id="btn-aircraft-attach" type="button" value="Attach">Attach</button>
   <button id="btn-aircraft-detach" type="button" value="Detach">Detach</button>
   <button id="btn-aircraft-delete" type="button" value="Delete">Delete</button>
+	</div>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-aircraft"></code></pre>
@@ -139,7 +147,7 @@ Aircraft Notes
 ::clear box id-msg-aircraft::This area will contain information, confirmations, and error messages about activities done on the form.
 
 #### Engines
-::box::<div>Information about current workorder/company/aircraft</div>
+::box::<div>Information about current company/aircraft/workorder</div>
 
 ::left box margin-0-1::<div>
   <button id="btn-engine-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -165,10 +173,12 @@ Aircraft Notes
 </div>
   <button id="btn-engine-add" type="button" value="Add">Add</button>
   <button id="btn-engine-update" type="button" value="Update">Update</button>
+	::cl-admin-btns::<div>
   <hr>
   <button id="btn-engine-attach" type="button" value="Attach">Attach</button>
   <button id="btn-engine-detach" type="button" value="Detach">Detach</button>
   <button id="btn-engine-delete" type="button" value="Delete">Delete</button>
+	</div>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-engine"></code></pre>
@@ -182,7 +192,7 @@ Engine Notes
 ::blue tx-center box:: Workorder Records
 
 ### Workorders
-::box::<div>Information about current workorder/company/aircraft</div>
+::box::<div>Information about current company/aircraft/workorder</div>
 
 ::left box margin-0-1::<div>
   <button id="btn-workorder-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -219,10 +229,12 @@ Engine Notes
   <button id="btn-workorder-company" type="button" value="Company">Company</button>
   <button id="btn-workorder-aircraft" type="button" value="Aircraft">Aircraft</button>
   <button id="btn-workorder-task" type="button" value="Tasks">Tasks</button>
+	::cl-admin-btns::<div>
 	<hr>
   <button id="btn-workorder-attach" type="button" value="Attach">Attach</button>
   <button id="btn-workorder-detach" type="button" value="Detach">Detach</button>
   <button id="btn-workorder-delete" type="button" value="Delete">Delete</button>
+	</div>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-workorder"></code></pre>
@@ -234,7 +246,7 @@ Workorder Notes
 ::clear box id-msg-workorder::This area will contain information, confirmations, and error messages about activities done on the form.
 
 #### Tasks
-::box::<div>Information about current workorder/company/aircraft</div>
+::box::<div>Information about current company/aircraft/workorder</div>
 
 ::left box margin-0-1::<div>
   <button id="btn-task-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -265,10 +277,12 @@ Workorder Notes
   <button id="btn-task-update" type="button" value="Update">Update</button>
   <hr>
   <button id="btn-task-associate" type="button" value="Associates">Associates</button>
+	::cl-admin-btns::<div>
   <hr>
   <button id="btn-task-attach" type="button" value="Attach">Attach</button>
   <button id="btn-task-detach" type="button" value="Detach">Detach</button>
   <button id="btn-task-delete" type="button" value="Delete">Delete</button>
+	</div>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-task"></code></pre>
@@ -289,7 +303,7 @@ or a government regulator.
 
 </div>
 
-::box::<div>Information about current workorder/company/aircraft</div>
+::box::<div>Information about current company/aircraft/workorder</div>
 
 ::left box margin-0-1::<div>
   <button id="btn-associate-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
@@ -315,10 +329,12 @@ or a government regulator.
 </div>
   <button id="btn-associate-add" type="button" value="Add">Add</button>
   <button id="btn-associate-update" type="button" value="Update">Update</button>
+	::cl-admin-btns::<div>
   <hr>
   <button id="btn-associate-attach" type="button" value="Attach">Attach</button>
   <button id="btn-associate-detach" type="button" value="Detach">Detach</button>
   <button id="btn-associate-delete" type="button" value="Delete">Delete</button>
+	</div>
 </div>
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-associate"></code></pre>
