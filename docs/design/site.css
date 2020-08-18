@@ -40,6 +40,16 @@ body, .textBtn  {
   padding-bottom: 2px;
 }
 
+#site-logo {
+  position:absolute;
+  width:8em;
+  height:auto;
+  float:left;
+  background: lightcyan;
+  border-radius: 15px;
+  padding: .8em 0 0 .5em;
+}
+
 /* Width of textSize slider done in Listeners.js */
 #textSize {
   opacity: .4;

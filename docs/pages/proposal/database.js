@@ -182,6 +182,7 @@
     
     if (['find','add','update', 'delete'].indexOf(btn) > -1) {
       apiRequest(apireq);
+      window.animatelo['flash'](`#schema-${type}`);
     }
   }
 

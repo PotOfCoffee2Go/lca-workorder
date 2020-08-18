@@ -13,4 +13,5 @@
   - [Handy Links](?md=pages/proposal/handylinks.md)
   - [LCA Work Order Flow Proposal](?md=pages/proposal/introduction.md)
   - [LCA Discrepancy Form Rev 2](?md=pages/proposal/lca-discrep.md)
+  - [Questions](?md=pages/proposal/questions.md)
 

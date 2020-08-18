@@ -5,7 +5,7 @@
 <script type="text/doc-canvas-rendered">
   return (new Database).codemirror.buildCssSelect('cmCssSelector');
 </script>
-<input type="checkbox" id="chk-admin" name="chk-admin" checked><label for="chk-admin">Admin Buttons</label>
+<input type="checkbox" id="chk-admin" name="chk-admin"><label for="chk-admin">Admin Buttons</label>
 ::tx-.7::<input id="show-records" type="button" value="Show DB Records"/>
 
 </div>
@@ -37,7 +37,8 @@
   <hr>
   <button id="btn-company-contact" type="button" value="Contacts">Contacts</button>
   <button id="btn-company-aircraft" type="button" value="Aircrafts">Aircrafts</button>
-	::cl-admin-btns::<div>
+  <button id="btn-company-workorder" type="button" value="Workorders">Workorders</button>
+	::cl-admin-btns::<div style="display: none;">
 	<hr>
   <button id="btn-company-attach" type="button" value="Attach">Attach</button>
   <button id="btn-company-detach" type="button" value="Detach">Detach</button>
@@ -45,13 +46,15 @@
   </div>
 </div>
 
+::id-msg-company::This area will contain information, confirmations, and error messages about activities done on the form.
+
 ::left margin-.1 box cl-schema::<pre><code id="schema-company"></code></pre>
 
 ::left margin-.1 box id-staged-company cl-staged::<div>
 Company Notes
 </div>
 
-::clear box id-msg-company::This area will contain information, confirmations, and error messages about activities done on the form.
+::clear box id-msg-company-bottom:: &nbsp;
 
 ### Contacts
 ::cl-description::<div>
@@ -86,7 +89,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 </div>
   <button id="btn-contact-add" type="button" value="Add">Add</button>
   <button id="btn-contact-update" type="button" value="Update">Update</button>
-	::cl-admin-btns::<div>
+	::cl-admin-btns::<div style="display: none;">
   <hr>
   <button id="btn-contact-attach" type="button" value="Attach">Attach</button>
   <button id="btn-contact-detach" type="button" value="Detach">Detach</button>
@@ -94,13 +97,15 @@ A contact contains information about any person that Lowcountry Aviation might w
 	</div>
 </div>
 
+::id-msg-contact::This area will contain information, confirmations, and error messages about activities done on the form.
+
 ::left margin-.1 box cl-schema::<pre><code id="schema-contact"></code></pre>
 
 ::left margin-.1 box id-staged-contact cl-staged::<div>
 Contact Notes
 </div>
 
-::clear box id-msg-contact::This area will contain information, confirmations, and error messages about activities done on the form.
+::clear box id-msg-contact-bottom:: &nbsp;
 
 ### Aircrafts
 ::box::<div>Information about current company/aircraft/workorder</div>
@@ -130,7 +135,7 @@ Contact Notes
   <button id="btn-aircraft-update" type="button" value="Update">Update</button>
   <hr>
   <button id="btn-aircraft-engine" type="button" value="Engines">Engines</button>
-	::cl-admin-btns::<div>
+	::cl-admin-btns::<div style="display: none;">
   <hr>
   <button id="btn-aircraft-attach" type="button" value="Attach">Attach</button>
   <button id="btn-aircraft-detach" type="button" value="Detach">Detach</button>
@@ -138,13 +143,15 @@ Contact Notes
 	</div>
 </div>
 
+::id-msg-aircraft::This area will contain information, confirmations, and error messages about activities done on the form.
+
 ::left margin-.1 box cl-schema::<pre><code id="schema-aircraft"></code></pre>
 
 ::left margin-.1 box id-staged-aircraft cl-staged::<div>
 Aircraft Notes
 </div>
 
-::clear box id-msg-aircraft::This area will contain information, confirmations, and error messages about activities done on the form.
+::clear box id-msg-aircraft-bottom:: &nbsp;
 
 #### Engines
 ::box::<div>Information about current company/aircraft/workorder</div>
@@ -173,7 +180,7 @@ Aircraft Notes
 </div>
   <button id="btn-engine-add" type="button" value="Add">Add</button>
   <button id="btn-engine-update" type="button" value="Update">Update</button>
-	::cl-admin-btns::<div>
+	::cl-admin-btns::<div style="display: none;">
   <hr>
   <button id="btn-engine-attach" type="button" value="Attach">Attach</button>
   <button id="btn-engine-detach" type="button" value="Detach">Detach</button>
@@ -181,13 +188,15 @@ Aircraft Notes
 	</div>
 </div>
 
+::id-msg-engine::This area will contain information, confirmations, and error messages about activities done on the form.
+
 ::left margin-.1 box cl-schema::<pre><code id="schema-engine"></code></pre>
 
 ::left margin-.1 box id-staged-engine cl-staged::<div>
 Engine Notes
 </div>
 
-::clear box id-msg-engine::This area will contain information, confirmations, and error messages about activities done on the form.
+::clear box id-msg-engine-bottom:: &nbsp;
 
 ::blue tx-center box:: Workorder Records
 
@@ -229,7 +238,7 @@ Engine Notes
   <button id="btn-workorder-company" type="button" value="Company">Company</button>
   <button id="btn-workorder-aircraft" type="button" value="Aircraft">Aircraft</button>
   <button id="btn-workorder-task" type="button" value="Tasks">Tasks</button>
-	::cl-admin-btns::<div>
+	::cl-admin-btns::<div style="display: none;">
 	<hr>
   <button id="btn-workorder-attach" type="button" value="Attach">Attach</button>
   <button id="btn-workorder-detach" type="button" value="Detach">Detach</button>
@@ -237,13 +246,15 @@ Engine Notes
 	</div>
 </div>
 
+::id-msg-workorder::This area will contain information, confirmations, and error messages about activities done on the form.
+
 ::left margin-.1 box cl-schema::<pre><code id="schema-workorder"></code></pre>
 
 ::left margin-.1 box id-staged-workorder cl-staged::<div>
 Workorder Notes
 </div>
 
-::clear box id-msg-workorder::This area will contain information, confirmations, and error messages about activities done on the form.
+::clear box id-msg-workorder-bottom:: &nbsp;
 
 #### Tasks
 ::box::<div>Information about current company/aircraft/workorder</div>
@@ -277,7 +288,7 @@ Workorder Notes
   <button id="btn-task-update" type="button" value="Update">Update</button>
   <hr>
   <button id="btn-task-associate" type="button" value="Associates">Associates</button>
-	::cl-admin-btns::<div>
+	::cl-admin-btns::<div style="display: none;">
   <hr>
   <button id="btn-task-attach" type="button" value="Attach">Attach</button>
   <button id="btn-task-detach" type="button" value="Detach">Detach</button>
@@ -285,13 +296,15 @@ Workorder Notes
 	</div>
 </div>
 
+::id-msg-task::This area will contain information, confirmations, and error messages about activities done on the form.
+
 ::left margin-.1 box cl-schema::<pre><code id="schema-task"></code></pre>
 
 ::left margin-.1 box id-staged-task cl-staged::<div>
 Tasks Notes
 </div>
 
-::clear box id-msg-task::This area will contain information, confirmations, and error messages about activities done on the form.
+::clear box id-msg-task-bottom:: &nbsp;
 
 ##### Associates
 ::cl-description::<div>
@@ -329,7 +342,7 @@ or a government regulator.
 </div>
   <button id="btn-associate-add" type="button" value="Add">Add</button>
   <button id="btn-associate-update" type="button" value="Update">Update</button>
-	::cl-admin-btns::<div>
+	::cl-admin-btns::<div style="display: none;">
   <hr>
   <button id="btn-associate-attach" type="button" value="Attach">Attach</button>
   <button id="btn-associate-detach" type="button" value="Detach">Detach</button>
@@ -337,14 +350,15 @@ or a government regulator.
 	</div>
 </div>
 
+::id-msg-associate::This area will contain information, confirmations, and error messages about activities done on the form.
+
 ::left margin-.1 box cl-schema::<pre><code id="schema-associate"></code></pre>
 
 ::left margin-.1 box id-staged-associate cl-staged::<div>
 Associate Notes
 </div>
 
-::clear box id-msg-associate::This area will contain information, confirmations, and error messages about activities done on the form.
-
+::clear box id-msg-associate-bottom:: &nbsp;
 
 <style>
 div.settings {
@@ -372,8 +386,11 @@ button.btn-enabled { opacity: 1; }
 
 ::insert-pages/proposal/database.js::
 
+::script-from/github/gibbok/animatelo.min.js::
+
+
 ::comment:: Styles and scripts for codemirror editor
-::insert-pages/from/codemirror/editor.md::
+::insert-from/codemirror/editor.md::
 
 Author: PotOfCoffee2Go
 Created: Aug. 9, 2020

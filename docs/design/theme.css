@@ -25,7 +25,7 @@ h1,h2,h3,h4,h5 {color: var(--clrheading);}
 a:link, a:visited, a:hover, a:active {
   color:var(--clrheading);
 }
-a:focus, button:focus, input:focus {
+a:focus, input:focus {
   outline: 1px solid var(--clrtext);
 }
 
