@@ -1,4 +1,4 @@
-# Proposed Database Records
+# LCA Work Order System
 
 ::comment:: Page  options and Editor theme list selector
 ::id-editorOpts::<div>
@@ -10,19 +10,20 @@
 
 </div>
 
-::bg-blue tx-center box:: Company Records
-
+----
 ## Company
 ::box::<div>Information about current company/aircraft/workorder</div>
 
-::left box margin-0-1::<div>
+<div class="form-container">
+
+::box::<div>
   <button id="btn-company-clear"  class="btn-enabled" type="button" value="Clear">Clear</button>
   <button id="btn-company-find" class="btn-enabled" type="button" value="Find">Find</button>
   <button id="btn-company-next" type="button" value="Next">Next</button>
   <button id="btn-company-prev" type="button" value="Prev">Prev</button>
   <button id="btn-company-stage" type="button" value="Stage">Stage</button>
   <hr>
-<div id="company-form" class="settings">
+<div id="company-form" class="wo-form">
   <label for="company-name">*Name</label><input name="company-name" type="text" value="Fly by Night, LLC" /> 
   <label for="company-address">Address</label><input name="company-address" type="text" value="999 Ut-Oh Way" /> 
   <label for="company-city">City</label><input name="company-city" type="text" value="Cottageville" /> 
@@ -46,12 +47,11 @@
   </div>
 </div>
 
-::id-msg-company::This area will contain information, confirmations, and error messages about activities done on the form.
+::comment id-msg-company::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-company"></code></pre>
 
-::left margin-.1 box id-staged-company cl-staged::<div>
-Company Notes
+::box id-staged-company cl-staged::<div>Company Notes</div>
 </div>
 
 ::clear box id-msg-company-bottom:: &nbsp;
@@ -65,14 +65,16 @@ A contact contains information about any person that Lowcountry Aviation might w
 
 ::box::<div>Information about current company/aircraft/workorder</div>
 
-::left box margin-0-1::<div>
+<div class="form-container">
+
+::box::<div>
   <button id="btn-contact-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
   <button id="btn-contact-find" class="btn-enabled" type="button" value="Find">Find</button>
   <button id="btn-contact-next" type="button" value="Next">Next</button>
   <button id="btn-contact-prev" type="button" value="Prev">Prev</button>
   <button id="btn-contact-stage" type="button" value="Stage">Stage</button>
   <hr>
-<div id="contact-form" class="settings">
+<div id="contact-form" class="wo-form">
   <label for="contact-company_id">*Company</label><select name="contact-company_id">
     <option value="default">default</option>
     <option value="a11y-dark">a11y-dark</option>
@@ -97,12 +99,11 @@ A contact contains information about any person that Lowcountry Aviation might w
 	</div>
 </div>
 
-::id-msg-contact::This area will contain information, confirmations, and error messages about activities done on the form.
+::comment id-msg-contact::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-contact"></code></pre>
 
-::left margin-.1 box id-staged-contact cl-staged::<div>
-Contact Notes
+::box id-staged-contact cl-staged::<div>Contact Notes</div>
 </div>
 
 ::clear box id-msg-contact-bottom:: &nbsp;
@@ -110,14 +111,16 @@ Contact Notes
 ### Aircrafts
 ::box::<div>Information about current company/aircraft/workorder</div>
 
-::left box margin-0-1::<div>
+<div class="form-container">
+
+::box::<div>
   <button id="btn-aircraft-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
   <button id="btn-aircraft-find" class="btn-enabled" type="button" value="Find">Find</button>
   <button id="btn-aircraft-next" type="button" value="Next">Next</button>
   <button id="btn-aircraft-prev" type="button" value="Prev">Prev</button>
   <button id="btn-aircraft-stage" type="button" value="Stage">Stage</button>
   <hr>
-<div id="aircraft-form" class="settings">
+<div id="aircraft-form" class="wo-form">
   <label for="aircraft-company_id">*Company</label><select name="aircraft-company_id">
     <option value="default">default</option>
     <option value="a11y-dark">a11y-dark</option>
@@ -143,12 +146,11 @@ Contact Notes
 	</div>
 </div>
 
-::id-msg-aircraft::This area will contain information, confirmations, and error messages about activities done on the form.
+::comment id-msg-aircraft::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-aircraft"></code></pre>
 
-::left margin-.1 box id-staged-aircraft cl-staged::<div>
-Aircraft Notes
+::box id-staged-aircraft cl-staged::<div>Aircraft Notes</div>
 </div>
 
 ::clear box id-msg-aircraft-bottom:: &nbsp;
@@ -156,14 +158,16 @@ Aircraft Notes
 #### Engines
 ::box::<div>Information about current company/aircraft/workorder</div>
 
-::left box margin-0-1::<div>
+<div class="form-container">
+
+::box::<div>
   <button id="btn-engine-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
   <button id="btn-engine-find" class="btn-enabled" type="button" value="Find">Find</button>
   <button id="btn-engine-next" type="button" value="Next">Next</button>
   <button id="btn-engine-prev" type="button" value="Prev">Prev</button>
   <button id="btn-engine-stage" type="button" value="Stage">Stage</button>
   <hr>
-<div id="engine-form" class="settings">
+<div id="engine-form" class="wo-form">
   <label for="engine-aircraft_id">*Aircraft</label><select name="engine-aircraft_id">
     <option value="default">default</option>
     <option value="a11y-dark">a11y-dark</option>
@@ -188,29 +192,30 @@ Aircraft Notes
 	</div>
 </div>
 
-::id-msg-engine::This area will contain information, confirmations, and error messages about activities done on the form.
+::comment id-msg-engine::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-engine"></code></pre>
 
-::left margin-.1 box id-staged-engine cl-staged::<div>
-Engine Notes
+::box id-staged-engine cl-staged::<div>Engine Notes</div>
 </div>
 
 ::clear box id-msg-engine-bottom:: &nbsp;
 
-::blue tx-center box:: Workorder Records
-
+----
+----
 ### Workorders
 ::box::<div>Information about current company/aircraft/workorder</div>
 
-::left box margin-0-1::<div>
+<div class="form-container">
+
+::box::<div>
   <button id="btn-workorder-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
   <button id="btn-workorder-find" class="btn-enabled" type="button" value="Find">Find</button>
   <button id="btn-workorder-next" type="button" value="Next">Next</button>
   <button id="btn-workorder-prev" type="button" value="Prev">Prev</button>
   <button id="btn-workorder-stage" type="button" value="Stage">Stage</button>
   <hr>
-<div id="workorder-form" class="settings">
+<div id="workorder-form" class="wo-form">
   <label for="workorder-company_id">*Company</label><select name="workorder-company_id">
     <option value="default">default</option>
     <option value="a11y-dark">a11y-dark</option>
@@ -246,12 +251,11 @@ Engine Notes
 	</div>
 </div>
 
-::id-msg-workorder::This area will contain information, confirmations, and error messages about activities done on the form.
+::comment id-msg-workorder::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-workorder"></code></pre>
 
-::left margin-.1 box id-staged-workorder cl-staged::<div>
-Workorder Notes
+::box id-staged-workorder cl-staged::<div>Workorder Notes</div>
 </div>
 
 ::clear box id-msg-workorder-bottom:: &nbsp;
@@ -259,14 +263,16 @@ Workorder Notes
 #### Tasks
 ::box::<div>Information about current company/aircraft/workorder</div>
 
-::left box margin-0-1::<div>
+<div class="form-container">
+
+::box::<div>
   <button id="btn-task-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
   <button id="btn-task-find" class="btn-enabled" type="button" value="Find">Find</button>
   <button id="btn-task-next" type="button" value="Next">Next</button>
   <button id="btn-task-prev" type="button" value="Prev">Prev</button>
   <button id="btn-task-stage" type="button" value="Stage">Stage</button>
   <hr>
-<div id="task-form" class="settings">
+<div id="task-form" class="wo-form">
   <label for="task-workorder_id">*Workorder</label><select name="task-workorder_id">
     <option value="default">default</option>
     <option value="a11y-dark">a11y-dark</option>
@@ -296,12 +302,11 @@ Workorder Notes
 	</div>
 </div>
 
-::id-msg-task::This area will contain information, confirmations, and error messages about activities done on the form.
+::comment id-msg-task::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-task"></code></pre>
 
-::left margin-.1 box id-staged-task cl-staged::<div>
-Tasks Notes
+::box id-staged-task cl-staged::<div>Tasks Notes</div>
 </div>
 
 ::clear box id-msg-task-bottom:: &nbsp;
@@ -318,14 +323,16 @@ or a government regulator.
 
 ::box::<div>Information about current company/aircraft/workorder</div>
 
-::left box margin-0-1::<div>
+<div class="form-container">
+
+::box::<div>
   <button id="btn-associate-clear" class="btn-enabled" type="button" value="Clear">Clear</button>
   <button id="btn-associate-find" class="btn-enabled" type="button" value="Find">Find</button>
   <button id="btn-associate-next" type="button" value="Next">Next</button>
   <button id="btn-associate-prev" type="button" value="Prev">Prev</button>
   <button id="btn-associate-stage" type="button" value="Stage">Stage</button>
   <hr>
-<div id="associate-form" class="settings">
+<div id="associate-form" class="wo-form">
   <label for="associate-task_ids">Tasks</label><select name="associate-task_ids">
     <option value="default">default</option>
     <option value="a11y-dark">a11y-dark</option>
@@ -350,25 +357,30 @@ or a government regulator.
 	</div>
 </div>
 
-::id-msg-associate::This area will contain information, confirmations, and error messages about activities done on the form.
+::comment id-msg-associate::This area will contain information, confirmations, and error messages about activities done on the form.
 
 ::left margin-.1 box cl-schema::<pre><code id="schema-associate"></code></pre>
 
-::left margin-.1 box id-staged-associate cl-staged::<div>
-Associate Notes
+::box id-staged-associate cl-staged::<div>Associate Notes</div>
 </div>
 
 ::clear box id-msg-associate-bottom:: &nbsp;
 
 <style>
-div.settings {
+.form-container {
+    display: grid;
+    grid-template-columns: max-content 500px;
+    grid-gap: 10px;
+}
+
+div.wo-form {
   display:grid;
   grid-template-columns: max-content max-content;
   grid-gap:5px;
   margin-bottom: 1em;  
 }
-div.settings label       { text-align:right; }
-div.settings label:after { content: ":"; }
+div.wo-form label       { text-align:right; }
+div.woform label:after { content: ":"; }
 
 button.btn-enabled { opacity: 1; }
 
@@ -379,7 +391,8 @@ button.btn-enabled { opacity: 1; }
   font-size: .8em;
   line-height: 24px;
   white-space: pre-wrap;
-  height: auto;
+ /* resize: vertical;
+  overflow: auto !important; */
 }
 
 </style>

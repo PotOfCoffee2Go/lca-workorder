@@ -116,7 +116,8 @@ a[name]:before {
 }
 
 .stamp {
-  font-size: .6em;
+  font-family: monospace;
+  font-size: .4em;
 }
 
 .dim {

@@ -91,13 +91,13 @@ this.localStorage = {
   theme: {
     clrbackgrnd: "#000000",
     clrtext: "#c4b8b3",
-    clrheading: "#ffff00",
+    clrheading: "#e0ffff",
     clrborder: "#000000",
     clricon: "#ffff00"
   },
   id: {
-    textSize: "100",
-    textSpace: "38",
+    textSize: "25",
+    textSpace: "34",
     textOffset: "22"
   },
   highlight: {
