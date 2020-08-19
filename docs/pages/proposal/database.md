@@ -49,7 +49,7 @@
 
 ::comment id-msg-company::This area will contain information, confirmations, and error messages about activities done on the form.
 
-::left margin-.1 box cl-schema::<pre><code id="schema-company"></code></pre>
+::box cl-schema::<pre><code id="schema-company"></code></pre>
 
 ::box id-staged-company cl-staged::<div>Company Notes</div>
 </div>
@@ -101,7 +101,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 
 ::comment id-msg-contact::This area will contain information, confirmations, and error messages about activities done on the form.
 
-::left margin-.1 box cl-schema::<pre><code id="schema-contact"></code></pre>
+::box cl-schema::<pre><code id="schema-contact"></code></pre>
 
 ::box id-staged-contact cl-staged::<div>Contact Notes</div>
 </div>
@@ -148,7 +148,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 
 ::comment id-msg-aircraft::This area will contain information, confirmations, and error messages about activities done on the form.
 
-::left margin-.1 box cl-schema::<pre><code id="schema-aircraft"></code></pre>
+::box cl-schema::<pre><code id="schema-aircraft"></code></pre>
 
 ::box id-staged-aircraft cl-staged::<div>Aircraft Notes</div>
 </div>
@@ -194,7 +194,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 
 ::comment id-msg-engine::This area will contain information, confirmations, and error messages about activities done on the form.
 
-::left margin-.1 box cl-schema::<pre><code id="schema-engine"></code></pre>
+::box cl-schema::<pre><code id="schema-engine"></code></pre>
 
 ::box id-staged-engine cl-staged::<div>Engine Notes</div>
 </div>
@@ -253,7 +253,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 
 ::comment id-msg-workorder::This area will contain information, confirmations, and error messages about activities done on the form.
 
-::left margin-.1 box cl-schema::<pre><code id="schema-workorder"></code></pre>
+::box cl-schema::<pre><code id="schema-workorder"></code></pre>
 
 ::box id-staged-workorder cl-staged::<div>Workorder Notes</div>
 </div>
@@ -304,7 +304,7 @@ A contact contains information about any person that Lowcountry Aviation might w
 
 ::comment id-msg-task::This area will contain information, confirmations, and error messages about activities done on the form.
 
-::left margin-.1 box cl-schema::<pre><code id="schema-task"></code></pre>
+::box cl-schema::<pre><code id="schema-task"></code></pre>
 
 ::box id-staged-task cl-staged::<div>Tasks Notes</div>
 </div>
@@ -359,7 +359,7 @@ or a government regulator.
 
 ::comment id-msg-associate::This area will contain information, confirmations, and error messages about activities done on the form.
 
-::left margin-.1 box cl-schema::<pre><code id="schema-associate"></code></pre>
+::box cl-schema::<pre><code id="schema-associate"></code></pre>
 
 ::box id-staged-associate cl-staged::<div>Associate Notes</div>
 </div>

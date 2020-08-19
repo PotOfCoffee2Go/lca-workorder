@@ -65,13 +65,16 @@
   }
 
   ns.dom['show-records'].addEventListener("click", () => {
-    var allDbSchema = document.querySelectorAll('.schema');
-    for (var i=0, len=allDbSchema.length|0; i<len; i=i+1|0) {
+    let allDbSchema = document.querySelectorAll('.schema');
+    let allDbStaged = document.querySelectorAll('.staged');
+    for (let i=0, len=allDbSchema.length|0; i<len; i=i+1|0) {
       if (allDbSchema[i].style.display === 'block') {
         allDbSchema[i].style.display = 'none';
+        allDbStaged[i].style.display = 'block';
         ns.dom['show-records'].value = "Show DB Records"
       } else {
         allDbSchema[i].style.display = 'block';
+        allDbStaged[i].style.display = 'none';
         ns.dom['show-records'].value = "Hide DB Records"
       }
     }
