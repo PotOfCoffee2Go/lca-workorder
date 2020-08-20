@@ -42,12 +42,12 @@ body, .textBtn  {
 
 #site-logo {
   position:absolute;
-  width:8em;
+  width:7em;
   height:auto;
   float:left;
   background: lightcyan;
   border-radius: 15px;
-  padding: .8em 0 0 .5em;
+  margin: .8em 0 0 .5em;
 }
 
 /* Width of textSize slider done in Listeners.js */
