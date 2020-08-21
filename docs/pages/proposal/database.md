@@ -384,6 +384,8 @@ div.woform label:after { content: ":"; }
 
 button.btn-enabled { opacity: 1; }
 
+.staged { display: none; }
+
 .schema { display: none; }
 
 .CodeMirror {

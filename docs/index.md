@@ -10,6 +10,7 @@
 
 ## pages/proposal
   - [LCA Work Order System](?md=pages/proposal/database.md)
+  - [LCA Email Portal](?md=pages/proposal/emailportal.md)
   - [Handy Links](?md=pages/proposal/handylinks.md)
   - [LCA Work Order Flow Proposal](?md=pages/proposal/introduction.md)
   - [LCA Discrepancy Form Rev 2](?md=pages/proposal/lca-discrep.md)

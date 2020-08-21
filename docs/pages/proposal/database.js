@@ -63,7 +63,7 @@
       viewportMargin: Infinity
     });
   }
-
+/*
   ns.dom['show-records'].addEventListener("click", () => {
     let allDbSchema = document.querySelectorAll('.schema');
     let allDbStaged = document.querySelectorAll('.staged');
@@ -79,7 +79,7 @@
       }
     }
   }, false);
-  
+ */ 
   ns.dom['chk-admin'].addEventListener("click", () => {
     var allAdminBtns = document.querySelectorAll('.admin-btns');
     for (var i=0, len=allAdminBtns.length|0; i<len; i=i+1|0) {
