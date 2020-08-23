@@ -14,12 +14,8 @@
 
 -----
 
-Database schema
-
-[schema](https://lca.ngrok.io/schema)
-
-Database records
-
-[All records](https://lca.ngrok.io/all)
-
+<script type="text/doc-canvas-fetched">
+return `Database schema\n\n[schema](${poc2go.config.lca.workorderDb}/schema)\n\n` +
+ `Database records\n\n[All records](${poc2go.config.lca.workorderDb}/all)\n\n`
+</script>
 
