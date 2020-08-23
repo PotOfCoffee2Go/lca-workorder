@@ -11,7 +11,7 @@ Be aware that the contents of these accounts are routinely viewed and maintained
 
 ::box::<a href="https://lca.poc2go.com/webmail" target="_blank">Go to LCA Work Order Portal</a>
 
-## Distrubution
+## Distribution
 Currently there are four distribution lists :
  - Administration
    - Supervisor and adminstration emails
