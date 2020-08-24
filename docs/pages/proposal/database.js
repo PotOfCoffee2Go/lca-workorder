@@ -3,6 +3,7 @@
     dom: poc2go.dom,
     schema: {},
     form: {
+      types: ['company','contact','aircraft','engine','workorder','task','associate'],
       index: {
         workorder: 0,
         company: 0,
@@ -63,7 +64,7 @@
       viewportMargin: Infinity
     });
   }
-/*
+
   ns.dom['show-records'].addEventListener("click", () => {
     let allDbSchema = document.querySelectorAll('.schema');
     let allDbStaged = document.querySelectorAll('.staged');
@@ -79,7 +80,8 @@
       }
     }
   }, false);
- */ 
+
+
   ns.dom['chk-admin'].addEventListener("click", () => {
     var allAdminBtns = document.querySelectorAll('.admin-btns');
     for (var i=0, len=allAdminBtns.length|0; i<len; i=i+1|0) {
@@ -124,9 +126,16 @@
     })
   }  
 
+  ns.form.types.forEach(type => {
+    let input = document.querySelector(`input[name=${type}-name]`);
+    input.addEventListener('input', function(evt) {
+      ns.dom[`btn-${type}-add`].classList.add('btn-enabled');
+      ns.dom[`btn-${type}-update`].classList.remove('btn-enabled');
+    })
+  })
 
   function formBtn(type, btn) {
-    if (['contact','engine','aircraft','company','associate','task','workorder'].indexOf(btn) > -1) {
+    if (ns.form.types.indexOf(btn) > -1) {
       let hash = btn + 's';
       if (btn === 'company') { hash = 'company' }
       location.hash = "#" + hash;
@@ -137,18 +146,25 @@
     
     if (btn === 'prev') {
       displayForm(type, --ns.form.index[type]);
-      return;
+      ns.dom[`btn-${type}-add`].classList.remove('btn-enabled');
+      ns.dom[`btn-${type}-update`].classList.add('btn-enabled');
+     return;
     }
     else if (btn === 'next') {
       displayForm(type, ++ns.form.index[type]);
+      ns.dom[`btn-${type}-add`].classList.remove('btn-enabled');
+      ns.dom[`btn-${type}-update`].classList.add('btn-enabled');
       return;
+    }
+    else if (btn === 'clear') {
+      ns.dom[`btn-${type}-add`].classList.remove('btn-enabled');
+      ns.dom[`btn-${type}-update`].classList.remove('btn-enabled');
     }
     else if (btn === 'find') {
       apireq.find = {_type: type};
     }
     else if (btn === 'add') {
       apireq.add = {};
-      console.log(ns.schema)
       let dbfields = Object.keys(ns.schema[type]);
       for (const dbfield of dbfields) {
         if (dbfield[0] === '_') {
@@ -169,7 +185,6 @@
         input.value = "";
       }
       else if (btn === 'find' && input.value) {
-        console.log('type', type);
         apireq.find[input.name.replace(`${type}-`,'')] = input.value;
       }
       else if (btn === 'add') {
@@ -184,11 +199,19 @@
     }
     
     if (['find','add','update', 'delete'].indexOf(btn) > -1) {
-      apiRequest(apireq);
+      apiRequest(apireq)
+      .then(() => {
+          ['company','contact','aircraft','engine','workorder','task','associate']
+          .forEach(type => listQuery(type, { _id: 1, name : 1} ));
+      })
+
+      ns.form.types.forEach(type => {
+        ns.dom[`btn-${type}-add`].classList.remove('btn-enabled');
+        ns.dom[`btn-${type}-update`].classList.add('btn-enabled');
+      })
       window.animatelo['flash'](`#schema-${type}`);
     }
   }
-
 
   function displayForm(type, idx = 0) {
     let nbrRecs = ns.form[type].length;
@@ -218,25 +241,51 @@
     }
   }
 
+  function populateDropdowns() {
+    const selects = document.querySelectorAll('select');
+    for (const select of selects) {
+      let selpress = /(.*)-(.*)/.exec(select.name);
+//      if (selpress) console.log(selpress);
+      if (selpress && selpress.length === 3 && selpress[2].match(/.*_id/)) {
+        let type = selpress[1], field = selpress[2].match(/(.*)_(.*)/);
+        if (ns.list[field[1]] && ns.list[field[1]].options) {
+          select.innerHTML = ns.list[field[1]].options.join('\n');
+        }
+//        console.log(type, field, selpress);
+      }
+    }
+  }
+
+
+  function buildDropdown(evt) {
+
+  }
+
+
+
   function apiRequest(apireq) {
-    postData(poc2go.config.lca.workorderDb, apireq)
-    .then(data => {
-      let msg = ns.dom[`msg-${apireq.api_type}`];
-      if (!Array.isArray(data)) {
-        msg.innerHTML = JSON.stringify(data);
-        return;
-      }
-      ns.form[apireq.api_type] = data;
-      let nbrRecs = ns.form[apireq.api_type].length;
-      if ( nbrRecs === 0) {
-          msg.innerHTML = `${apireq.api_action}: no records found`;
-      }
-      else {
-        msg.innerHTML = `${apireq.api_action}: successful - ${ns.form[apireq.api_type].length} record${nbrRecs === 1 ? '' : 's'}`;
-      }
-      displayForm(apireq.api_type, 0);
-      console.log('resp', data);
-    });
+    return new Promise((resolve, reject) => {
+      postData(poc2go.config.lca.workorderDb, apireq)
+      .then(data => {
+        let msg = ns.dom[`msg-${apireq.api_type}-top`];
+        if (!Array.isArray(data)) {
+          msg.innerHTML = JSON.stringify(data);
+          resolve([]);
+          return;
+        }
+        ns.form[apireq.api_type] = data;
+        let nbrRecs = ns.form[apireq.api_type].length;
+        if ( nbrRecs === 0) {
+            msg.innerHTML = `${apireq.api_action}: no records found`;
+        }
+        else {
+          msg.innerHTML = `${apireq.api_action}: successful - ${ns.form[apireq.api_type].length} record${nbrRecs === 1 ? '' : 's'}`;
+        }
+        displayForm(apireq.api_type, 0);
+        console.log('resp', data);
+        resolve([]);
+      });
+    })
   }
 
   function listQuery(type, projection) {
@@ -244,36 +293,27 @@
       api_action: 'list',
       api_type: type,
       find: { _type: type },
-      projection: projection ? projection : { _id : 1 },
+      projection: projection ? projection : { _id : 1, name: 1 },
     }
 
     postData(poc2go.config.lca.workorderDb, apireq)
     .then(data => {
-      ns.list[type] = data;
-    });
+      ns.list[type] = {};
+      ns.list[type].recs = data;
+      ns.list[type].options = [];
+      ns.list[type].recs.forEach(item => {
+        ns.list[type].options.push(`<option value="${item._id}">${item.name}</option>`);
+        // console.log(type, ns.list[type]);
+      })
+      populateDropdowns();
+    })
   }
 
-  listQuery('company', { _id: 1, name : 1} );
+    ns.form.types.forEach(type => listQuery(type, { _id: 1, name : 1} ));
 
    poc2go.fetch.json('server/rest/api/models/workorderModel.json')
    .then(json => {
 		ns.schema = json.schema;
-/*
-     document.getElementById('schema-associate').innerHTML = 
-      hljs.highlight('json', JSON.stringify(ns.schema.associate, null, 2)).value;
-     document.getElementById('schema-contact').innerHTML = 
-      hljs.highlight('json', JSON.stringify(ns.schema.contact, null, 2)).value;
-     document.getElementById('schema-company').innerHTML = 
-      hljs.highlight('json', JSON.stringify(ns.schema.company, null, 2)).value;
-     document.getElementById('schema-engine').innerHTML = 
-      hljs.highlight('json', JSON.stringify(ns.schema.engine, null, 2)).value;
-     document.getElementById('schema-aircraft').innerHTML = 
-      hljs.highlight('json', JSON.stringify(ns.schema.aircraft, null, 2)).value;
-     document.getElementById('schema-task').innerHTML = 
-      hljs.highlight('json', JSON.stringify(ns.schema.task, null, 2)).value;
-     document.getElementById('schema-workorder').innerHTML = 
-      hljs.highlight('json', JSON.stringify(ns.schema.workorder, null, 2)).value;
-*/
    });
 
 
