@@ -1,0 +1,8 @@
+Company,Name,Address,City,State,Zip,Phone,Email,Notes
+,,,,,,,,
+Contact,Name,Address,City,State,Zip,Phone,Email,Notes
+,,,,,,,,
+Aircraft,Name,Model,Make,Serial No,Registration_No,Time_in_service,Notes,
+,,,,,,,,
+Engine,Name,Model,Make,Serial No,Registration_No,Time_in_service,Time_since_overhaul,Notes
+,,,,,,,,,

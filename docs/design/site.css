@@ -139,7 +139,7 @@ hr {
   opacity: .4;  
 }
 
-button {
+button, input[type='file'] {
   font-size: 1.0em;
   border-radius: 10px;
   background: transparent;
