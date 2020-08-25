@@ -8,6 +8,8 @@ var Datastore = require('nedb'),
   db = new Datastore({ filename: `./databases/workorders.db`, autoload: true }),
   dbs = require('../models/workorderModel');
 
+const Chaintastic = require('chaintastic');
+
 exports.read_schema = function(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify({schema: dbs.schema}, null, 2));
@@ -26,6 +28,85 @@ exports.read_all = function(req, res) {
   });
 }
 
+function findDone(err, fndDocs) {
+  if (err) return [];
+  return fndDocs;
+}
+
+const chain = Chaintastic({
+  findCompany(companyId, cb) {
+    db.find({_id: companyId, _type: 'company'}, (err,fndDocs) => {
+      if (err) cb([]);
+      cb(fndDocs[0]);
+    })
+  },
+  findAircrafts(dbrec, cb) {
+    db.find({_company_id: dbrec._id, _type: 'aircraft'}, (err, fndDocs) => {
+      if (err) cb([]);
+      dbrec.aircrafts = fndDocs;
+      cb(dbrec);
+    })
+  },
+  findEngines(dbrec, cb) {
+    let waitForAll = dbrec.aircrafts.length;
+    dbrec.aircrafts.forEach((aircraft, idx) => {
+      db.find({_aircraft_id: aircraft._id, _type: 'engine'}, (err, fndDocs) => {
+        dbrec.aircrafts[idx].engines = fndDocs;
+        if ((--waitForAll) <= 0) cb(dbrec);
+      })
+    })
+  },
+  findWorkorders(dbrec, cb) {
+    db.find({_company_id: dbrec._id, _type: 'workorder'}, (err, fndDocs) => {
+      if (err) cb([]);
+      dbrec.workorders = fndDocs;
+      cb(dbrec);
+    })
+  },
+  findTasks(dbrec, cb) {
+    let waitForAll = dbrec.workorders.length;
+    dbrec.workorders.forEach((workorder, idx) => {
+      db.find({_workorder_id: workorder._id, _type: 'task'}, (err, fndDocs) => {
+        dbrec.workorders[idx].tasks = fndDocs;
+        if ((--waitForAll) <= 0) cb(dbrec);
+      })
+    })
+  },
+  findAssociates(dbrec, cb) {
+    let waitForAllWorkorders = dbrec.workorders.length;
+    dbrec.workorders.forEach((workorder, widx) => {
+      let waitForAllTasks = workorder.tasks.length;
+      workorder.tasks.forEach((task, tidx) => {
+        db.find({_task_ids: task._id, _type: 'associate'}, (err, fndDocs) => {
+          dbrec.workorders[widx].tasks[tidx].associates = fndDocs;
+          if ((--waitForAllTasks) <= 0) waitForAllWorkorders--;
+          if ((waitForAllWorkorders) <= 0) cb(dbrec);
+        })
+      })
+    })
+  },
+
+
+  sum(a, b) {
+    return a + b;
+  },
+  display(value) {
+    return 'Your number is ' + value.aircrafts[0].name;
+  }
+});
+
+//chain.init(10).sum(5).display().then(console.log); // 'Your number is 15'
+
+exports.read_a_company = function(req, res) {
+  chain.init(req.params.companyId)
+    .findCompany().findAircrafts().findEngines()
+    .findWorkorders().findTasks().findAssociates()
+  .then(company => {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(company, null, 2));
+  });
+}    
+/*
 exports.read_a_company = function(req, res) {
   db.find({_id: req.params.companyId, _type: 'company'}, (err, fndDocs) => {
     if (err) { res.send(err); }
@@ -35,12 +116,24 @@ exports.read_a_company = function(req, res) {
         fndDocs[0].aircrafts = subDocs;
       fndDocs[0].aircrafts.forEach(aircraft => {
         db.find({_aircraft_id: aircraft._id, _type: 'engine'}, (err, subDocs) => {
-        aircraft.engines = subDocs;})
+        aircraft.engines = subDocs;
+      })})
+
+      db.find({_company_id: companyId, _type: 'workorder'}, (err, subDocs) => {
+        fndDocs[0].workorders = subDocs;
+      fndDocs[0].workorders.forEach((workorder, idx) => {
+        db.find({_workorder_id: workorder._id, _type: 'task'}, (err, subDocs) => {
+        fndDocs[0].workorders[idx].tasks = subDocs;
+        fndDocs[0].workorders[idx].tasks.forEach((task, tidx) => {
+          db.find({_task_ids: task._id, _type: 'associate'}, (err, subDocs) => {
+          fndDocs[0].workorders[idx].tasks[tidx].associates = subDocs;
+      })})})})
+
       db.find({_company_ids: companyId, _type: 'contact'}, (err, subDocs) => {
         fndDocs[0].contacts = subDocs;
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(fndDocs, null, 2));
-      })})});
+      })})})//})});
     }
     else {
       console.log(fndDocs);
@@ -49,7 +142,7 @@ exports.read_a_company = function(req, res) {
     }
   });
 };
-
+*/
 function contacts(companyId, cb) {
   console.log(companyId);
   db.find({_company_ids: companyId, _type: 'contact'}, (err, fndDocs) => {
