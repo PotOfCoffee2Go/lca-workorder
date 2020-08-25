@@ -26,6 +26,52 @@ exports.read_all = function(req, res) {
   });
 }
 
+exports.read_a_company = function(req, res) {
+  db.find({_id: req.params.companyId, _type: 'company'}, (err, fndDocs) => {
+    if (err) { res.send(err); }
+    if (fndDocs.length) {
+      let companyId = fndDocs[0]._id;
+      db.find({_company_id: companyId, _type: 'aircraft'}, (err, subDocs) => {
+        fndDocs[0].aircrafts = subDocs;
+      fndDocs[0].aircrafts.forEach(aircraft => {
+        db.find({_aircraft_id: aircraft._id, _type: 'engine'}, (err, subDocs) => {
+        aircraft.engines = subDocs;})
+      db.find({_company_ids: companyId, _type: 'contact'}, (err, subDocs) => {
+        fndDocs[0].contacts = subDocs;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(fndDocs, null, 2));
+      })})});
+    }
+    else {
+      console.log(fndDocs);
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(fndDocs, null, 2));
+    }
+  });
+};
+
+function contacts(companyId, cb) {
+  console.log(companyId);
+  db.find({_company_ids: companyId, _type: 'contact'}, (err, fndDocs) => {
+    cb(err, fndDocs);
+  });
+};
+
+function aircraft(companyId, cb) {
+  console.log(companyId);
+  db.find({_company_id: companyId, _type: 'aircraft'}, (err, fndDocs) => {
+    cb(err, fndDocs);
+  });
+};
+
+function associates(associateIds) {
+  db.find({_id: req.params.companyId, _type: 'associate'}, (err, fndDocs) => {
+    if (err) { res.send(err); }
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(fndDocs, null, 2));
+  });
+};
+
 exports.list_query = function(req, res) {
   let apireq = req.body;
   let query = {};

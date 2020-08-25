@@ -9,6 +9,11 @@ module.exports = function(app) {
 	app.route('/all')
 		.get(workorder.read_all);
 
+	app.route('/company/:companyId')
+		.get(workorder.read_a_company);
+//		.put(workorder.update_a_task)
+//		.delete(workorder.delete_a_task);
+
 	// workorder Routes
 	app.route('/list')
 //		.get(workorder.list_all_customers);
