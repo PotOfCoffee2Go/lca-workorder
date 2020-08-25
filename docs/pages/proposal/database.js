@@ -201,8 +201,7 @@
     if (['find','add','update', 'delete'].indexOf(btn) > -1) {
       apiRequest(apireq)
       .then(() => {
-          ['company','contact','aircraft','engine','workorder','task','associate']
-          .forEach(type => listQuery(type, { _id: 1, name : 1} ));
+        ns.form.types.forEach(type => listQuery(type, { _id: 1, name : 1} ));
       })
 
       ns.form.types.forEach(type => {
