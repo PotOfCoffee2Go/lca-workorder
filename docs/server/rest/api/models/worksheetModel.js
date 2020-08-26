@@ -4,7 +4,6 @@ exports.schema = {
 
 "company": {
   "_id": "",
-  "_timestamp": "",
   "_type": "company",
   "name": "",
   "address": "",
@@ -13,14 +12,13 @@ exports.schema = {
   "zip": "",
   "phone": "",
   "email": "",
-  "notes": ""
+  "notes": "",
+  "_contact_ids": [],
   },
 
 "associate": {
   "_id": "",
-  "_timestamp": "",
   "_type": "associate",
-  "_task_ids": [],
   "name": "",
   "address": "",
   "city": "",
@@ -28,14 +26,12 @@ exports.schema = {
   "zip": "",
   "phone": "",
   "email": "",
-  "notes": ""
+  "notes": "",
 },
 
 "contact": {
   "_id": "",
-  "_timestamp": "",
   "_type": "contact",
-  "_company_ids": [],
   "name": "",
   "address": "",
   "city": "",
@@ -43,14 +39,12 @@ exports.schema = {
   "zip": "",
   "phone": "",
   "email": "",
-  "notes": ""
+  "notes": "",
  },
 
 "engine": {
   "_id": "",
-  "_timestamp": "",
   "_type": "engine",
-  "_aircraft_id": "",
   "name": "",
   "model": "",
   "make": "",
@@ -58,28 +52,26 @@ exports.schema = {
   "registration_no": "",
   "time_in_service": "",
   "time_since_overhaul": "",
-  "notes": ""
+  "notes": "",
+  "_aircraft_id": "",
  },
 
 "aircraft": {
   "_id": "",
-  "_timestamp": "",
   "_type": "aircraft",
-  "_company_id": "",
   "name": "",
   "model": "",
   "make": "",
   "serial_no": "",
   "registration_no": "",
   "time_in_service": "",
-  "notes": ""
+  "notes": "",
+  "_company_id": "",
   },
 
 "task": {
   "_id": "",
-  "_timestamp": "",
   "_type": "task",
-  "_workorder_id": "",
   "name": "",
   "discrepancy": "",
   "removed_pn": "",
@@ -90,15 +82,14 @@ exports.schema = {
   "time": "",
   "corrected_by": "",
   "inspected_by": "",
-  "notes": ""
+  "notes": "",
+  "_workorder_id": "",
+  "_associate_ids": "",
   },
   
 "workorder": {
   "_id": "",
-  "_timestamp": "",
   "_type": "workorder",
-  "_company_id": "",
-  "_aircraft_id": "",
   "name": "",
   "workorder_no": "",
   "date": "",
@@ -108,6 +99,8 @@ exports.schema = {
   "start_date": "",
   "completed_date": "",
   "signed_date": "",
-  "notes": ""
+  "notes": "",
+  "_company_id": "",
+  "_aircraft_id": "",
   }
 }

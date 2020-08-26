@@ -381,6 +381,5 @@ button.btn-enabled { opacity: 1; }
 
 Author: PotOfCoffee2Go
 Created: Aug. 9, 2020
-Updated: Aug. 17, 2020
-Copyright: (c) 2020 Lowcountry Aviation - All Rights reserved.
+Updated: Aug. 24, 2020
 ::comment:: License:
