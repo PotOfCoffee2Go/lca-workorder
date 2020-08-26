@@ -132,6 +132,10 @@ const chain = Chaintastic({
 
 function getCompanyRecords(cid, cb) {
 //  let prj = { _id:1, _type:1, name:1, _company_id:1, _aircraft_id: 1, _workorder_id: 1, _contact_ids:1, _associate_ids: 1 };
+  let order = { company: [], contact: [],
+    aircraft: [], engine: [],
+    workorder: [], task: [], associate: [] }
+
   let prj = {_timestamp: 0};
   let qry = { $or: [{ _id: cid }, { _company_id: cid }, { _contact_ids: cid }] }
   db.find(qry ,prj, (err, lvl1Docs) => {
@@ -150,45 +154,64 @@ function getCompanyRecords(cid, cb) {
       })
       db.find({ _id: {$in: qry3}}, prj, (err, lvl3Docs) => {
       if  (err) console.log('errrreeeerr', err);
-        else cb(lvl1Docs.concat(lvl2Docs, lvl3Docs));
+      else {
+        lvl1Docs.concat(lvl2Docs, lvl3Docs).forEach(doc => {
+          order[doc._type].push(doc);
+        });
+        cb(order);
+      }  
       })
     })
   })
 }
 
-exports.test = function(req, res) {
-  let order = {
-    company: [],
-    contacts: [],
-    aircrafts: [],
-    engines: [],
-    workorders: [],
-    tasks: [],
-    associates: []
-  }
+function fieldsSheet(type) {
+  const sch = require('../models/worksheetModel');
+  let fields = [];
+  Object.keys(sch.schema[type]).forEach( scheme => {
+      fields.push(scheme);
+  })
+  return { fields }
+}
 
-  getCompanyRecords(req.params.id, (fndDocs) => {
-    fndDocs.forEach(doc => {order[doc._type === 'company' ? 'company' : doc._type+'s'].push(doc);});
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(order, null, 2));
+function companySheet(order) {
+  const { Parser } = require('json2csv');
+  
+  let sheet = "";
+  Object.keys(order).forEach(rec => {
+    try {
+      const parser = new Parser(fieldsSheet(rec));
+      const csv = parser.parse(order[rec]);
+      sheet = sheet + csv + '\r\n\r\n';
+    } catch (err) {
+      console.error(err);
+    }
+  })
+  return sheet;
+}
+
+
+exports.test = function(req, res) {
+//  getCompanyRecords(req.params.id, (order) => {
+  getCompanyRecords('JkBTk3UJ13ysxMWF', (order) => {
+    res.setHeader('Content-Type', 'text/plain');
+    res.end(companySheet(order));
   })
 }
 
 //chain.init(10).sum(5).display().then(console.log); // 'Your number is 15'
 exports.csv_records = function(req, res) {
   let id = req.params.id === '*' ? /.*/ : req.params.id;
-  let type = req.params.type ?req.params.type : '';
+  let type = req.params.type ? req.params.type : '';
+  type = type === '*' ? /.*/ : type;
   
   const { Parser } = require('json2csv');
 
-  const fields = ['field1', 'field2', 'field3'];
-  var opts = { fields };
-  opts = {};
-  chain.init(id).getrecord(type).then(rec => {
+  chain.init(id).getrecord(type).then(recs => {
+    recs.forEach(rec => delete rec._timestamp)
     try {
-      const parser = new Parser(opts);
-      const csv = parser.parse(rec);
-      console.log(csv);
+      const parser = new Parser();
+      const csv = parser.parse(recs);
       res.setHeader('Content-Type', 'text/plain');
       res.end(csv);
       
