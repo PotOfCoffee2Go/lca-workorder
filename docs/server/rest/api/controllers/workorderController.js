@@ -28,27 +28,55 @@ exports.read_all = function(req, res) {
   });
 }
 
-function findDone(err, fndDocs) {
-  if (err) return [];
-  return fndDocs;
-}
-
 const chain = Chaintastic({
-  findCompany(companyId, cb) {
-    db.find({_id: companyId, _type: 'company'}, (err,fndDocs) => {
+  getrecord(id, type, cb) {
+    db.find({_id: id, _type: type ? type : /.*/}, (err,fndDocs) => {
       if (err) cb([]);
-      cb(fndDocs[0]);
+      else cb(fndDocs);
     })
   },
+  
+  getWorkorderCompanyId(workorderId, cb) {
+    db.find({_id: workorderId, _type: 'workorder'}, (err,fndDocs) => {
+      if (err || !fndDocs.length) cb('');
+      else cb(fndDocs[0]._company_id);
+    })
+  },
+
+  findCompany(id, cb) {
+    db.findOne({_id: id, _type: 'company'}, (err, fndDoc) => {
+      if (err || !fndDoc) cb([]);
+      cb(fndDoc);
+    })
+  },
+
+  findContacts(dbrec, cb) {
+    let waitForAll = dbrec._contact_ids.length;
+    dbrec.contacts = [];
+    if (waitForAll === 0) {cb(dbrec);return;}
+    dbrec._contact_ids.forEach(id => {
+      db.findOne({_id: id, _type: 'contact'}, (err, fndDoc) => {
+        dbrec.contacts.push(fndDoc);
+        if ((--waitForAll) <= 0) cb(dbrec);
+      })
+    })
+  },
+
+
   findAircrafts(dbrec, cb) {
+      console.log('err', dbrec._id);
     db.find({_company_id: dbrec._id, _type: 'aircraft'}, (err, fndDocs) => {
       if (err) cb([]);
       dbrec.aircrafts = fndDocs;
       cb(dbrec);
     })
   },
+
   findEngines(dbrec, cb) {
     let waitForAll = dbrec.aircrafts.length;
+      console.log('err', waitForAll);
+
+    if (waitForAll === 0) cb(dbrec);
     dbrec.aircrafts.forEach((aircraft, idx) => {
       db.find({_aircraft_id: aircraft._id, _type: 'engine'}, (err, fndDocs) => {
         dbrec.aircrafts[idx].engines = fndDocs;
@@ -56,6 +84,7 @@ const chain = Chaintastic({
       })
     })
   },
+
   findWorkorders(dbrec, cb) {
     db.find({_company_id: dbrec._id, _type: 'workorder'}, (err, fndDocs) => {
       if (err) cb([]);
@@ -63,8 +92,10 @@ const chain = Chaintastic({
       cb(dbrec);
     })
   },
+
   findTasks(dbrec, cb) {
     let waitForAll = dbrec.workorders.length;
+    if (waitForAll === 0) cb(dbrec);
     dbrec.workorders.forEach((workorder, idx) => {
       db.find({_workorder_id: workorder._id, _type: 'task'}, (err, fndDocs) => {
         dbrec.workorders[idx].tasks = fndDocs;
@@ -72,98 +103,123 @@ const chain = Chaintastic({
       })
     })
   },
+
   findAssociates(dbrec, cb) {
+    let gotAssociate = false;
     let waitForAllWorkorders = dbrec.workorders.length;
     dbrec.workorders.forEach((workorder, widx) => {
       let waitForAllTasks = workorder.tasks.length;
+      if (waitForAllTasks === 0) waitForAllWorkorders--;
       workorder.tasks.forEach((task, tidx) => {
-        db.find({_task_ids: task._id, _type: 'associate'}, (err, fndDocs) => {
-          dbrec.workorders[widx].tasks[tidx].associates = fndDocs;
-          if ((--waitForAllTasks) <= 0) waitForAllWorkorders--;
-          if ((waitForAllWorkorders) <= 0) cb(dbrec);
+        let waitForAll = task._associate_ids.length;
+        task.associates = [];
+        if (waitForAll === 0 ) waitForAllTasks--;
+        task._associate_ids.forEach(id => {
+          gotAssociate = true;
+          db.findOne({_id: id, _type: 'associate'}, (err, fndDoc) => {
+            task.associates.push(fndDoc);
+            if ((--waitForAll) <= 0) waitForAllTasks--;
+            if ((waitForAllTasks) <= 0) waitForAllWorkorders--;
+            if ((waitForAllWorkorders) <= 0) cb(dbrec);
+          })
         })
       })
     })
+    if (!gotAssociate) cb(dbrec);
   },
 
-
-  sum(a, b) {
-    return a + b;
-  },
-  display(value) {
-    return 'Your number is ' + value.aircrafts[0].name;
-  }
 });
 
+function getCompanyRecords(cid, cb) {
+//  let prj = { _id:1, _type:1, name:1, _company_id:1, _aircraft_id: 1, _workorder_id: 1, _contact_ids:1, _associate_ids: 1 };
+  let prj = {_timestamp: 0};
+  let qry = { $or: [{ _id: cid }, { _company_id: cid }, { _contact_ids: cid }] }
+  db.find(qry ,prj, (err, lvl1Docs) => {
+     if  (err) console.log('errddddddrrrr', err);
+     let qry2 = [];
+    lvl1Docs.forEach(rec => {
+      if (rec._type === 'workorder') qry2.push({_workorder_id: rec._id});
+      if (rec._type === 'aircraft') qry2.push({_aircraft_id: rec._id});
+      if (rec._type === 'company') qry2.push({_id: {$in: rec._contact_ids}});
+    })
+    db.find({ $or: qry2 }, prj, (err, lvl2Docs) => {
+      if  (err) console.log('errrrrr', err);
+      let qry3 = [];
+      lvl1Docs.concat(lvl2Docs).forEach(rec => {
+        if (rec._type === 'task') qry3 = qry3.concat(rec._associate_ids);
+      })
+      db.find({ _id: {$in: qry3}}, prj, (err, lvl3Docs) => {
+      if  (err) console.log('errrreeeerr', err);
+        else cb(lvl1Docs.concat(lvl2Docs, lvl3Docs));
+      })
+    })
+  })
+}
+
+exports.test = function(req, res) {
+  let order = {
+    company: [],
+    contacts: [],
+    aircrafts: [],
+    engines: [],
+    workorders: [],
+    tasks: [],
+    associates: []
+  }
+
+  getCompanyRecords(req.params.id, (fndDocs) => {
+    fndDocs.forEach(doc => {order[doc._type === 'company' ? 'company' : doc._type+'s'].push(doc);});
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(order, null, 2));
+  })
+}
+
 //chain.init(10).sum(5).display().then(console.log); // 'Your number is 15'
+exports.csv_records = function(req, res) {
+  let id = req.params.id === '*' ? /.*/ : req.params.id;
+  let type = req.params.type ?req.params.type : '';
+  
+  const { Parser } = require('json2csv');
+
+  const fields = ['field1', 'field2', 'field3'];
+  var opts = { fields };
+  opts = {};
+  chain.init(id).getrecord(type).then(rec => {
+    try {
+      const parser = new Parser(opts);
+      const csv = parser.parse(rec);
+      console.log(csv);
+      res.setHeader('Content-Type', 'text/plain');
+      res.end(csv);
+      
+    } catch (err) {
+      console.error(err);
+    }
+  })
+
+}
+
+
 
 exports.read_a_company = function(req, res) {
   chain.init(req.params.companyId)
-    .findCompany().findAircrafts().findEngines()
+    .findCompany()
+    .findAircrafts().findEngines()
     .findWorkorders().findTasks().findAssociates()
+    .findContacts()
   .then(company => {
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(company, null, 2));
+    res.end(JSON.stringify([company], null, 2));
   });
 }    
-/*
-exports.read_a_company = function(req, res) {
-  db.find({_id: req.params.companyId, _type: 'company'}, (err, fndDocs) => {
-    if (err) { res.send(err); }
-    if (fndDocs.length) {
-      let companyId = fndDocs[0]._id;
-      db.find({_company_id: companyId, _type: 'aircraft'}, (err, subDocs) => {
-        fndDocs[0].aircrafts = subDocs;
-      fndDocs[0].aircrafts.forEach(aircraft => {
-        db.find({_aircraft_id: aircraft._id, _type: 'engine'}, (err, subDocs) => {
-        aircraft.engines = subDocs;
-      })})
 
-      db.find({_company_id: companyId, _type: 'workorder'}, (err, subDocs) => {
-        fndDocs[0].workorders = subDocs;
-      fndDocs[0].workorders.forEach((workorder, idx) => {
-        db.find({_workorder_id: workorder._id, _type: 'task'}, (err, subDocs) => {
-        fndDocs[0].workorders[idx].tasks = subDocs;
-        fndDocs[0].workorders[idx].tasks.forEach((task, tidx) => {
-          db.find({_task_ids: task._id, _type: 'associate'}, (err, subDocs) => {
-          fndDocs[0].workorders[idx].tasks[tidx].associates = subDocs;
-      })})})})
-
-      db.find({_company_ids: companyId, _type: 'contact'}, (err, subDocs) => {
-        fndDocs[0].contacts = subDocs;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(fndDocs, null, 2));
-      })})})//})});
-    }
-    else {
-      console.log(fndDocs);
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(fndDocs, null, 2));
-    }
-  });
-};
-*/
-function contacts(companyId, cb) {
-  console.log(companyId);
-  db.find({_company_ids: companyId, _type: 'contact'}, (err, fndDocs) => {
-    cb(err, fndDocs);
-  });
-};
-
-function aircraft(companyId, cb) {
-  console.log(companyId);
-  db.find({_company_id: companyId, _type: 'aircraft'}, (err, fndDocs) => {
-    cb(err, fndDocs);
-  });
-};
-
-function associates(associateIds) {
-  db.find({_id: req.params.companyId, _type: 'associate'}, (err, fndDocs) => {
-    if (err) { res.send(err); }
+exports.get_a_record = function(req, res) {
+  chain.init(req.params.id).getrecord('') // Just use id - no type
+  .then(record => {
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(fndDocs, null, 2));
+    res.end(JSON.stringify(record, null, 2));
   });
-};
+}    
 
 exports.list_query = function(req, res) {
   let apireq = req.body;
