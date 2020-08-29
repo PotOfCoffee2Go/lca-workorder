@@ -8,6 +8,35 @@ var Datastore = require('nedb'),
   db = new Datastore({ filename: `./databases/workorders.db`, autoload: true }),
   dbs = require('../models/workorderModel');
 
+class Company {
+  constructor () { this.init() }
+  init() {
+    Object.assign(this, {
+      _id: '',
+      _timestamp: '',
+      _type: 'company',
+      _contact_ids: [],
+      name': '',
+      address': '',
+      city: '',
+      state: '',
+      zip: '',
+      phone: '',
+      email': '',
+      notes': ''
+    })
+  }  
+  // Check fetch() http status
+  //  when valid return response text
+  textResponse(res) {
+    return res.ok
+    ? Promise.resolve(res.text())
+    : Promise.reject(`HTTP error: (${res.status}) - ${res.statusText}\n${res.url}`);
+  }
+
+}
+
+
 const Chaintastic = require('chaintastic');
 
 exports.read_schema = function(req, res) {
@@ -26,6 +55,28 @@ exports.read_all = function(req, res) {
     res.end(JSON.stringify(fndDocs, null, 2));
 // res.json(fndDocs);
   });
+}
+
+
+const woRec = Chaintastic({
+  s
+  
+  link(parent, child, cb) {},
+  
+  empty(cb) {
+    cb({
+      company: "",
+      contact: [],
+      aircraft: [],
+      engine:[],
+      workorder: [],
+      task: []
+      associate: []  
+      }
+    })
+  }
+
+
 }
 
 const chain = Chaintastic({

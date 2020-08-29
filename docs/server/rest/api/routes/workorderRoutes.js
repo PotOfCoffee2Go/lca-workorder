@@ -12,7 +12,7 @@ module.exports = function(app) {
 	app.route('/test/:id')
 		.get(workorder.test);
 
-	app.route('/company/:companyId')
+	app.route('/company/:id')
 		.get(workorder.read_a_company);
 //		.put(workorder.update_a_task)
 //		.delete(workorder.delete_a_task);
@@ -22,6 +22,9 @@ module.exports = function(app) {
 
 	app.route('/csv/records/:id/:type?')
 		.get(workorder.csv_records);
+
+	app.route('/csv/company/:id')
+		.get(workorder.csv_company);
 
 	// workorder Routes
 	app.route('/list')

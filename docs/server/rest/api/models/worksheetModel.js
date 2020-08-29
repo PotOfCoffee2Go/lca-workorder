@@ -1,106 +1,14 @@
-"use strict";
+'use strict';
 
-exports.schema = {
-
-"company": {
-  "_id": "",
-  "_type": "company",
-  "name": "",
-  "address": "",
-  "city": "",
-  "state": "",
-  "zip": "",
-  "phone": "",
-  "email": "",
-  "notes": "",
-  "_contact_ids": [],
-  },
-
-"associate": {
-  "_id": "",
-  "_type": "associate",
-  "name": "",
-  "address": "",
-  "city": "",
-  "state": "",
-  "zip": "",
-  "phone": "",
-  "email": "",
-  "notes": "",
-},
-
-"contact": {
-  "_id": "",
-  "_type": "contact",
-  "name": "",
-  "address": "",
-  "city": "",
-  "state": "",
-  "zip": "",
-  "phone": "",
-  "email": "",
-  "notes": "",
- },
-
-"engine": {
-  "_id": "",
-  "_type": "engine",
-  "name": "",
-  "model": "",
-  "make": "",
-  "serial_no": "",
-  "registration_no": "",
-  "time_in_service": "",
-  "time_since_overhaul": "",
-  "notes": "",
-  "_aircraft_id": "",
- },
-
-"aircraft": {
-  "_id": "",
-  "_type": "aircraft",
-  "name": "",
-  "model": "",
-  "make": "",
-  "serial_no": "",
-  "registration_no": "",
-  "time_in_service": "",
-  "notes": "",
-  "_company_id": "",
-  },
-
-"task": {
-  "_id": "",
-  "_type": "task",
-  "name": "",
-  "discrepancy": "",
-  "removed_pn": "",
-  "removed_sn": "",
-  "corrective_action": "",
-  "installed_pn": "",
-  "installed_sn": "",
-  "time": "",
-  "corrected_by": "",
-  "inspected_by": "",
-  "notes": "",
-  "_workorder_id": "",
-  "_associate_ids": "",
-  },
-  
-"workorder": {
-  "_id": "",
-  "_type": "workorder",
-  "name": "",
-  "workorder_no": "",
-  "date": "",
-  "preliminary_inspection": "",
-  "hidden_damage_inspection": "",
-  "in_progress_inspection": "",
-  "start_date": "",
-  "completed_date": "",
-  "signed_date": "",
-  "notes": "",
-  "_company_id": "",
-  "_aircraft_id": "",
-  }
-}
+exports.fields = [
+  // company / contact / associate
+  '_id', '_type', 'name', 'address', 'city', 'state', 'zip', 'phone', 'email', 'notes',
+  // aircraft / engine
+  'model', 'make', 'serial_no', 'registration_no', 'time_in_service', 'time_since_overhaul',
+  // task
+  'discrepancy', 'removed_pn', 'removed_sn', 'corrective_action', 'installed_pn',
+  'installed_sn', 'time', 'corrected_by', 'inspected_by',
+  // workorder
+  'workorder_no', 'date', 'preliminary_inspection', 'hidden_damage_inspection',
+  'in_progress_inspection', 'start_date', 'completed_date', 'signed_date',
+]
