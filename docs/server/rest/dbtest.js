@@ -88,7 +88,7 @@ class DataRecord {
       db.find({_id: {$in: id }}, (err, docs) => {
         if (err) {reject(err); return;}
         this.insertSubDocs(docs)
-          .then((dbRecs)=>resolve(dbRecs), (err)=>reject(err));
+          .then((dbRecs)=>resolve(dbRecs));
       })
     }) // Promise
   }
@@ -102,7 +102,7 @@ class DataRecord {
       db.insert(qryInsert, (err, doc) => {
         if (err) {reject(err); return;}
         this.find(doc._id)
-          .then((dbRec) => resolve(dbRec), (err) => reject(err));
+          .then((dbRec) => resolve(dbRec));
       })
     }) // Promise
   }
@@ -117,7 +117,7 @@ class DataRecord {
         if (!err && numReplaced === 0) err = this.isNotUpdated(this._id, numReplaced);
         if (err) {reject(err); return;}
         this.find(this._id)
-          .then((dbRec) => resolve(dbRec), (err) => reject(err));
+          .then((dbRec) => resolve(dbRec));
       })
     }) // Promise
   }
@@ -125,7 +125,6 @@ class DataRecord {
   change(ob) {
     return new Promise((resolve, reject) => {
       Object.assign(this, ob);
-      console.log(this, ob);
       resolve (this);
     }) // Promise
   }
@@ -152,23 +151,26 @@ class Company extends DataRecord {
   insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
       let companies = [];
-      console.log('docs',docs);
-      docs.forEach((doc) => {
+      docs.forEach((doc, idx) => {
         let company = new Company;
-        companies.push(company);
         company.setData(doc);
+        companies.push(company);
         let contact = new Contact;
         console.log('company-popsubdoc',doc._contacts);
         contact.find(company._contacts)
-          .then((contactdocs) => {company.contacts = contactdocs})
+          .then((contactdocs) => {console.log('cccontacts',contactdocs);company.contacts = contactdocs})
+          .then(()=>this.setData(companies[0]))
+          .then(()=>{if (idx+1 === docs.length) resolve(companies)})
           .catch((err) => reject(err));
       })
-      resolve(companies);
+//      resolve(companies);
     })
   }
 
   // Remove the contact sub-docs
   removeSubDocs() {
+      delete this.contacts;
+return;
     if (typeof this.contacts !==  undefined) {
       this._contacts = [];
       // Grab the DB keys just in case contact(s) added/removed
@@ -184,10 +186,10 @@ class Company extends DataRecord {
     return new Promise((resolve, reject) => {
       this._contacts.push(dbrec._id);
       this._contacts = this._contacts.filter(this.unique);
-      console.log('this', this);
+      console.log('attach', this);
       this.update()
-        .then(() => this.find(this._id))
-        .then((dbRecs)=>resolve(dbRecs), (err)=>reject(err));
+//        .then(() => this.find(this._id))
+        .then((dbRecs)=>resolve(dbRecs));
     })
   }
 
@@ -196,7 +198,7 @@ class Company extends DataRecord {
       let idx = this._contacts.indexOf(dbrec._id);
       if (idx > -1) this._contacts.splice(idx,1);
       this.find(this._id)
-        .then((dbRecs)=>resolve(dbRecs), (err)=>reject(err));
+        .then((dbRecs)=>resolve(dbRecs));
     })
   }
 
@@ -219,6 +221,7 @@ class Contact extends DataRecord {
         contacts.push(contact);
         contact.setData(doc);
       })
+      this.setData(contacts[0]);
       resolve(contacts);
     })
   }
@@ -244,6 +247,7 @@ class Associate extends DataRecord {
         associates.push(associate);
         associate.setData(doc);
       })
+      this.setData(associates[0]);
       resolve(associates);
     })
   }
@@ -268,16 +272,22 @@ function dberr(err) {
 
 let ccon = new Contact;
 let tcon = new Company;
+let rcon = new Company;
 
 tcon.change({name:'kim'})
 .then(() => tcon.insert())
-.catch ((err) => dberr(err));
+.then(()=>console.log('xxxxx',tcon,ccon))
 
-
-ccon.change({notes: 'new contact'})
+.then(()=>ccon.change({notes: 'new contact'}))
 .then(() => ccon.insert())
+.then(()=>console.log('docs',tcon,ccon))
+
 .then (() => tcon.attach(ccon))
-.then ((dbrec) => {tcon = dbrec})
+.then(()=>console.log('eeeee',tcon,ccon))
+
+.then (() => rcon.find(tcon._id))
+.then(()=>console.log('rrrrrr',rcon))
+
 .catch ((err) => dberr(err));
 
 
