@@ -1,21 +1,47 @@
 const Nedb = require('nedb');
 var db = new Nedb({ filename: './databases/test.db', autoload: true }); // localStoreage
 //var db = new Nedb(); // memory
+class Schema {
+  constructor() {this.init();}
+
+  init() { Object.assign(this, {
+    company: { 
+      type: 'company',
+      name: '', address: '', city: '', state: '', zip: '',
+      phone: '', email: '',
+      _contacts: [],
+      contacts: [],
+      notes: '',
+    },
+    contact: { 
+      type: 'contact',
+      name: '', address: '', city: '', state: '', zip: '',
+      phone: '', email: '',
+      notes: '',
+    },
+    associate: { 
+      type: 'associate',
+      name: '', address: '', city: '', state: '', zip: '',
+      phone: '', email: '',
+      notes: '',
+    },
+  })}
+}
+
+const schema = new Schema;
 
 class DataRecord {
-  constructor() {
-    // Defined by derived class
-    this.type = '', // 
-    this.data = {}// Working copy of this.schema, defined in derived classes
-    }
+  constructor() {}
 
   // Called by derived class to start over fresh
-  reset() {
-    this.data = Object.assign({}, this.schema);
-//    this.merge(this.ref, this.keys);
-//    this.merge(this.data, this.scheme);
-  }
+  reset() { Object.assign(this, this.getSchema()) }
 
+  setData(doc) { Object.assign(this, doc); }
+
+  // filter array to be unique
+  unique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
   // Errors
   
   hasNoRecordId() {
@@ -61,12 +87,8 @@ class DataRecord {
       if (typeof id === 'string') id = [id];
       db.find({_id: {$in: id }}, (err, docs) => {
         if (err) {reject(err); return;}
-        docs.forEach(doc => {
-          this.reset();
-          if ((err = this.isWrongType(doc._id, doc.type))) {reject(err);return;};
-          Object.assign(this.data, doc);
-        })
-        this.insertSubDocs().then(()=>resolve(docs), (err)=>reject(err));
+        this.insertSubDocs(docs)
+          .then((dbRecs)=>resolve(dbRecs), (err)=>reject(err));
       })
     }) // Promise
   }
@@ -74,39 +96,37 @@ class DataRecord {
   insert(ob) {
     return new Promise((resolve, reject) => {
       //delete this.data._id; // should be done before insert called
-      if (this.data._id) {reject(this.hasRecordId());return;}
-      let qryInsert = Object.assign({},this.data);
+      if (this._id) {reject(this.hasRecordId());return;}
       this.removeSubDocs(); // get rid of subdoc data - just keep the keys
+      let qryInsert = Object.assign({},this);
       db.insert(qryInsert, (err, doc) => {
         if (err) {reject(err); return;}
-        Object.assign(this.data, doc);
-        // Read from database
-        this.find(this.data._id).then((fnd) => resolve(fnd), (err) => reject(err));
+        this.find(doc._id)
+          .then((dbRec) => resolve(dbRec), (err) => reject(err));
       })
     }) // Promise
   }
 
   update(ob,cb) {
     return new Promise((resolve, reject) => {
-      if (!this.data._id) {reject(this.hasNoRecordId());return;}
-      let qryFind = { _id: this.data._id };
+      if (!this._id) {reject(this.hasNoRecordId());return;}
+      let qryFind = { _id: this._id };
       this.removeSubDocs(); // get rid of subdoc data - just keep the keys
-      let qrySet = { $set: this.data };
+      let qrySet = { $set: this };
       db.update(qryFind, qrySet, {}, (err, numReplaced) => {
-        if (!err && numReplaced === 0) err = this.isNotUpdated(this.data._id, numReplaced);
+        if (!err && numReplaced === 0) err = this.isNotUpdated(this._id, numReplaced);
         if (err) {reject(err); return;}
-        // Read from database
-        let id = this.data._id;
-        this.find(this.data._id).then((fnd) => resolve(fnd), (err) => reject(err));
+        this.find(this._id)
+          .then((dbRec) => resolve(dbRec), (err) => reject(err));
       })
     }) // Promise
   }
   
   change(ob) {
     return new Promise((resolve, reject) => {
-      Object.assign(this.data, ob);
-      console.log(this.data, ob);
-      resolve (this.data);
+      Object.assign(this, ob);
+      console.log(this, ob);
+      resolve (this);
     }) // Promise
   }
 
@@ -123,68 +143,112 @@ class Company extends DataRecord {
   constructor(){super();this.init()}
 
   init() {
-    this.type = 'company',
-    this.keys = {
-      _contacts: [],
-    },
-    this.schema = {
-      type: this.type,
-      name: '', address: '', city: '', state: '', zip: '',
-      phone: '', email: '',
-      _contacts: [],
-      notes: '',
-    }
     super.reset();
   }
 
-  insertSubDocs() {
+  getSchema() {return schema.company;}
+
+  // Insert the contact sub-docs
+  insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
-      let contact = new Contact;
-      console.log('company-popsubdoc',this.data._contacts);
-      contact.find(this.data._contacts)
-        .then((docs) => {this.data.contacts = docs})
-        .then(() => resolve(null))
-        .catch((err) => reject(err));
+      let companies = [];
+      console.log('docs',docs);
+      docs.forEach((doc) => {
+        let company = new Company;
+        companies.push(company);
+        company.setData(doc);
+        let contact = new Contact;
+        console.log('company-popsubdoc',doc._contacts);
+        contact.find(company._contacts)
+          .then((contactdocs) => {company.contacts = contactdocs})
+          .catch((err) => reject(err));
+      })
+      resolve(companies);
     })
   }
 
+  // Remove the contact sub-docs
   removeSubDocs() {
-    if (typeof this.data.contacts !==  undefined) {
-      let _contacts = [];
+    if (typeof this.contacts !==  undefined) {
+      this._contacts = [];
       // Grab the DB keys just in case contact(s) added/removed
-      this.data.contacts.forEach(contact => {
-        _contacts.push(contact._id);
+      this.contacts.forEach(contact => {
+        this._contacts.push(contact._id);
       })
-      this.data._contacts = _contacts;
       // Now have the keys, delete the related data
-      delete this.data.contacts;
+      delete this.contacts;
     }
   }
+
+  attach(dbrec) {
+    return new Promise((resolve, reject) => {
+      this._contacts.push(dbrec._id);
+      this._contacts = this._contacts.filter(this.unique);
+      console.log('this', this);
+      this.update()
+        .then(() => this.find(this._id))
+        .then((dbRecs)=>resolve(dbRecs), (err)=>reject(err));
+    })
+  }
+
+  detach(dbrec) {
+    return new Promise((resolve, reject) => {
+      let idx = this._contacts.indexOf(dbrec._id);
+      if (idx > -1) this._contacts.splice(idx,1);
+      this.find(this._id)
+        .then((dbRecs)=>resolve(dbRecs), (err)=>reject(err));
+    })
+  }
+
 }
+
 
 class Contact extends DataRecord {
   constructor(){super(); this.init()}
   
-  init() {
-    this.type = 'contact';
-    this.keys = {},
-    this.schema = {
-      type: this.type,
-      name: '', address: '', city: '', state: '', zip: '',
-      phone: '', email: '',
-      notes: '',
-    }
-    super.reset();
-  }
+  init() {super.reset();}
 
-  insertSubDocs() {
+  getSchema() {return schema.contact;}
+
+  // Contacts have no sub-docs - so just return
+  insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
-      // Get any sub-documents
-      console.log('contact-popsubdoc',this.data._contacts);
-      resolve(null);
+      let contacts = [];
+      docs.forEach((doc) => {
+        let contact = new Contact;
+        contacts.push(contact);
+        contact.setData(doc);
+      })
+      resolve(contacts);
     })
   }
 
+  // Contacts has no sub-docs to remove
+  removeSubDocs() {}
+
+}
+
+class Associate extends DataRecord {
+  constructor(){super(); this.init()}
+  
+  init() {super.reset();}
+
+  getSchema() {return schema.associate;}
+
+  // Associates have no sub-docs - so just return
+  insertSubDocs() {
+    return new Promise((resolve, reject) => {
+      let associates = [];
+      docs.forEach((doc) => {
+        let associate = new Associate;
+        associates.push(associate);
+        associate.setData(doc);
+      })
+      resolve(associates);
+    })
+  }
+
+  // Associates has no sub-docs to remove
   removeSubDocs() {}
 
 }
@@ -198,20 +262,35 @@ tryit().then((df)=>console.log(df))
 
 
 function dberr(err) {
-  console.log({message: err.message, key: err.key, errorType: err.errorType});
+  console.log(err);
   return err;
 }
 
+let ccon = new Contact;
 let tcon = new Company;
 
-//tcon.doalert('KIMMY',()=>{})
-//tcon.change({name:'kim'})
-tcon.find('yfWHqQWkqI4ObhqR')
-//.then(() => tcon.change({state: 'MN'}))
-//.then(() => tcon.update())
-//.then((doc) => {console.log('updated', doc);return doc})
-.then((docs)=>console.log('got',typeof docs[0], docs[0], 'Data', tcon.data))
+tcon.change({name:'kim'})
+.then(() => tcon.insert())
 .catch ((err) => dberr(err));
+
+
+ccon.change({notes: 'new contact'})
+.then(() => ccon.insert())
+.then (() => tcon.attach(ccon))
+.then ((dbrec) => {tcon = dbrec})
+.catch ((err) => dberr(err));
+
+
+
+//(docs)=>console.log('got',typeof docs[0], docs[0], 'Data', tcon.data))
+//.catch ((err) => dberr(err));
+/*
+let acon = new Associate;
+
+acon.change({name: 'An Associate'})
+  .then(()=>acon.insert())
+  .then(()=>console.log(acon));
+*/
 
 /*
  // .then(rtn => console.log('insert',rtn))

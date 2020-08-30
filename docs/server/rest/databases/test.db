@@ -1,18 +1,10 @@
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"5doQKHZ1Cw0XhIg3"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"8pD1iHmPZ79FPz5S"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"AEGreUJp5G6Q6nLB"}
-{"type":"contact","name":"ffdds","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"BXSvWiXnefn10WWv"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"DNIicyeEHHSx4NSb"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"I8tPWd0IwB5KGY5R"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"P7o4ednNMNt1isuj"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"QjM7KqKP915xi4fD"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"ZlVDGUh9KKKK2rzz"}
-{"type":"contact","name":"ffdds","address":"","city":"cottage2","state":"","zip":"","phone":"","email":"","notes":"","_id":"cBh3oDdADTpJqnNL"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"cVUVChbBDHOpfgE4"}
-{"type":"company","name":"","address":"","city":"cottage4","state":"","zip":"","phone":"","email":"","_contacts":[],"notes":"","_id":"ltgrOsa5BfP8wK9a"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"oZmF5tM3hT2DDyld"}
-{"type":"contact","name":"ffdds","address":"","city":"cottage3","state":"","zip":"","phone":"","email":"","notes":"","_id":"pKWuZ8mTKdptyGtR","_contacts":[],"contacts":[]}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"qAFtkoCiUlGov3Fm"}
-{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"vWshJYhhn2Gwm30J"}
-{"type":"contact","name":"ffdds","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"x3cbWeNk0TTSAh9h"}
-{"type":"company","name":"","address":"","city":"cottage4","state":"TX","zip":"","phone":"","email":"","_contacts":["x3cbWeNk0TTSAh9h"],"notes":"","_id":"yfWHqQWkqI4ObhqR","contacts":[]}
+{"type":"company","name":"kim","address":"","city":"","state":"","zip":"","phone":"","email":"","_contacts":[],"notes":"","_id":"149i3aIkMLPIcgl7"}
+{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"new contact","_id":"3CCbjK44B4Y9eNXL"}
+{"type":"company","name":"kim","address":"","city":"","state":"","zip":"","phone":"","email":"","_contacts":[],"notes":"","_id":"5xqLeGRCI3SXXIQT"}
+{"type":"company","name":"kim","address":"","city":"","state":"","zip":"","phone":"","email":"","_contacts":[],"notes":"","_id":"9UelFBYfkklz9Aap"}
+{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"new contact","_id":"BHTqPuOuJppFVDBN"}
+{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"new contact","_id":"JgEDc4cX7vatfU1R"}
+{"type":"company","name":"kim","address":"","city":"","state":"","zip":"","phone":"","email":"","_contacts":[],"notes":"","_id":"rfZMgbwT1b3vt2Ec"}
+{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"new contact","_id":"x40qQmJJtBZOO6WB"}
+{"type":"company","name":"kim","address":"","city":"","state":"","zip":"","phone":"","email":"","_contacts":[],"notes":"","_id":"dg2EbqubZMfB0dkl"}
+{"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"new contact","_id":"e3Cx829ONB7GKzLu"}
