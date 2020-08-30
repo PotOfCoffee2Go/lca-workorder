@@ -15,5 +15,4 @@
 {"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"qAFtkoCiUlGov3Fm"}
 {"type":"contact","name":"","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"vWshJYhhn2Gwm30J"}
 {"type":"contact","name":"ffdds","address":"","city":"","state":"","zip":"","phone":"","email":"","notes":"","_id":"x3cbWeNk0TTSAh9h"}
-{"type":"company","name":"","address":"","city":"cottage4","state":"TX","zip":"","phone":"","email":"","_contacts":[],"notes":"","_id":"yfWHqQWkqI4ObhqR","contacts":[]}
-{"type":"company","name":"","address":"","city":"cottage4","state":"MN","zip":"","phone":"","email":"","_contacts":[],"notes":"","_id":"yfWHqQWkqI4ObhqR","contacts":[]}
+{"type":"company","name":"","address":"","city":"cottage4","state":"TX","zip":"","phone":"","email":"","_contacts":["x3cbWeNk0TTSAh9h"],"notes":"","_id":"yfWHqQWkqI4ObhqR","contacts":[]}
