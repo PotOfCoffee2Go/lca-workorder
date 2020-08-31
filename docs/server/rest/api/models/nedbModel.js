@@ -7,7 +7,6 @@ class Schema {
       name: '', address: '', city: '', state: '', zip: '',
       phone: '', email: '',
       _contacts: [],
-      contacts: [],
       notes: '',
     },
     contact: { 

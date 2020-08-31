@@ -68,7 +68,7 @@ class DataRecord {
       if (typeof id === 'string') id = [id];
       if (Array.isArray(id)) qry = {_id: {$in: id }}; else qry = id;
       db.find(qry, (err, docs) => {
-        if (err) {reject(err); return;}
+        if (err) {return reject(err);}
         this.insertSubDocs(docs)
           .then((dbRecs)=>resolve(dbRecs));
       })
@@ -78,11 +78,11 @@ class DataRecord {
   insert(ob) {
     return new Promise((resolve, reject) => {
       //delete this.data._id; // should be done before insert called
-      if (this._id) {reject(this.hasRecordId());return;}
+      if (this._id) {return reject(this.hasRecordId());}
       this.removeSubDocs(); // get rid of subdoc data - just keep the keys
       let qryInsert = Object.assign({},this);
       db.insert(qryInsert, (err, doc) => {
-        if (err) {reject(err); return;}
+        if (err) {return reject(err);}
         this.find(doc._id)
           .then((dbRec) => resolve(dbRec));
       })
@@ -91,13 +91,13 @@ class DataRecord {
 
   update(ob,cb) {
     return new Promise((resolve, reject) => {
-      if (!this._id) {reject(this.hasNoRecordId());return;}
+      if (!this._id) {return reject(this.hasNoRecordId())}
       let qryFind = { _id: this._id };
       this.removeSubDocs(); // get rid of subdoc data - just keep the keys
       let qrySet = { $set: this };
       db.update(qryFind, qrySet, {}, (err, numReplaced) => {
         if (!err && numReplaced === 0) err = this.isNotUpdated(this._id, numReplaced);
-        if (err) {reject(err); return;}
+        if (err) {return reject(err);}
         this.find(this._id)
           .then((dbRec) => resolve(dbRec));
       })
@@ -130,6 +130,7 @@ class Company extends DataRecord {
   // Insert the contact sub-docs
   insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
+      if (docs.length === 0) return resolve(docs);
       let companies = [];
       docs.forEach((doc, idx) => {
         let company = new Company;
@@ -199,6 +200,7 @@ class Contact extends DataRecord {
   // Contacts have no sub-docs - so just return
   insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
+      if (docs.length === 0) return resolve(docs);
       let contacts = [];
       docs.forEach((doc) => {
         let contact = new Contact;
@@ -223,8 +225,9 @@ class Associate extends DataRecord {
   getSchema() {return schema.associate;}
 
   // Associates have no sub-docs - so just return
-  insertSubDocs() {
+  insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
+      if (docs.length === 0) return resolve(docs);
       let associates = [];
       docs.forEach((doc) => {
         let associate = new Associate;
@@ -250,6 +253,7 @@ class Engine extends DataRecord {
   // Engines have no sub-docs - so just return
   insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
+      if (docs.length === 0) return resolve(docs);
       let engines = [];
       docs.forEach((doc) => {
         let engine = new Engine;
@@ -271,6 +275,7 @@ class Engine extends DataRecord {
       }
       this._aircraft = dbrec._id;
       this.update()
+        .then(() => dbrec.update())
         .then(() => resolve(this));
     })
   }
@@ -286,6 +291,7 @@ class Aircraft extends DataRecord {
   // Aircraft have no sub-docs - so just return
   insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
+      if (docs.length === 0) return resolve(docs);
       let aircrafts = [];
       docs.forEach((doc) => {
         let aircraft = new Aircraft;
@@ -321,23 +327,10 @@ class Task extends DataRecord {
 
   getSchema() {return schema.task;}
 
-  // Task have no sub-docs - so just return
-  insertSubDocs(docs) {
-    return new Promise((resolve, reject) => {
-      let tasks = [];
-      docs.forEach((doc) => {
-        let task = new Task;
-        tasks.push(task);
-        task.setData(doc);
-      })
-      this.setData(tasks[0]);
-      resolve(tasks);
-    })
-  }
-
   // Insert the contact sub-docs
   insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
+      if (docs.length === 0) return resolve(docs);
       let tasks = [];
       docs.forEach((doc, idx) => {
         let task = new Task;
@@ -366,6 +359,7 @@ class Task extends DataRecord {
       }
       this._workorder = dbrec._id;
       this.update()
+        .then(() => dbrec.update())
         .then(() => resolve(this));
     })
   }
@@ -373,7 +367,7 @@ class Task extends DataRecord {
   attachAssociate(dbrec) {
     return new Promise((resolve, reject) => {
       this._associates.push(dbrec._id);
-      this._associates  = this._contacts.filter(this.unique);
+      this._associates  = this._associates.filter(this.unique);
       this.update()
         .then((dbRecs)=>resolve(dbRecs));
     })
@@ -392,14 +386,22 @@ class Workorder extends DataRecord {
   // Workorder have no sub-docs - so just return
   insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
+      if (docs.length === 0) return resolve(docs);
+      console.log('here',docs);
       let workorders = [];
-      docs.forEach((doc) => {
+      docs.forEach((doc, idx) => {
         let workorder = new Workorder;
-        workorders.push(workorder);
         workorder.setData(doc);
+        workorders.push(workorder);
+        let task = new Task;
+        Promise.all([
+          task.find({_workorder: workorder._id, type: 'task'})
+            .then((taskdocs) => {workorder.tasks = taskdocs}),
+          ])
+          .then(()=>this.setData(workorders[0]))
+          .then(()=>{if (idx+1 === docs.length) resolve(workorders)})
+          .catch((err) => reject(err));
       })
-      this.setData(workorders[0]);
-      resolve(workorders);
     })
   }
 
@@ -413,6 +415,7 @@ class Workorder extends DataRecord {
       }
       this._company = dbrec._id;
       this.update()
+        .then(() => dbrec.update())
         .then(() => resolve(this));
     })
   }
@@ -424,6 +427,7 @@ class Workorder extends DataRecord {
       }
       this._aircraft = dbrec._id;
       this.update()
+        .then(() => dbrec.update())
         .then(() => resolve(this));
     })
   }

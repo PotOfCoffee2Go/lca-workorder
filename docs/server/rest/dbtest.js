@@ -20,13 +20,16 @@ let tcon = new cl.Company;
 let rcon = new cl.Company;
 let econ = new cl.Engine;
 let acon = new cl.Aircraft;
+let wcon = new cl.Workorder;
+let scon = new cl.Associate;
+let kcon = new cl.Task;
 
+console.log('hi');
 tcon.change({name:'kim'})
 .then(() => tcon.insert())
 
 .then(()=>ccon.change({notes: 'new cl.contact'}))
 .then(() => ccon.insert())
-
 .then (() => tcon.attachContact(ccon))
 
 .then (() => rcon.find(tcon._id))
@@ -51,26 +54,24 @@ tcon.change({name:'kim'})
 .then(()=>console.log('econ2',econ))
 
 
+.then(()=>scon.change({notes: 'new associate'}))
+.then(() => scon.insert())
+
+.then(()=>kcon.change({notes: 'new task'}))
+.then(() => kcon.insert())
+.then (() => kcon.attachAssociate(scon))
+
+
+.then(()=>wcon.change({notes: 'new workorder'}))
+.then (() => wcon.insert())
+.then (() => kcon.assignWorkorder(wcon))
+.then (() => wcon.assignAircraft(acon))
+.then (() => wcon.assignCompany(tcon))
+.then(()=>console.log('kcon',kcon))
+.then(()=>console.log('wcon',wcon))
+.then(()=>console.log('tcon',JSON.stringify(tcon, null, 2)))
+
+
+
 .catch ((err) => dberr(err));
 
-
-
-//(docs)=>console.log('got',typeof docs[0], docs[0], 'Data', tcon.data))
-//.catch ((err) => dberr(err));
-/*
-let acon = new Associate;
-
-acon.change({name: 'An Associate'})
-  .then(()=>acon.insert())
-  .then(()=>console.log(acon));
-*/
-
-/*
- // .then(rtn => console.log('insert',rtn))
-//  .then(tcon.change({state: 'Hawaii'}))
-//  .then(rtn => console.log('change',rtn))
-  .then(()=>{tryit()})
-  .then(() => {tcon.data = Object.assign({},tcon.data,{name: 'ffdds'})})
-  .then(() => {tcon.update(tcon.data)})
-  .then((rtn) => {console.log('update',rtn)});
-*/
