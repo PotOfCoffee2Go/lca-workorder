@@ -62,20 +62,25 @@ class DataRecord {
   // Database acccess
 
   // Get record from the database, given _id(ob)  
-  find(id) {
+  find(id, opts = {}) {
     return new Promise((resolve, reject) => {
       let qry = {};
       if (typeof id === 'string') id = [id];
       if (Array.isArray(id)) qry = {_id: {$in: id }}; else qry = id;
       db.find(qry, (err, docs) => {
         if (err) {return reject(err);}
+        if (opts.raw) {
+          this.removeSubDocs();
+          this.setData(docs[0]);
+          return resolve([this]);
+        }
         this.insertSubDocs(docs)
           .then((dbRecs)=>resolve(dbRecs));
       })
     }) // Promise
   }
 
-  insert(ob) {
+  insert(opts = {}) {
     return new Promise((resolve, reject) => {
       //delete this.data._id; // should be done before insert called
       if (this._id) {return reject(this.hasRecordId());}
@@ -83,13 +88,13 @@ class DataRecord {
       let qryInsert = Object.assign({},this);
       db.insert(qryInsert, (err, doc) => {
         if (err) {return reject(err);}
-        this.find(doc._id)
+        this.find(doc._id, opts)
           .then((dbRec) => resolve(dbRec));
       })
     }) // Promise
   }
 
-  update(ob,cb) {
+  update(opts = {}) {
     return new Promise((resolve, reject) => {
       if (!this._id) {return reject(this.hasNoRecordId())}
       let qryFind = { _id: this._id };
@@ -98,17 +103,26 @@ class DataRecord {
       db.update(qryFind, qrySet, {}, (err, numReplaced) => {
         if (!err && numReplaced === 0) err = this.isNotUpdated(this._id, numReplaced);
         if (err) {return reject(err);}
-        this.find(this._id)
+        this.find(this._id, opts)
           .then((dbRec) => resolve(dbRec));
       })
     }) // Promise
   }
   
-  change(ob) {
+  change(fields) {
     return new Promise((resolve, reject) => {
-      Object.assign(this, ob);
+      Object.assign(this, fields);
       resolve (this);
-    }) // Promise
+    })
+  }
+
+  removeSubDocs() {
+    delete this.contacts;
+    delete this.associates;
+    delete this.engines;
+    delete this.aircrafts;
+    delete this.tasks;
+    delete this.workorders;
   }
 
   str(ob,cb) {Promise.resolve('');}
@@ -118,6 +132,7 @@ class DataRecord {
   csv(ob,cb) { cb(`"${this.data._id}","${this.data.name}"`);}
   html(ob,cb){cb('<td>${this.data._id}</td><td>${this.data.name}</td>');}
   doalert(ob,cb){alert(ob);Promise.resolve(ob);}
+
 }
 
 class Company extends DataRecord {
@@ -136,37 +151,21 @@ class Company extends DataRecord {
         let company = new Company;
         company.setData(doc);
         companies.push(company);
-        let contact = new Contact, workorder = new Workorder, aircraft = new Aircraft;
         Promise.all([
-          contact.find(company._contacts)
-            .then((contactdocs) => {company.contacts = contactdocs}),
-          workorder.find({ _company: company._id, type: 'workorder' })
-            .then((workorderdocs) => {company.workorders = workorderdocs}),
-          aircraft.find({ _company: company._id, type: 'aircraft' })
-            .then((aircraftdocs) => {company.aircrafts = aircraftdocs}),
+         // Array References to contacts
+          (new Contact).find(company._contacts)
+            .then((sdocs) => {company.contacts = sdocs}),
+          // workorders and aircraft have a single reference a company
+          (new Workorder).find({ _company: company._id, type: 'workorder' })
+            .then((sdocs) => {company.workorders = sdocs}),
+          (new Aircraft).find({ _company: company._id, type: 'aircraft' })
+            .then((sdocs) => {company.aircrafts = sdocs}),
           ])
           .then(()=>this.setData(companies[0]))
           .then(()=>{if (idx+1 === docs.length) resolve(companies)})
           .catch((err) => reject(err));
       })
     })
-  }
-
-  // Remove the contact sub-docs
-  removeSubDocs() {
-      delete this.contacts;
-      delete this.aircrafts;
-      delete this.workorders;
-return;
-    if (typeof this.contacts !==  undefined) {
-      this._contacts = [];
-      // Grab the DB keys just in case contact(s) added/removed
-      this.contacts.forEach(contact => {
-        this._contacts.push(contact._id);
-      })
-      // Now have the keys, delete the related data
-      delete this.contacts;
-    }
   }
 
   attachContact(dbrec) {
@@ -178,7 +177,7 @@ return;
     })
   }
 
-  detach(dbrec) {
+  detachContact(dbrec) {
     return new Promise((resolve, reject) => {
       let idx = this._contacts.indexOf(dbrec._id);
       if (idx > -1) this._contacts.splice(idx,1);
@@ -212,9 +211,6 @@ class Contact extends DataRecord {
     })
   }
 
-  // Contacts has no sub-docs to remove
-  removeSubDocs() {}
-
 }
 
 class Associate extends DataRecord {
@@ -238,11 +234,8 @@ class Associate extends DataRecord {
       resolve(associates);
     })
   }
-
-  // Associates has no sub-docs to remove
-  removeSubDocs() {}
-
 }
+
 class Engine extends DataRecord {
   constructor(){super(); this.init()}
   
@@ -264,9 +257,6 @@ class Engine extends DataRecord {
       resolve(engines);
     })
   }
-
-  // Engines has no sub-docs to remove
-  removeSubDocs() {}
 
   assignAircraft(dbrec) {
     return new Promise((resolve, reject) => {
@@ -293,18 +283,19 @@ class Aircraft extends DataRecord {
     return new Promise((resolve, reject) => {
       if (docs.length === 0) return resolve(docs);
       let aircrafts = [];
-      docs.forEach((doc) => {
+      docs.forEach((doc, idx) => {
         let aircraft = new Aircraft;
-        aircrafts.push(aircraft);
         aircraft.setData(doc);
+        aircrafts.push(aircraft);
+        Promise.all([
+          (new Engine).find({_aircraft: aircraft._id, type: 'engine'})
+            .then((sdocs) => {aircraft.engines = sdocs}),
+        ])
+        .then(()=>this.setData(aircrafts[0]))
+        .then(()=>{if (idx+1 === docs.length) resolve(aircrafts)})
+        .catch((err) => reject(err));
       })
-      this.setData(aircrafts[0]);
-      resolve(aircrafts);
     })
-  }
-
-  // Aircraft has no sub-docs to remove
-  removeSubDocs() {
   }
 
   assignCompany(dbrec) {
@@ -336,20 +327,15 @@ class Task extends DataRecord {
         let task = new Task;
         task.setData(doc);
         tasks.push(task);
-        let associate = new Associate;
         Promise.all([
-          associate.find(task._associates)
-            .then((associatedocs) => {task.associates = associatedocs}),
-          ])
-          .then(()=>this.setData(tasks[0]))
-          .then(()=>{if (idx+1 === docs.length) resolve(tasks)})
-          .catch((err) => reject(err));
+          (new Associate).find(task._associates)
+            .then((sdocs) => {task.associates = sdocs}),
+        ])
+        .then(()=>this.setData(tasks[0]))
+        .then(()=>{if (idx+1 === docs.length) resolve(tasks)})
+        .catch((err) => reject(err));
       })
     })
-  }
-  // Task has no sub-docs to remove
-  removeSubDocs() {
-    delete this.associates;
   }
 
   assignWorkorder(dbrec) {
@@ -373,7 +359,14 @@ class Task extends DataRecord {
     })
   }
 
-
+  detachAssociate(dbrec) {
+    return new Promise((resolve, reject) => {
+      let idx = this._associates.indexOf(dbrec._id);
+      if (idx > -1) this._associates.splice(idx,1);
+      this.find(this._id)
+        .then((dbRecs)=>resolve(dbRecs));
+    })
+  }
 }
 
 class Workorder extends DataRecord {
@@ -387,16 +380,14 @@ class Workorder extends DataRecord {
   insertSubDocs(docs) {
     return new Promise((resolve, reject) => {
       if (docs.length === 0) return resolve(docs);
-      console.log('here',docs);
       let workorders = [];
       docs.forEach((doc, idx) => {
         let workorder = new Workorder;
         workorder.setData(doc);
         workorders.push(workorder);
-        let task = new Task;
         Promise.all([
-          task.find({_workorder: workorder._id, type: 'task'})
-            .then((taskdocs) => {workorder.tasks = taskdocs}),
+          (new Task).find({_workorder: workorder._id, type: 'task'})
+            .then((sdocs) => {workorder.tasks = sdocs}),
           ])
           .then(()=>this.setData(workorders[0]))
           .then(()=>{if (idx+1 === docs.length) resolve(workorders)})
@@ -404,9 +395,6 @@ class Workorder extends DataRecord {
       })
     })
   }
-
-  // Workorder has no sub-docs to remove
-  removeSubDocs() {}
 
   assignCompany(dbrec) {
     return new Promise((resolve, reject) => {
@@ -431,7 +419,6 @@ class Workorder extends DataRecord {
         .then(() => resolve(this));
     })
   }
-
 }
 
 module.exports = {

@@ -70,7 +70,8 @@ tcon.change({name:'kim'})
 .then(()=>console.log('kcon',kcon))
 .then(()=>console.log('wcon',wcon))
 .then(()=>console.log('tcon',JSON.stringify(tcon, null, 2)))
-
+.then(()=>tcon.find(tcon._id,{raw:true}))
+.then(()=>console.log('tcon-raw',tcon))
 
 
 .catch ((err) => dberr(err));
