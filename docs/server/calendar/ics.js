@@ -223,9 +223,9 @@ var ics = function(uidDomain, prodId) {
 'CATEGORIES:Work',
 'PRIORITY:5',
         'TRANSP:OPAQUE',
-'ATTENDEE;CN=ITech;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;CUTYPE=INDIVIDUAL;RSVP=TRUE:mailto:itech@lca.poc2go.com',
-'ORGANIZER:mailto:kim@lca.poc2go.com',
-'COMMENT:Test notification',
+//'ATTENDEE;CN=ITech;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;CUTYPE=INDIVIDUAL;RSVP=TRUE:mailto:itech@lca.poc2go.com',
+//'ORGANIZER:mailto:kim@lca.poc2go.com',
+//'COMMENT:Test notification',
         'END:VEVENT'
       ];
 

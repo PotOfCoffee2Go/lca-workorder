@@ -3,7 +3,7 @@
 
 <script>
 poc2go.cal = ics();
-poc2go.cal.addEvent('Task #1 Order LCA-345', 'Fix broken thing!', 'Walterboro', '09/03/2020 10:00', '09/03/2020 11:00');
+poc2go.cal.addEvent('Task #15 Order LCA-345', 'Fix another broken thing!', 'Walterboro, SC', '09/08/2020 10:00', '09/08/2020 11:00');
 
 function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
