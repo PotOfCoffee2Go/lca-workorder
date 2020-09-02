@@ -1,19 +1,37 @@
 
-const cl = require('./nedbController');
+const cl = {} //require('./controller');
+const log = console.log;
 
+module.exports =
+ function view(req, res, next) {
+  if (typeof res.poc2go.body === 'undefined') { return next() }
+  if (typeof res.poc2go.body === 'object') {
+    res.poc2go.body = JSON.stringify(res.poc2go.body, null, 2);
+  }
+  if (typeof res.poc2go.body === 'string') {
+    res.format({
+      'text/plain': function () {
+        res.send(res.poc2go.body)
+      },
 
+      'text/html': function () {
+        res.send('<div>' + res.poc2go.body + '</div>')
+      },
 
-exports.read_all = function(req, res) {
-  let apireq = req.body;
-  let query = {};
-  db.find({}, (err, fndDocs) => {
-    if (err) { res.send(err); }
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(fndDocs, null, 2));
-// res.json(fndDocs);
-  });
-}
+      'application/json': function () {
+        res.send({ message: res.poc2go.body })
+      },
 
+      default: function () {
+        // log the request and respond with 406
+        res.status(406).send('Mime type requested in Accept header is Not Available')
+      }
+    })
+  }
+  else {next()}
+};
+
+/*
 
 
 
@@ -94,3 +112,4 @@ tcon.change({name:'kim'})
 
 .catch ((err) => dberr(err));
 
+*/

@@ -13,7 +13,7 @@
     "chaintastic": "^0.1.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express": "^4.14.0",
+    "express": "^4.17.1",
     "json2csv": "^5.0.1",
     "nedb": "^1.8.0",
     "nodemailer": "^6.4.11"
