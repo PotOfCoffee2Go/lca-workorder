@@ -16,18 +16,19 @@ app.use(function(req, res, next) {
   next();
 });
 
-// Controller (req.poc2go and res.poc2go)
-//  have vars/functions to control app
-const controller = require('./controller');
-app.use(controller);
+// Init the poc2go namespace
+app.use( (req, res, next) => {
+  req.poc2go = {}; res.poc2go = {}; next();
+});
 
-// Routes commands to the database model
-//  which returns all results in JSON
+// Routes commands to the controller that
+//  calls the database model
+//  which returns all results in res.poc2go
 const routes = require('./routes');
 routes(app);
 
 // Transforms model results to various formats
-//  as directed by controller
+//  as directed by requested Accept header
 const view = require('./view');
 app.use(view);
 

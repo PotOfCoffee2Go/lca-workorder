@@ -1,10 +1,13 @@
-const Schema = require('./schema').Schema;
-const schema = new Schema;
+const config = require('./config');
+const schema = new config.Schema;
 const Nedb = require('nedb');
 var db = new Nedb({ filename: './databases/test.db', autoload: true, timestampData: true }); // localStoreage
 
-module.exports = function () {
-class DataRecord {
+//module.exports = function () {
+  
+exports.read_schema = () => { return schema; }  
+  
+exports.DataRecord = class DataRecord {
   constructor() {}
 
   // Called by derived class to start over fresh
@@ -12,10 +15,28 @@ class DataRecord {
 
   setData(doc) { Object.assign(this, doc); }
 
+  // Accept any record type
+  getSchema() {return {type: /.*/}}
+
+
+  // Overloaded by derived class
+  insertSubDocs(docs) {return Promise.resolve(docs);};
+
+  removeSubDocs() {
+    delete this.contacts;
+    delete this.associates;
+    delete this.engines;
+    delete this.aircrafts;
+    delete this.tasks;
+    delete this.workorders;
+  }
+
+
   // filter array to be unique
   unique(value, index, self) { return self.indexOf(value) === index; }
+
+
   // Errors
-  
   hasNoRecordId() {
     let err = new Error();
     err.message = 'Not updated! data._id field is required';
@@ -68,13 +89,14 @@ class DataRecord {
       let qry = {};
       if (typeof id === 'string') id = [id];
       if (Array.isArray(id)) qry = {_id: {$in: id }}; else qry = id;
+      qry.type = this.getSchema().type;
       db.find(qry, (err, docs) => {
         if (err) {return reject(err);}
-        if (opts.raw) {
+        /*if (opts.raw) { // use class DataRecords for raw records
           this.removeSubDocs();
           this.setData(docs[0]);
           return resolve([this]);
-        }
+        }*/
         this.insertSubDocs(docs)
           .then((dbRecs)=>resolve(dbRecs));
       })
@@ -117,14 +139,6 @@ class DataRecord {
     })
   }
 
-  removeSubDocs() {
-    delete this.contacts;
-    delete this.associates;
-    delete this.engines;
-    delete this.aircrafts;
-    delete this.tasks;
-    delete this.workorders;
-  }
 
   str(ob,cb) {Promise.resolve('');}
   getid(ob,cb) {Promise.resolve(this.data._id);}
@@ -136,7 +150,7 @@ class DataRecord {
 
 }
 
-class Company extends DataRecord {
+exports.Company = class Company extends exports.DataRecord {
   constructor(){super();this.init()}
 
   init() { super.reset(); }
@@ -154,12 +168,12 @@ class Company extends DataRecord {
         companies.push(company);
         Promise.all([
          // Array References to contacts
-          (new Contact).find(company._contacts)
+          (new exports.Contact).find(company._contacts)
             .then((sdocs) => {company.contacts = sdocs}),
           // workorders and aircraft have a single reference a company
-          (new Workorder).find({ _company: company._id, type: 'workorder' })
+          (new exports.Workorder).find({ _company: company._id, type: 'workorder' })
             .then((sdocs) => {company.workorders = sdocs}),
-          (new Aircraft).find({ _company: company._id, type: 'aircraft' })
+          (new exports.Aircraft).find({ _company: company._id, type: 'aircraft' })
             .then((sdocs) => {company.aircrafts = sdocs}),
           ])
           .then(()=>this.setData(companies[0]))
@@ -190,7 +204,7 @@ class Company extends DataRecord {
 }
 
 
-class Contact extends DataRecord {
+exports.Contact = class Contact extends exports.DataRecord {
   constructor(){super(); this.init()}
   
   init() {super.reset();}
@@ -214,7 +228,7 @@ class Contact extends DataRecord {
 
 }
 
-class Associate extends DataRecord {
+exports.Associate = class Associate extends exports.DataRecord {
   constructor(){super(); this.init()}
   
   init() {super.reset();}
@@ -237,7 +251,7 @@ class Associate extends DataRecord {
   }
 }
 
-class Engine extends DataRecord {
+exports.Engine = class Engine extends exports.DataRecord {
   constructor(){super(); this.init()}
   
   init() {super.reset();}
@@ -272,7 +286,7 @@ class Engine extends DataRecord {
   }
 }
 
-class Aircraft extends DataRecord {
+exports.Aircraft = class Aircraft extends exports.DataRecord {
   constructor(){super(); this.init()}
   
   init() {super.reset();}
@@ -289,7 +303,7 @@ class Aircraft extends DataRecord {
         aircraft.setData(doc);
         aircrafts.push(aircraft);
         Promise.all([
-          (new Engine).find({_aircraft: aircraft._id, type: 'engine'})
+          (new exports.Engine).find({_aircraft: aircraft._id, type: 'engine'})
             .then((sdocs) => {aircraft.engines = sdocs}),
         ])
         .then(()=>this.setData(aircrafts[0]))
@@ -312,7 +326,7 @@ class Aircraft extends DataRecord {
   }
 }
 
-class Task extends DataRecord {
+exports.Task = class Task extends exports.DataRecord {
   constructor(){super(); this.init()}
   
   init() {super.reset();}
@@ -329,7 +343,7 @@ class Task extends DataRecord {
         task.setData(doc);
         tasks.push(task);
         Promise.all([
-          (new Associate).find(task._associates)
+          (new exports.Associate).find(task._associates)
             .then((sdocs) => {task.associates = sdocs}),
         ])
         .then(()=>this.setData(tasks[0]))
@@ -370,7 +384,7 @@ class Task extends DataRecord {
   }
 }
 
-class Workorder extends DataRecord {
+exports.Workorder = class Workorder extends exports.DataRecord {
   constructor(){super(); this.init()}
   
   init() {super.reset();}
@@ -387,7 +401,7 @@ class Workorder extends DataRecord {
         workorder.setData(doc);
         workorders.push(workorder);
         Promise.all([
-          (new Task).find({_workorder: workorder._id, type: 'task'})
+          (new exports.Task).find({_workorder: workorder._id, type: 'task'})
             .then((sdocs) => {workorder.tasks = sdocs}),
           ])
           .then(()=>this.setData(workorders[0]))
@@ -422,4 +436,4 @@ class Workorder extends DataRecord {
   }
 }
 
-} // module.exports 
+//} // module.exports 

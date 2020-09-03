@@ -1,4 +1,6 @@
-class Schema {
+      
+      
+exports.Schema = class Schema {
   constructor() {this.init();}
 
   init() { Object.assign(this, {
@@ -55,4 +57,10 @@ class Schema {
   })}
 }
 
-module.exports.Schema = Schema;
+exports.Formats = class Formats {
+  constructor() {this.init();}
+  
+  init() {
+    this.list = ['sheet','table', 'csv', 'json'];
+  }
+}
