@@ -4,6 +4,7 @@ const model = require('./model'),
 
 const // helpers
   types = Object.keys((new config.Schema)),
+  _subdocs = types.filter((type) => type !== 'company').map((type) => type + 's'),
   isType = (type) => types.indexOf(type) > -1 ? true : false,
   makeDbClass = (type) => type[0].toUpperCase() + type.substr(1);
 
@@ -39,6 +40,7 @@ exports.get_all = (req, res, next) => {
 }
 
 exports.get_requested_type = (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
   if (req.params.format === 'sheet') {
     get_sheet(req, res, next);
     return;
@@ -54,10 +56,26 @@ exports.get_requested_type = (req, res, next) => {
   else {next();}
 }
 
-const get_sheet = (req, res, next) => {
-  next();
-  return;
+function linearRecs(docs, stack) {
+  docs.forEach((doc) => {
+    const fields = Object.keys(doc).filter((key) => _subdocs.indexOf(key) > -1);
+    fields.forEach((field) => {linearRecs(doc[field], stack); })
+    stack.push(doc);
+  })
+}
+
+const get_sheet = async (req, res, next) => {
   let linearSubDocs = [];
+  let dbClass = makeDbClass(req.params.type);
+  let id = makeFindQry(req.params.id);
+  let dr = new model[dbClass];
+  const recs = await dr.find(id);
+  linearRecs(recs, linearSubDocs);
+  linearSubDocs.reverse();
+  res.poc2go.body = linearSubDocs;
+  next();
+}
+ /* 
   if (isType(req.params.type)) {
     let dbClass = 'DataRecord'; // Get records without subdocs
     let id = makeFindQry(req.params.id);
@@ -66,7 +84,7 @@ const get_sheet = (req, res, next) => {
     .then((recs) => {
       let rec = recs[0];
       Object.keys(rec).forEach((key) => {
-      if (key[0] === '_' && rec) {}
+      if (key[0] === '_') {}
       
       })
     })
@@ -75,7 +93,7 @@ const get_sheet = (req, res, next) => {
   else {next();}
 }
     
-
+*/
 return;
 
 let ccon = new cl.Contact;

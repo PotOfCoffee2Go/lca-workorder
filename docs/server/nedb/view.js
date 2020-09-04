@@ -7,29 +7,40 @@ const // helpers
   isType = (type) => types.indexOf(type) > -1 ? true : false,
   log = console.log,
   formats = (new config.Formats).list,
-  isFormat = (format) => formats.indexOf(format) > -1 ? true : false;
+  isFormat = (format) => formats.indexOf(format) > -1 ? true : false,
+  unique = (value, index, self) => { return self.indexOf(value) === index; };
 
-const formatcsv2 = (json) => {
-const stringify = require('csv-stringify/lib/sync')
+var allHeaders = ['_', '_id'];
+(function () {
+  types.forEach((type) => {allHeaders = allHeaders.concat(Object.keys((new config.Schema)[type]))})
+  allHeaders = allHeaders.filter(unique);
+})();
 
-return stringify(json,{
-  header: true,
-  columns: ['_id'].concat(Object.keys((new config.Schema)[json[0].type]))
-})
+
+const format2csv = (req, res, next) => {
+  const stringify = require('csv-stringify/lib/sync')
+  let json = res.poc2go.body;
+  json.forEach((rec) => {
+    Object.keys(rec).forEach((fld) => {
+      if (rec[fld] === '') rec[fld] = '(---)';
+    })
+  })
+  return stringify(json,{header: true, columns: allHeaders})
 }
 
 
 module.exports =
   function view(req, res, next) {
-    res.send('<pre>' + formatcsv2(res.poc2go.body) + '</pre>')
+  if (req.poc2go.params.format === 'sheet') {
+    res.send('<pre>' + format2csv(req, res, next) + '</pre>')
+    return;
+  }   
 
-   
-    return; 
   if (res.poc2go.error) {res.poc2go.body = res.poc2go.error;}
 
   if (typeof res.poc2go.body === 'undefined') { return next() }
   if (typeof res.poc2go.body === 'object') {
-//    res.poc2go.body = '<pre>' + JSON.stringify(res.poc2go.body, null, 2) + '</pre>';
+    res.poc2go.body = '<pre>' + JSON.stringify(res.poc2go.body, null, 2) + '</pre>';
   }
   if (typeof res.poc2go.body === 'string') {
     res.format({
@@ -38,12 +49,12 @@ module.exports =
       },
 
       'text/html': function () {
-        res.send('<pre>' + formatcsv(res.poc2go.body) + '</pre>')
-//        res.send('<div>' + res.poc2go.body + '</div>')
+        res.send('<div>' + res.poc2go.body + '</div>')
       },
 
+      // To-do: fix above so this works!
       'application/json': function () {
-        res.send({ message: res.poc2go.body })
+        res.json(res.poc2go.body);
       },
 
       default: function () {
