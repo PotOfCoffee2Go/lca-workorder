@@ -1,0 +1,103 @@
+<html>
+<head>
+<script src="node_modules/nedb/browser-version/out/nedb.min.js"></script>
+</head>
+<body>
+<div id="show-me"></div>
+
+
+<script>
+//const Nedb = require('nedb');
+var db = new Nedb();
+//var db = nedb({ filename: './databases/test.db', autoload: true }); // localStoreage
+//var db = new Nedb(); // memory
+fetch('api/models/nedbModel.js')
+  .then(response => response.text())
+  .then(data => {
+    data = data.replace(/module.exports.*$/mg,'');
+    let s = document.createElement('script');
+    s.innerHTML = data;
+    document.head.appendChild(s);
+    });
+
+fetch('api/controllers/nedbController.js')
+  .then(response => response.text())
+  .then(data => {
+    let lines = data.split(/\r\n|\r|\n/);
+    lines.splice(0,4);lines.splice(lines.length-11,11)
+    data = lines.join('\n');
+    let s = document.createElement('script');
+    s.innerHTML = data;
+    document.head.appendChild(s);
+    });
+
+
+</script>
+
+<script>
+  var schema;
+  setTimeout(()=>runit(),3000);
+  
+  //window.onload = runit;
+ function dberr(err) {
+  console.log(err);
+  return err;
+}
+ 
+function runit() {// wait for scri
+schema = new Schema;
+
+let ccon = new Contact;
+let tcon = new Company;
+let rcon = new Company;
+let econ = new Engine;
+let acon = new Aircraft;
+let wcon = new Workorder;
+let kcon = new Task;
+
+tcon.change({name:'kim'})
+.then(() => tcon.insert())
+
+.then(()=>ccon.change({notes: 'new cl.contact'}))
+.then(() => ccon.insert())
+
+.then (() => tcon.attachContact(ccon))
+
+.then (() => rcon.find(tcon._id))
+.then(()=>console.log('rcon',rcon))
+
+
+.then(()=>econ.change({notes: 'new cl.engine'}))
+.then (() => econ.insert())
+//.then (() => econ.assignAircraft(tcon))
+.then(()=>console.log('econ',econ))
+
+.then(()=>acon.change({notes: 'new cl.aircraft'}))
+.then (() => acon.insert())
+.then (() => acon.assignCompany(tcon))
+.then(()=>console.log('acon',acon))
+
+//.then(()=> tcon.find(tcon._id))
+//.then((withaircraft)=>{tcon=withaircraft[0]})
+.then(()=> console.log('see if aircraft',tcon))
+
+.then (() => econ.assignAircraft(acon))
+.then(()=>console.log('econ2',econ))
+
+.then(()=>wcon.change({notes: 'new workorder'}))
+.then (() => wcon.insert())
+.then (() => wcon.assignAircraft(acon))
+//.then (() => wcon.assignCompany(tcon))
+.then(()=>console.log('wcon',wcon))
+.then(()=>console.log('tcon',tcon))
+
+
+
+.catch ((err) => dberr(err));
+
+  }
+  
+  </script>
+
+</body>
+</html>
