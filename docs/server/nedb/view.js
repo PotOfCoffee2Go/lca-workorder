@@ -16,7 +16,6 @@ var allHeaders = ['_', '_id'];
   allHeaders = allHeaders.filter(unique);
 })();
 
-
 const format2csv = (req, res, next) => {
   const stringify = require('csv-stringify/lib/sync')
   let json = res.poc2go.body;
@@ -25,7 +24,7 @@ const format2csv = (req, res, next) => {
       if (rec[fld] === '') rec[fld] = '(---)';
     })
   })
-  return stringify(json,{header: true, columns: allHeaders})
+  return stringify(json,{header: true, columns: allHeaders, delimiter: '\t'})
 }
 
 
