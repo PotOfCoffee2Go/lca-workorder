@@ -50,6 +50,7 @@ body, .textBtn  {
 }
 #header-logo {
   margin: .8em 0 0 .5em;
+  opacity: .3;
 }
 #footer-logo {
   margin-top: .1em;

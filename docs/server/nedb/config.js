@@ -1,4 +1,6 @@
-      
+// Order on worksheets
+exports._subdocs = ['contacts', 'aircrafts', 'engines',
+      'workorders', 'tasks', 'associates', 'company']      
       
 exports.Schema = class Schema {
   constructor() {this.init();}

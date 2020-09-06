@@ -1,20 +1,23 @@
 // Modified from github project https://github.com/generalgmt/RESTfulAPITutorial
 
 const express = require('express'),
-  cors = require('cors'),
-  app = express(),
   port = process.env.PORT || 9000,
+  app = express(),
+  cors = require('cors'),
+  favicon = require('serve-favicon'),
   bodyParser = require('body-parser');
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+app.use(favicon('./favicon.ico'));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Init the poc2go namespace
 app.use( (req, res, next) => {
