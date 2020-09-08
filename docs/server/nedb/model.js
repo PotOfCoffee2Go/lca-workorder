@@ -84,26 +84,21 @@ exports.DataRecord = class DataRecord {
   // Database acccess
 
   // Get record from the database, given _id(ob)  
-  find(id, opts = {}) {
+  find(id, prj = {}) {
     return new Promise((resolve, reject) => {
       let qry = {};
       if (typeof id === 'string') id = [id];
       if (Array.isArray(id)) qry = {_id: {$in: id }}; else qry = id;
-      qry.type = this.getSchema().type;
-      db.find(qry, (err, docs) => {
+      if (!qry.type) qry.type = this.getSchema().type;
+      db.find(qry, prj, (err, docs) => {
         if (err) {return reject(err);}
-        /*if (opts.raw) { // use class DataRecords for raw records
-          this.removeSubDocs();
-          this.setData(docs[0]);
-          return resolve([this]);
-        }*/
         this.insertSubDocs(docs)
           .then((dbRecs)=>resolve(dbRecs));
       })
     }) // Promise
   }
 
-  insert(opts = {}) {
+  insert() {
     return new Promise((resolve, reject) => {
       //delete this.data._id; // should be done before insert called
       if (this._id) {return reject(this.hasRecordId());}
@@ -111,13 +106,13 @@ exports.DataRecord = class DataRecord {
       let qryInsert = Object.assign({},this);
       db.insert(qryInsert, (err, doc) => {
         if (err) {return reject(err);}
-        this.find(doc._id, opts)
+        this.find(doc._id)
           .then((dbRec) => resolve(dbRec));
       })
     }) // Promise
   }
 
-  update(opts = {}) {
+  update() {
     return new Promise((resolve, reject) => {
       if (!this._id) {return reject(this.hasNoRecordId())}
       let qryFind = { _id: this._id };
@@ -126,7 +121,7 @@ exports.DataRecord = class DataRecord {
       db.update(qryFind, qrySet, {}, (err, numReplaced) => {
         if (!err && numReplaced === 0) err = this.isNotUpdated(this._id, numReplaced);
         if (err) {return reject(err);}
-        this.find(this._id, opts)
+        this.find(this._id)
           .then((dbRec) => resolve(dbRec));
       })
     }) // Promise

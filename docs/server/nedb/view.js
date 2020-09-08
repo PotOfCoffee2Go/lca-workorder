@@ -30,6 +30,7 @@ const format2csv = (req, res, next) => {
 
 module.exports =
   function view(req, res, next) {
+  if (!req.poc2go.params) return next();
   if (req.poc2go.params.format === 'sheet') {
     res.send('<pre>' + format2csv(req, res, next) + '</pre>')
     return;
@@ -39,7 +40,7 @@ module.exports =
 
   if (typeof res.poc2go.body === 'undefined') { return next() }
   if (typeof res.poc2go.body === 'object') {
-    res.poc2go.body = '<pre>' + JSON.stringify(res.poc2go.body, null, 2) + '</pre>';
+    res.poc2go.body = JSON.stringify(res.poc2go.body, null, 2);
   }
   if (typeof res.poc2go.body === 'string') {
     res.format({

@@ -42,7 +42,7 @@ exports.Schema = class Schema {
       },
     task: {
       type: 'task',
-      name: '', discrepancy: '', removed_pn: '', removed_sn: '',
+      name: '', unscheduled: "", discrepancy: '', removed_pn: '', removed_sn: '',
       corrective_action: '', installed_pn: '', installed_sn: '',
       time: '', corrected_by: '', inspected_by: '',
       notes: '',

@@ -43,9 +43,8 @@ exports.get_all = (req, res, next) => {
 
 exports.get_requested_type = (req, res, next) => {
   req.poc2go.params = Object.assign({},req.params); 
-  if (req.params.format === 'sheet') {
-    get_sheet(req, res, next);
-  }
+  if (req.params.format === 'list') {get_list(req, res, next);}
+  else if (req.params.format === 'sheet') {get_sheet(req, res, next);}
   else if (isType(req.params.type)) {
     let dbClass = makeDbClass(req.params.type);
     let id = makeFindQry(req.params.id);
@@ -55,6 +54,15 @@ exports.get_requested_type = (req, res, next) => {
     .catch((err) => {next(err);})
   }
   else {next();}
+}
+
+const get_list = (req, res, next) => {
+  let id = makeFindQry(req.params.id);
+  if (req.params.type) id = Object.assign(id, {type: req.params.type ? req.params.type : /.*/});
+  let dr = new model.DataRecord;
+  dr.find(id, {_id:1, name:1, type:1})
+  .then((recs) => {res.poc2go.body = recs; next();})
+  .catch((err) => {next(err);})
 }
 
 function linearRecs(docs, stack) {
