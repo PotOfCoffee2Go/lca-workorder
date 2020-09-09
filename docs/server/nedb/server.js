@@ -18,6 +18,7 @@ app.use(favicon('./favicon.ico'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.text());
 
 // Init the poc2go namespace
 app.use( (req, res, next) => {

@@ -47,6 +47,7 @@ body, .textBtn  {
   float:left;
   background: lightcyan;
   border-radius: 15px;
+  opacity: .6;
 }
 #header-logo {
   margin: .8em 0 0 .5em;

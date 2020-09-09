@@ -18,6 +18,10 @@ const controller = require('./controller');
 	app.route('/:format/:type/:id?')
 		.get(controller.get_requested_type);
 
+	app.route('/sheet/update')
+		.post(controller.post_update);
+
+
 //		.put(controller.update_a_task)
 //		.delete(controller.delete_a_task);
 

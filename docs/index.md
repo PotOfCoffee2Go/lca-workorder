@@ -14,6 +14,16 @@
   - [Handy Links](?md=pages/proposal/handylinks.md)
   - [LCA Work Order Flow Proposal](?md=pages/proposal/introduction.md)
   - [LCA Discrepancy Form Rev 2](?md=pages/proposal/lca-discrep.md)
+  - [ LCA Database Import/Export](?md=pages/proposal/pastetsv.md)
   - [Questions](?md=pages/proposal/questions.md)
   - [LCA Worksheets](?md=pages/proposal/worksheets.md)
+
+## pages/reports
+  - [Log Entries Report](?md=pages/reports/logentries.md)
+
+## server/calendar
+  - [Calendar Event Scheduler](?md=server/calendar/event.md)
+
+## server/nedb
+  - [LCA Work Order Data Server](?md=server/nedb/readme.md)
 

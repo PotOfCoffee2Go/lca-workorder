@@ -3,7 +3,8 @@ const model = require('./model'),
 	config = require('./config');
 
 const // helpers
-  types = Object.keys((new config.Schema)),
+  schema = new config.Schema,
+  types = Object.keys(schema),
   _subdocs = config._subdocs,
   isType = (type) => types.indexOf(type) > -1 ? true : false,
   makeDbClass = (type) => type[0].toUpperCase() + type.substr(1);
@@ -84,6 +85,49 @@ const get_sheet = async (req, res, next) => {
   res.poc2go.body = linearSubDocs;
   next();
 }
+
+const format2json = (req, res, next) => {
+  const parse = require('csv-parse/lib/sync')
+  let input = req.body;
+  const records = parse(input, {
+    columns: true,
+    skip_empty_lines: true,
+    delimiter: '\t'
+  })
+  return records;
+}
+
+
+exports.post_update = async (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
+  req.poc2go.params.format = 'sheet';
+  let curCo = {}, curWo = {};
+  let changed = [], linearSubDocs = [];
+  let recs = format2json(req, res, next);
+  for (const rec of recs) {
+    if (rec.type === 'company') curCo = rec;
+    if (rec.type === 'workorder') curWo = rec;
+    if (rec._.toLowerCase() === 'u') {
+      delete rec._;
+      Object.keys(rec).forEach((fld) => {
+        if (rec[fld] === '(---)') rec[fld] = '';
+        if (fld !== '_id' && typeof schema[rec.type][fld] === 'undefined') delete rec[fld];
+        if (fld[0] === '_' && Array.isArray(schema[rec.type][fld])) rec[fld] = rec[fld].split(' ');
+      })
+      let dbClass = makeDbClass(rec.type);
+      let dr = new model[dbClass];
+      dr.setData(rec);
+      await dr.update(rec);
+      dr = new model.DataRecord; // get record without subdocs
+      let upd = await dr.find(rec._id);
+      changed.push(upd[0]);
+    }
+  }
+  res.poc2go.body = changed;
+  next();
+}
+
+
  /* 
   if (isType(req.params.type)) {
     let dbClass = 'DataRecord'; // Get records without subdocs

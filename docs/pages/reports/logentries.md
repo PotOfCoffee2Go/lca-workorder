@@ -1,6 +1,6 @@
 # Log Entries Report
 
-Select a workorder to print:
+Select a work order to print:
 <select id="workorder-dropdown"></select>
 <button id="print-report" type="button">Print</button>
 

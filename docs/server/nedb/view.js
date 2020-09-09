@@ -22,6 +22,9 @@ const format2csv = (req, res, next) => {
   json.forEach((rec) => {
     Object.keys(rec).forEach((fld) => {
       if (rec[fld] === '') rec[fld] = '(---)';
+      if (fld[0] === '_' && Array.isArray(rec[fld])) {
+        rec[fld] = rec[fld].join(' ');
+      }
     })
   })
   return stringify(json,{header: true, columns: allHeaders, delimiter: '\t'})
@@ -32,7 +35,7 @@ module.exports =
   function view(req, res, next) {
   if (!req.poc2go.params) return next();
   if (req.poc2go.params.format === 'sheet') {
-    res.send('<pre>' + format2csv(req, res, next) + '</pre>')
+    res.send(format2csv(req, res, next));
     return;
   }   
 
