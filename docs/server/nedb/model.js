@@ -3,10 +3,6 @@ const schema = new config.Schema;
 const Nedb = require('nedb');
 var db = new Nedb({ filename: './databases/test.db', autoload: true, timestampData: true }); // localStoreage
 
-//module.exports = function () {
-  
-exports.read_schema = () => { return schema; }  
-  
 exports.DataRecord = class DataRecord {
   constructor() {}
 

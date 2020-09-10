@@ -29,11 +29,11 @@ const makeFindQry = (id) => {
 
 exports.get_schema = (req, res, next) => {
   req.poc2go.params = Object.assign({},req.params); 
-  res.poc2go.body = model.read_schema();
+  res.poc2go.body = [schema];
   next();
 }
 
-exports.get_all = (req, res, next) => {
+exports.get_qry = (req, res, next) => {
   req.poc2go.params = Object.assign({},req.params); 
   let id = makeFindQry(req.params.id);
   let dr = new model.DataRecord;
@@ -42,9 +42,37 @@ exports.get_all = (req, res, next) => {
   .catch((err) => {next(err);})
 }
 
+exports.put_qry = async (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
+  if (req.poc2go.params.format !== 'json') {
+    throw "Format for POST /{format}/qry must be 'json'"
+  }
+  let rec = req.body; 
+  let dbClass = makeDbClass(rec.type);
+  let dr = new model[dbClass];
+  let keys = Object.keys(rec);
+  for (const key in keys) { // remove any subdocs
+    if (Array.isArray(keys[key]) && key[0] !== '_') { delete keys[key]; }
+  }
+  dr.setData(rec);
+  await dr.update(rec);
+  dr = new model.DataRecord; // get record without subdocs
+  let upd = await dr.find(rec._id);
+  res.poc2go.body = upd[0];
+  next();
+}
+
+exports.post_qry = (req, res, next) => {
+  next();
+}
+exports.delete_qry = (req, res, next) => {
+  next();
+}
+
 exports.get_requested_type = (req, res, next) => {
   req.poc2go.params = Object.assign({},req.params); 
-  if (req.params.format === 'list') {get_list(req, res, next);}
+  if (res.poc2go.body) {next();}
+  else if (req.params.format === 'list') {get_list(req, res, next);}
   else if (req.params.format === 'sheet') {get_sheet(req, res, next);}
   else if (isType(req.params.type)) {
     let dbClass = makeDbClass(req.params.type);
@@ -112,7 +140,7 @@ exports.post_update = async (req, res, next) => {
       Object.keys(rec).forEach((fld) => {
         if (rec[fld] === '(---)') rec[fld] = '';
         if (fld !== '_id' && typeof schema[rec.type][fld] === 'undefined') delete rec[fld];
-        if (fld[0] === '_' && Array.isArray(schema[rec.type][fld])) rec[fld] = rec[fld].split(' ');
+        if (fld[0] === '_' && Array.isArray(schema[rec.type][fld])) rec[fld] = rec[fld].split(',');
       })
       let dbClass = makeDbClass(rec.type);
       let dr = new model[dbClass];

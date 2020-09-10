@@ -23,7 +23,7 @@ const format2csv = (req, res, next) => {
     Object.keys(rec).forEach((fld) => {
       if (rec[fld] === '') rec[fld] = '(---)';
       if (fld[0] === '_' && Array.isArray(rec[fld])) {
-        rec[fld] = rec[fld].join(' ');
+        rec[fld] = rec[fld].join(',');
       }
     })
   })
@@ -43,7 +43,9 @@ module.exports =
 
   if (typeof res.poc2go.body === 'undefined') { return next() }
   if (typeof res.poc2go.body === 'object') {
-    res.poc2go.body = JSON.stringify(res.poc2go.body, null, 2);
+    res.json(res.poc2go.body);
+    return;
+//    res.poc2go.body = JSON.stringify(res.poc2go.body, null, 2);
   }
   if (typeof res.poc2go.body === 'string') {
     res.format({
@@ -57,7 +59,7 @@ module.exports =
 
       // To-do: fix above so this works!
       'application/json': function () {
-        res.json(res.poc2go.body);
+        res.send(res.poc2go.body);
       },
 
       default: function () {

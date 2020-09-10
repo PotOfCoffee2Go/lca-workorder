@@ -12,8 +12,11 @@ const controller = require('./controller');
 	app.route('/:format/schema')
 		.get(controller.get_schema);
 
-	app.route('/:format/all/:id?')
-		.get(controller.get_all);
+	app.route('/:format/qry/:id?')
+		.get(controller.get_qry)  // read
+		.post(controller.post_qry) // insert
+		.put(controller.put_qry) // update
+		.delete(controller.delete_qry); // delete
 
 	app.route('/:format/:type/:id?')
 		.get(controller.get_requested_type);
