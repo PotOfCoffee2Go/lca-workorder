@@ -1,5 +1,15 @@
 # DB Grid
 
+::tx-center tx-1.5::
+<select id="company-dropdown"></select>
+<select id="aircraft-dropdown"></select>
+<select id="engine-dropdown"></select>
+
+::tx-center tx-1.5::<div>
+<select id="workorder-dropdown"></select>
+<select id="task-dropdown"></select>
+</div>
+
 ::tx-center::
 <button class="grid-content" value="company" type="button">Companies</button>
 <button class="grid-content" value="contact" type="button">Contacts</button>
@@ -10,21 +20,36 @@
 <button class="grid-content" value="associate" type="button">Associates</button>
 
 
-::div-jsGrid::
+::div-company::
+::div-contact::
+::div-aircraft::
+::div-engine::
+::div-workorder::
+::div-task::
+::div-associate::
 
 <script>
+  const dm = poc2go.dom;
+  const grids = [dm['company'], dm['contact'], dm['aircraft'], dm['engine'],
+    dm['workorder'], dm['task'], dm['associate']];
+
+  const forGrids = (fn) => { for (grid of grids) {fn(grid);} }
+
+  forGrids((grid) => {grid.style.display = 'none'});
+  
+  var btnFontSize;
   var grid;
   var curType = 'company';
   var recType = {
     company: {
       fields: [
             { name: 'name', title: 'Name', type: 'text', width: 100 },
-            { name: 'address', title: 'Address', type: 'text', width: 150 },
+            { name: 'address', title: 'Address', type: 'text', width: 100 },
             { name: 'city', title: 'City', type: 'text', width: 100 },
-            { name: 'state', title: 'State', type: 'text', width: 10 },
+            { name: 'state', title: 'State', type: 'text', width: 40 },
             { name: 'zip', title: 'Zip', type: 'text', width: 50 },
-            { name: 'phone', title: 'Phone', type: 'text', width: 80 },
-            { name: 'email', title: 'Email', type: 'text', width: 80 },
+            { name: 'phone', title: 'Phone', type: 'text', width: 70 },
+            { name: 'email', title: 'Email', type: 'text', width: 70 },
             { type: 'control' },
         ]
       },
@@ -57,9 +82,9 @@
             { name: 'name', title: 'Name', type: 'text', width: 100 },
             { name: 'model', title: 'Model', type: 'text', width: 100 },
             { name: 'make', title: 'Make', type: 'text', width: 100 },
+            { name: 'time_in_service', title: 'TIS', type: 'text', width: 80 },
             { name: 'serial_no', title: 'Serial Nbr', type: 'text', width: 100 },
             { name: 'registration_no', title: 'Reg Nbr', type: 'text', width: 100 },
-            { name: 'time_in_service', title: 'TIS', type: 'text', width: 80 },
             { name: 'time_since_overhaul', title: 'TSO', type: 'text', width: 80 },
             { type: 'control' },
         ]
@@ -78,7 +103,8 @@
     task: {
       fields: [
             { name: 'name', title: 'Name', type: 'text', width: 100 },
-            { name: 'discrepancy', title: 'Discrepancy', type: 'text', width: 100 },
+            { name: 'discrepancy', title: 'Discrepancy', type: 'textarea', width: 100 },
+            { name: 'corrective_action', title: 'Corrective Action', type: 'textarea', width: 100 },
             { name: 'removed_pn', title: 'Removed PN', type: 'text', width: 100 },
             { name: 'removed_sn', title: 'Removed SN', type: 'text', width: 100 },
             { name: 'installed_pn', title: 'Installed PN', type: 'text', width: 100 },
@@ -105,82 +131,152 @@
       },
   }
 
+const db = {
+  loadData: async (filter) => {
+    console.log('filter', filter);
+    let qry = JSON.stringify(setFilter({type: curType}, filter));
+    let response = await $.ajax({
+      url: `https://lca.ngrok.io/json/qry/${qry}`,
+      dataType: "json"
+    });
+    console.log(response);
+    return response;
+  },
+
+  insertItem: async (item) => {
+    item.type = curType;
+    let response = await $.ajax({
+      type: "POST",
+      url: `https://lca.ngrok.io/json/qry/{}`,
+      dataType: "json",
+      data: item
+    });
+    console.log('rsp insert',response);
+    updateLists(item);
+    return response[0];
+  },
+
+  updateItem: async (item) => {
+    let response = await $.ajax({
+      type: "PUT",
+      url: `https://lca.ngrok.io/json/qry/${item._id}`,
+      dataType: "json",
+      data: item
+    });
+    console.log('Update rsp', response);
+    return response[0];
+  },
+
+  deleteItem: async (item) => {
+    let response = await $.ajax({
+      type: "DELETE",
+      url: `https://lca.ngrok.io/json/qry/${item._id}`,
+      dataType: "json",
+      data: item
+    });
+    console.log('delete rsp', response);
+    return response;
+  },
+};
+
+const stdGrid = {
+  height: "auto",
+  width: "100%",
+
+  editing: true,
+  inserting: true,
+  filtering: true,
+  sorting: true,
+  paging: true,
+  autoload: false,
+  pageLoading:false,
+  controller: db,
+  fields: []
+};
+
 
 //      type: 'task', unscheduled: "" // TO-DO
 
-
   const buttons = document.querySelectorAll('.grid-content')
+  btnFontSize = buttons[1].style.fontSize;
   for (const button of buttons) {
     button.addEventListener('click', function(evt) {
       curType = evt.target.value;
-      $("#jsGrid").jsGrid("option", "fields", recType[curType].fields);
-      $("#jsGrid").jsGrid("loadData");
+//      $("#jsGrid").jsGrid("option", "fields", recType[curType].fields);
+//      $("#jsGrid").jsGrid("option", "inserting", true);
+      $(`#${curType}`).jsGrid("loadData");
       for (const btn of buttons) {
-        if (evt.target === btn) { btn.style.opacity = 1; }
-        else {  btn.style.opacity = .6; }
+        if (evt.target === btn) { btn.style.opacity = 1; btn.style.fontSize = '1.1em'; }
+        else {  btn.style.opacity = .6; btn.style.fontSize = btnFontSize; }
       }
-
+      forGrids((grid) => {grid.style.display = 'none'});
+      dm[curType].style.display = 'block';
     })
   }
 
 
+const setFields = (type) => {
+  return Object.assign({}, stdGrid, recType[type])
+};
+
+const setFilter = (stdQry, filter) => {
+  if (typeof filter.name === 'undefined') return stdQry;
+  for (const fld in filter) {if (!filter[fld]) delete filter[fld];}
+  console.log('new filter', filter);
+  return Object.assign({}, stdQry, filter);
+};
+
 
 $(function() {
+  forGrids((grid) => console.log(grid.id));
+  forGrids((grid) => $(`#${grid.id}`).jsGrid(setFields(grid.id)));
+  dm[curType].style.display = 'block';
  
-    $("#jsGrid").jsGrid({
-        height: "auto",
-        width: "100%",
- 
-        editing: true,
-//        inserting: true,
-        sorting: true,
-        paging: true,
-        autoload: true,
-        pageLoading:false,
-        controller: {
-            loadData: function() {
-                var d = $.Deferred();
- 
-                $.ajax({
-                    url: `https://lca.ngrok.io/json/qry/{"type": "${curType}"}`,
-                    dataType: "json"
-                }).done(function(response) {
-                  console.log(response)
-                    d.resolve( response );
-                });
- 
-                return d.promise();
-            },
-            updateItem: function(item) {
-                var d = $.Deferred();
- 
-                $.ajax({
-                    type: "PUT",
-                    url: `https://lca.ngrok.io/json/qry/${item._id}`,
-                    dataType: "json",
-                    data: item
-                }).done(function(response) {
-                  console.log(response)
-                    d.resolve( response );
-                });
-
-                return d.promise();
- 
-            },
-
-      },
- 
-
-          fields: recType[curType].fields,
-    });
   for (const button of buttons) {
-    if (button.value === curType) { button.style.opacity = 1; }
+    if (button.value === curType) { button.style.opacity = 1; button.style.fontSize = '1.1em'; }
   }
 });
+
+const listAll = (type) => {
+poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/${type}`)
+  .then(data => {
+  let options = [`<option value="none">(unassigned)</option>`];
+  for (const item of data) {
+    options.push(`<option value="${item._id}">${item.name}</option>`);
+  }
+  poc2go.dom[`${type}-dropdown`].innerHTML = options.join('\n');
+})
+}
+
+const updateLists = (item) => {
+  if (!item.type) return;
+  let drpdwn = dm[`${item.type}-dropdown`]; if (!drpdwn) return;
+  var option = document.createElement("option");
+  option.text = item.name;
+  drpdwn.options.add(option);
+  if (drpdwn.value === 'none') drpdwn.value = item.name;
+}
+
+listAll('company');
+listAll('aircraft');
+listAll('engine');
+listAll('workorder');
+listAll('task');
+
+
+
 </script>
 
 
 <style>
+engine-dropdown { padding-top: 1em; }
+
+textarea {
+  position: relative;
+/*  z-index: 50; */
+  overflow-y: scroll;
+}
+
 /*
  * jsGrid v1.5.3 (http://js-grid.com)
  * (c) 2016 Artem Tabalin
@@ -311,7 +407,7 @@ $(function() {
 }
 
 .jsgrid-insert-row > .jsgrid-cell {
-    background: #e3ffe5;
+    background: #1a3636;
 }
 
 .jsgrid-edit-row > .jsgrid-cell {

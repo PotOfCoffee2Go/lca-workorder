@@ -42,7 +42,7 @@ exports.get_qry = (req, res, next) => {
   .catch((err) => {next(err);})
 }
 
-exports.put_qry = async (req, res, next) => {
+exports.post_qry = async (req, res, next) => {
   req.poc2go.params = Object.assign({},req.params); 
   if (req.poc2go.params.format !== 'json') {
     throw "Format for POST /{format}/qry must be 'json'"
@@ -55,17 +55,49 @@ exports.put_qry = async (req, res, next) => {
     if (Array.isArray(keys[key]) && key[0] !== '_') { delete keys[key]; }
   }
   dr.setData(rec);
-  await dr.update(rec);
+  let ins = await dr.insert(rec);
   dr = new model.DataRecord; // get record without subdocs
-  let upd = await dr.find(rec._id);
-  res.poc2go.body = upd[0];
+  let upd = await dr.find({ _id: ins[0]._id, type: ins[0].type });
+  res.poc2go.body = upd;
+  console.log('uuu',upd);
   next();
 }
 
-exports.post_qry = (req, res, next) => {
+exports.put_qry = async (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
+  if (req.poc2go.params.format !== 'json') {
+    throw "Format for PUT /{format}/qry must be 'json'"
+  }
+  let rec = req.body; 
+  let dbClass = makeDbClass(rec.type);
+  let dr = new model[dbClass];
+  let keys = Object.keys(rec);
+  for (const key in keys) { // remove any subdocs
+    if (Array.isArray(keys[key]) && key[0] !== '_') { delete keys[key]; }
+  }
+  dr.setData(rec);
+  await dr.update(rec);
+  dr = new model.DataRecord; // get record without subdocs
+  let upd = await dr.find(rec._id);
+  res.poc2go.body = upd;
   next();
 }
-exports.delete_qry = (req, res, next) => {
+
+exports.delete_qry = async (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
+  if (req.poc2go.params.format !== 'json') {
+    throw "Format for PUT /{format}/qry must be 'json'"
+  }
+  let rec = req.body; 
+  let dbClass = makeDbClass(rec.type);
+  let dr = new model[dbClass];
+  let keys = Object.keys(rec);
+  for (const key in keys) { // remove any subdocs
+    if (Array.isArray(keys[key]) && key[0] !== '_') { delete keys[key]; }
+  }
+  dr.setData(rec);
+  let rmv = await dr.remove(rec._id);
+  res.poc2go.body = rmv;
   next();
 }
 

@@ -68,6 +68,14 @@ exports.DataRecord = class DataRecord {
     return err;
   }
 
+  isNotRemoved(id, dbrecType) {
+    let err = new Error();
+    err.message = 'Not removed! DB returned 0 records removed.';
+    err.key =  '';
+    err.errorType = 'NotRemoved';
+    return err;
+  }
+
   isInvalidType(id, got, needed) {
     let err = new Error();
     err.message = `Not asssigned! Invalid record type '${got}'! needed '${needed}'.`;
@@ -122,7 +130,23 @@ exports.DataRecord = class DataRecord {
       })
     }) // Promise
   }
-  
+
+  remove() {
+    return new Promise((resolve, reject) => {
+      if (!this._id) {return reject(this.hasNoRecordId())}
+      let qryRemove = { _id: this._id };
+      this.removeSubDocs(); // get rid of subdoc data - just keep the keys
+      let qrySet = { $set: this };
+      db.remove(qryRemove, {}, (err, numRemoved) => {
+        if (!err && numRemoved === 0) err = this.isNotRemoved(this._id, numReplaced);
+        if (err) {return reject(err);}
+        this.find(this._id)
+          .then((dbRec) => resolve(dbRec));
+      })
+    }) // Promise
+  }
+
+
   change(fields) {
     return new Promise((resolve, reject) => {
       Object.assign(this, fields);

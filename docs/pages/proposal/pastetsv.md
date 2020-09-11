@@ -33,56 +33,6 @@ button {
 
 <script>
 
-const listAllCompanies = () => {
-poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/company`)
-.then(data => {
-  let options = [`<option value="workorders">(select company or workorder)</option>`];
-  for (const item of data) {
-    options.push(`<option value="${item._id}">${item.name}</option>`);
-  }
-  poc2go.dom['company-dropdown'].innerHTML = options.join('\n');
-})
-}
-
-const listAllWorkorders = () => {
-poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/workorder`)
-  .then(data => {
-  let options = [`<option value="companies">(company)</option>`];
-  for (const item of data) {
-    options.push(`<option value="${item._id}">${item.name}</option>`);
-  }
-  poc2go.dom['workorder-dropdown'].innerHTML = options.join('\n');
-})
-}
-
-const changeCompany = (value) => {
-  if (value === 'workorders') return listAllWorkorders();
-  poc2go.fetch.text(`${poc2go.config.lca.workorderDb}sheet/company/${value}`)
-  .then((content) => {
-    poc2go.dom['tsv-data'].value = content;
-    let options = [`<option value="companies">(company)</option>`];
-    let lines = content.split('\n');
-    for (const line of lines) {
-	  let fields = line.split('\t');
-	  if (fields[2] === 'workorder') {
-		options.push(`<option value="${fields[1]}">${fields[3]}</option>`);
-	  }
-	}
-	poc2go.dom['workorder-dropdown'].innerHTML = options.join('\n');
-  })
-}
-
-const changeWorkorder = (value) => {
-  if (value === 'companies') {
-    changeCompany(poc2go.dom['company-dropdown'].value);
-    return;	
-  }
-  poc2go.fetch.text(`${poc2go.config.lca.workorderDb}sheet/workorder/${value}`)
-  .then((content) => {
-    poc2go.dom['tsv-data'].value = content;
-  })
-}
-
 poc2go.dom['company-dropdown'].addEventListener("change", (evt) => {
   changeCompany(evt.target.value);
 }, false);
@@ -94,11 +44,6 @@ poc2go.dom['workorder-dropdown'].addEventListener("change", (evt) => {
 
   poc2go.dom['submit-db'].addEventListener('click', (event) => {
 	let value = poc2go.dom['tsv-data'].value;
-	//.replace(/"/g,"'");
-	
-	//.replace(/""/g,'"')
-	//  .replace(/"/g,'""').replace(/\["/g,'"["').replace(/"\]/g,'"]"');
-//	  console.log(value);
     postText(`${poc2go.config.lca.workorderDb}sheet/update`, value)
     .then(txt => poc2go.dom['tsv-data'].value = txt)
   }, false);
@@ -122,7 +67,71 @@ poc2go.dom['workorder-dropdown'].addEventListener("change", (evt) => {
     return response.text();//.json(); // parses JSON response into native JavaScript objects
   }
 
+// --------
+
+
+const listAllCompanies = () => {
+poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/company`)
+.then(data => {
+  let options = [`<option value="workorders">(select company or workorder)</option>`];
+  for (const item of data) {
+    options.push(`<option value="${item._id}">${item.name}</option>`);
+  }
+  poc2go.dom['company-dropdown'].innerHTML = options.join('\n');
+})
+}
+
+const listAllAircraft = () => {
+poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/aircraft`)
+  .then(data => {
+  let options = [`<option value="none">(Not selected)</option>`];
+  for (const item of data) {
+    options.push(`<option value="${item._id}">${item.name}</option>`);
+  }
+  poc2go.dom['aircraft-dropdown'].innerHTML = options.join('\n');
+})
+}
+
+const listAllWorkorders = () => {
+poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/workorder`)
+  .then(data => {
+  let options = [`<option value="companies">(company)</option>`];
+  for (const item of data) {
+    options.push(`<option value="${item._id}">${item.name}</option>`);
+  }
+  poc2go.dom['workorder-dropdown'].innerHTML = options.join('\n');
+})
+}
+
+const changeCompany = (value) => {
+  if (value === 'workorders') return listAllWorkorders();
+  poc2go.fetch.text(`${poc2go.config.lca.workorderDb}sheet/company/${value}`)
+  .then((content) => {
+    let options = [`<option value="companies">(company)</option>`];
+    let lines = content.split('\n');
+    for (const line of lines) {
+	  let fields = line.split('\t');
+	  if (fields[2] === 'workorder') {
+		options.push(`<option value="${fields[1]}">${fields[3]}</option>`);
+	  }
+	}
+	poc2go.dom['workorder-dropdown'].innerHTML = options.join('\n');
+  })
+}
+
+const changeWorkorder = (value) => {
+  if (value === 'companies') {
+    changeCompany(poc2go.dom['company-dropdown'].value);
+    return;	
+  }
+  poc2go.fetch.text(`${poc2go.config.lca.workorderDb}sheet/workorder/${value}`)
+  .then((content) => {
+    poc2go.dom['tsv-data'].value = content;
+  })
+}
+
 listAllCompanies();
+listAllAircraft();
 listAllWorkorders();
 
 </script>
