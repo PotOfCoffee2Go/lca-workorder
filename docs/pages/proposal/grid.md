@@ -1,22 +1,30 @@
 # DB Grid
 
-::tx-center tx-1.5::
-<select id="company-dropdown"></select>
-<select id="aircraft-dropdown"></select>
-<select id="engine-dropdown"></select>
+&nbsp;
 
-::tx-center tx-1.5::<div>
-<select id="workorder-dropdown"></select>
+::tx-center tx-1.5 cl-drpdown::<div>
+Company <select id="company-dropdown"></select>
+<select id="aircraft-dropdown"></select> Aircraft
+</div>
+
+::tx-center tx-1.5 cl-drpdown::<div>
+Contacts <select id="contact-dropdown"></select>
+<select id="engine-dropdown"></select> Engines
+</div>
+
+::tx-center tx-1.5 cl-drpdown::<div>
+Work Orders <select id="workorder-dropdown"></select>
 <select id="task-dropdown"></select>
+<select id="associate-dropdown"></select>
 </div>
 
 ::tx-center::
 <button class="grid-content" value="company" type="button">Companies</button>
+<button class="grid-content" value="aircraft" type="button">Aircraft</button>
 <button class="grid-content" value="contact" type="button">Contacts</button>
+<button class="grid-content" value="engine" type="button">Engines</button>
 <button class="grid-content" value="workorder" type="button">Work Orders</button>
 <button class="grid-content" value="task" type="button">Tasks</button>
-<button class="grid-content" value="aircraft" type="button">Aircrafts</button>
-<button class="grid-content" value="engine" type="button">Engines</button>
 <button class="grid-content" value="associate" type="button">Associates</button>
 
 
@@ -30,6 +38,7 @@
 
 <script>
   const dm = poc2go.dom;
+  const active = { company: {} };
   const grids = [dm['company'], dm['contact'], dm['aircraft'], dm['engine'],
     dm['workorder'], dm['task'], dm['associate']];
 
@@ -164,6 +173,7 @@ const db = {
       data: item
     });
     console.log('Update rsp', response);
+    updateLists(item);
     return response[0];
   },
 
@@ -191,9 +201,80 @@ const stdGrid = {
   autoload: false,
   pageLoading:false,
   controller: db,
-  fields: []
+  fields: [],
+  onItemEditing: (args) => {
+    dm[`${args.item.type}-dropdown`].value = args.item._id;
+    console.log('editing ', args.item.type, args.item.name);
+    if (args.item.type === 'company') fetchCompany(args.item._id);
+  }
+
 };
 
+  const selects = document.querySelectorAll('select');
+  for (const select of selects) {
+    select.addEventListener('change', function(evt) {
+      let type = evt.target.id.split('-')[0];
+      let id = evt.target.value;
+      if (!id) return resetToAll();
+      if (type === 'company') {
+        fetchCompany(evt.target.value) 
+      }
+    
+      if (type === 'aircraft') {
+        let el = active.company.aircrafts.filter((item) => id === item._id);
+        if (el.length) { active.aircraft = el[0]; setEngineOpts(el[0]); }
+        else { active.aircraft = {engines: []}; setEngineOpts({ engines: [] }) }
+      }
+      if (type === 'engine') {
+        let el = active.aircraft.engines.filter((item) => id === item._id);
+        if (el.length) { active.engine = el[0]; /* setEngineOpts(el[0]);*/ }
+        else { active.engine = {}; /* setEngineOpts({ engines: [] }); */ }
+      }
+      if (type === 'workorder') {
+        let el = active.company.workorders.filter((item) => id === item._id);
+        if (el.length) { active.workorder = el[0]; setTaskOpts(el[0]); }
+        else { active.workorder = {tasks: []}; setTaskOpts({tasks: []}); }
+      }
+      if (type === 'task') {
+        let el = active.workorder.tasks.filter((item) => id === item._id);
+        if (el.length) { active.task = el[0]; setAssociateOpts(el[0]); }
+        else { active.task = {associates: []}; setAssociateOpts({associates: []}); }
+      }
+/*
+    let selected = {};
+    forGrids((grid) => {
+      selected[grid.id] = { id: dm[`${}-dropdown`].value, active:{}};
+      if (grid.id === 'workorder') {
+        selected['workorder'] = company.workorders.filter((item) => selected['workorder'].id === item.id)
+      }
+      if (grid.id === 'contact') {
+        selected['contact'] = company.contacts.filter((item) => selected['contact'].id === item.id)
+      }
+    }
+
+
+    
+    setAircraftOpts(selected[active);
+    setWorkorderOpts(company);
+    setContactOpts(company);
+    setEngineOpts(company.aircrafts.length ? company.aircrafts[0] : []);
+    setTaskOpts(company.workorders.length ? company.workorders[0] : []);
+    let assoc = {associates:[]};
+    if (company.workorders.length && company.workorders[0].tasks.length)
+      assoc = company.workorders[0].tasks[0];
+    setAssociateOpts(assoc);
+
+    forGrids((grid) => {
+      if (grid.id !== 'company' && dm[`${grid.id}-dropdown`].options.length > 1) {
+        dm[`${grid.id}-dropdown`].value = dm[`${grid.id}-dropdown`].options[1].value;
+      }
+    })
+*/
+
+
+
+    }, false)
+  }
 
 //      type: 'task', unscheduled: "" // TO-DO
 
@@ -202,8 +283,6 @@ const stdGrid = {
   for (const button of buttons) {
     button.addEventListener('click', function(evt) {
       curType = evt.target.value;
-//      $("#jsGrid").jsGrid("option", "fields", recType[curType].fields);
-//      $("#jsGrid").jsGrid("option", "inserting", true);
       $(`#${curType}`).jsGrid("loadData");
       for (const btn of buttons) {
         if (evt.target === btn) { btn.style.opacity = 1; btn.style.fontSize = '1.1em'; }
@@ -211,7 +290,7 @@ const stdGrid = {
       }
       forGrids((grid) => {grid.style.display = 'none'});
       dm[curType].style.display = 'block';
-    })
+    }, false)
   }
 
 
@@ -222,7 +301,6 @@ const setFields = (type) => {
 const setFilter = (stdQry, filter) => {
   if (typeof filter.name === 'undefined') return stdQry;
   for (const fld in filter) {if (!filter[fld]) delete filter[fld];}
-  console.log('new filter', filter);
   return Object.assign({}, stdQry, filter);
 };
 
@@ -240,7 +318,7 @@ $(function() {
 const listAll = (type) => {
 poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/${type}`)
   .then(data => {
-  let options = [`<option value="none">(unassigned)</option>`];
+  let options = [`<option value=""></option>`];
   for (const item of data) {
     options.push(`<option value="${item._id}">${item.name}</option>`);
   }
@@ -254,22 +332,140 @@ const updateLists = (item) => {
   var option = document.createElement("option");
   option.text = item.name;
   drpdwn.options.add(option);
-  if (drpdwn.value === 'none') drpdwn.value = item.name;
+  if (drpdwn.value === '') {
+    assignItem(item);
+    drpdwn.value = item.name;
+  }
 }
 
-listAll('company');
-listAll('aircraft');
-listAll('engine');
-listAll('workorder');
-listAll('task');
+const assignItem = async (item) => {
+  if (['aircraft', 'workorder'].includes(item.type) && active.company._id) 
+    item._company = active.company._id;
+  if (['engine', 'workorder'].includes(item.type) && active.aircraft._id)
+    item._aircraft = active.aircraft._id;
+  if ('task' === item.type) {
+    if (active.workorder._id) item._workorder = active.workorder._id;
+    if (active.engine._id) item._engine = active.engine._id;
+  }
+  if ('contact' === item.type && active.company) {
+      active.company._contacts.push(item._id);
+      active.task._contacts = Array.from(new Set(active.task._contacts))
+      await db.updateItem(active.company);
+  }
+  if ('associate' === item.type && active.task)  {
+      active.task._associates.push(item._id);
+      active.task._associates = Array.from(new Set(active.task._associates))
+      await db.updateItem(active.task);
+  }
+  await db.updateItem(item);
+  await fetchCompany(active.company._id);
+}
 
+const setAircraftOpts = (company) => {
+  let options = [`<option value=""></option>`];;
+  for (const el of company.aircrafts) {
+      options.push(`<option value="${el._id}">${el.name}</option>`);
+  }
+  dm['aircraft-dropdown'].innerHTML = options;
+}
+const setWorkorderOpts = (company) => {
+  let options = [`<option value=""></option>`];;
+  for (const el of company.workorders) {
+      options.push(`<option value="${el._id}">${el.name}</option>`);
+  }
+  dm['workorder-dropdown'].innerHTML = options;
+}
+const setContactOpts = (company) => {
+  let options = [`<option value=""></option>`];;
+  for (const el of company.contacts) {
+      options.push(`<option value="${el._id}">${el.name}</option>`);
+  }
+  dm['contact-dropdown'].innerHTML = options;
+}
+const setEngineOpts = (aircraft) => {
+  let options = [`<option value=""></option>`];;
+  for (const el of aircraft.engines) {
+      options.push(`<option value="${el._id}">${el.name}</option>`);
+  }
+  dm['engine-dropdown'].innerHTML = options;
+}
+const setTaskOpts = (workorder) => {
+  let options = [`<option value=""></option>`];;
+  for (const el of workorder.tasks) {
+      options.push(`<option value="${el._id}">${el.name}</option>`);
+  }
+  dm['task-dropdown'].innerHTML = options;
+}
+const setAssociateOpts = (task) => {
+  let options = [`<option value=""></option>`];;
+  for (const el of task.associates) {
+      options.push(`<option value="${el._id}">${el.name}</option>`);
+  }
+  dm['associate-dropdown'].innerHTML = options;
+}
 
+const fetchCompany = (id) => {
+poc2go.fetch.json(`${poc2go.config.lca.workorderDb}json/company/${id}`)
+  .then(data => {
+    console.log(JSON.stringify(data, null, 2));
+    let company = active.company = data[0];
+    dm['company-dropdown'].value = company._id;
+
+    setAircraftOpts(company);
+    setWorkorderOpts(company);
+    setContactOpts(company);
+    setEngineOpts({engines:[]});
+    setTaskOpts({tasks:[]});
+    setAssociateOpts({associates:[]});
+//    setEngineOpts(company.aircrafts.length ? company.aircrafts[0] : []);
+//    setTaskOpts(company.workorders.length ? company.workorders[0] : []);
+//    let assoc = {associates:[]};
+//    if (company.workorders.length && company.workorders[0].tasks.length)
+//      assoc = company.workorders[0].tasks[0];
+//    setAssociateOpts(assoc);
+/*
+    forGrids((grid) => {
+      if (grid.id !== 'company' && dm[`${grid.id}-dropdown`].options.length > 1) {
+        dm[`${grid.id}-dropdown`].value = dm[`${grid.id}-dropdown`].options[1].value;
+      }
+    })
+*/
+
+/*    
+    for (const sel of grids) {
+      active[sel.id]._id = '';
+      if (sel.id === 'company') active['company']._id = dm['company-dropdown'].value;
+      if (sel.id !== 'company' && dm[`${sel.id}-dropdown`].options.length > 1) {
+        dm[`${sel.id}-dropdown`].value = dm[`${sel.id}-dropdown`].options[1].value;
+        active[sel.id]._id = dm[`${sel.id}-dropdown`].options[1].value;
+      }
+    }
+    for (const workorder of company.workorders) {
+      for (const task of workorder.tasks) {
+        if (task._id === active['task']._id) active['task'] = task;
+      }
+    }
+*/    console.log('active', active);
+  })
+}
+
+const resetToAll = () => {
+  listAll('company');
+  listAll('contact');
+  listAll('aircraft');
+  listAll('engine');
+  listAll('workorder');
+  listAll('task');
+  listAll('associate');
+}
+
+resetToAll();
 
 </script>
 
 
 <style>
-engine-dropdown { padding-top: 1em; }
+.drpdown { padding-top: .5em; }
 
 textarea {
   position: relative;
@@ -411,7 +607,7 @@ textarea {
 }
 
 .jsgrid-edit-row > .jsgrid-cell {
-    background: gray;
+    background: #506473;
 }
 
 .jsgrid-selected-row > .jsgrid-cell {

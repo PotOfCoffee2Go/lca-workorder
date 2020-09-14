@@ -46,7 +46,7 @@ exports.Schema = class Schema {
       corrective_action: '', installed_pn: '', installed_sn: '',
       time: '', corrected_by: '', inspected_by: '',
       notes: '',
-      _workorder: '',  _associates: [],
+      _workorder: '',  _engine: '', _associates: [],
       },
     workorder: {
       type: 'workorder',
