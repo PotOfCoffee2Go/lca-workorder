@@ -38,7 +38,7 @@ Work Orders <select id="workorder-dropdown"></select>
 
 <script>
   const dm = poc2go.dom;
-  const active = { company: {} };
+  const active = {company: {}};
   const grids = [dm['company'], dm['contact'], dm['aircraft'], dm['engine'],
     dm['workorder'], dm['task'], dm['associate']];
 

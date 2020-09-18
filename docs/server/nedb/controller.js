@@ -158,7 +158,7 @@ const format2json = (req, res, next) => {
 }
 
 
-exports.post_update = async (req, res, next) => {
+exports.post_sheet_update = async (req, res, next) => {
   req.poc2go.params = Object.assign({},req.params); 
   req.poc2go.params.format = 'sheet';
   let curCo = {}, curWo = {};
@@ -188,25 +188,6 @@ exports.post_update = async (req, res, next) => {
 }
 
 
- /* 
-  if (isType(req.params.type)) {
-    let dbClass = 'DataRecord'; // Get records without subdocs
-    let id = makeFindQry(req.params.id);
-    let dr = new model[dbClass];
-    dr.find(id)
-    .then((recs) => {
-      let rec = recs[0];
-      Object.keys(rec).forEach((key) => {
-      if (key[0] === '_') {}
-      
-      })
-    })
-    .catch((err) => {next(err);})
-  }
-  else {next();}
-}
-    
-*/
 return;
 
 let ccon = new cl.Contact;

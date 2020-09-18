@@ -6,6 +6,8 @@
 
 <textarea id="tsv-data" class="editBoxes" type="textarea" cols="30" rows="5" wrap="hard"> </textarea>
 
+<button id="btn-copy">Copy</button>
+
 <style>
 
 .editBoxes {
@@ -32,6 +34,23 @@ button {
 </style>
 
 <script>
+poc2go.dom['btn-copy'].addEventListener("click", (evt) => {
+  var copyText = poc2go.dom['tsv-data'];
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+  document.execCommand("copy");
+  poc2go.dom['btn-copy'].innerHTML = 'Copied!';
+  setTimeout(()=> {
+    poc2go.dom['btn-copy'].innerHTML = 'Copy';
+    copyText.setSelectionRange(0,0);
+  }, 1000);
+})
+
+poc2go.dom['tsv-data'].addEventListener("paste", (evt) => {
+  var copyText = poc2go.dom['tsv-data'];
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+}, true);
 
 poc2go.dom['company-dropdown'].addEventListener("change", (evt) => {
   changeCompany(evt.target.value);
@@ -42,11 +61,11 @@ poc2go.dom['workorder-dropdown'].addEventListener("change", (evt) => {
 }, false);
 
 
-  poc2go.dom['submit-db'].addEventListener('click', (event) => {
-	let value = poc2go.dom['tsv-data'].value;
-    postText(`${poc2go.config.lca.workorderDb}sheet/update`, value)
-    .then(txt => poc2go.dom['tsv-data'].value = txt)
-  }, false);
+poc2go.dom['submit-db'].addEventListener('click', (event) => {
+let value = poc2go.dom['tsv-data'].value;
+  postText(`${poc2go.config.lca.workorderDb}sheet/update`, value)
+  .then(txt => poc2go.dom['tsv-data'].value = txt)
+}, false);
 
   async function postText(url, data = '') {
     // Default options are marked with *
@@ -107,12 +126,14 @@ const changeCompany = (value) => {
   if (value === 'workorders') return listAllWorkorders();
   poc2go.fetch.text(`${poc2go.config.lca.workorderDb}sheet/company/${value}`)
   .then((content) => {
+  console.log('company value', value);
+    poc2go.dom['tsv-data'].value = content;
     let options = [`<option value="companies">(company)</option>`];
     let lines = content.split('\n');
     for (const line of lines) {
-	  let fields = line.split('\t');
-	  if (fields[2] === 'workorder') {
-		options.push(`<option value="${fields[1]}">${fields[3]}</option>`);
+      let fields = line.split('\t');
+      if (fields[2] === 'workorder') {
+      options.push(`<option value="${fields[1]}">${fields[3]}</option>`);
 	  }
 	}
 	poc2go.dom['workorder-dropdown'].innerHTML = options.join('\n');
@@ -131,7 +152,7 @@ const changeWorkorder = (value) => {
 }
 
 listAllCompanies();
-listAllAircraft();
+//listAllAircraft();
 listAllWorkorders();
 
 </script>

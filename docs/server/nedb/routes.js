@@ -22,7 +22,7 @@ const controller = require('./controller');
     .get(controller.get_requested_type);
 
   app.route('/sheet/update')
-    .post(controller.post_update);
+    .post(controller.post_sheet_update);
 
 
 //    .put(controller.update_a_task)

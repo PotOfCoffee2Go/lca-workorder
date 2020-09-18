@@ -351,6 +351,8 @@ exports.Task = class Task extends exports.DataRecord {
       await Promise.all([
           (new exports.Associate).find(task._associates)
             .then((sdocs) => {task.associates = sdocs}),
+        (new exports.Engine).find({ _id: task._engine, type: 'engine' })
+          .then((sdocs) => {task.engines = sdocs}),
         ])
         .then(()=>tasks.push(task))
         .catch((err) => reject(err));
@@ -365,6 +367,18 @@ exports.Task = class Task extends exports.DataRecord {
         return reject(this.isInvalidType(dbrec._id, dbrec.type, 'workorder'));
       }
       this._workorder = dbrec._id;
+      this.update()
+        .then(() => dbrec.update())
+        .then(() => resolve(this));
+    })
+  }
+
+  assignEngine(dbrec) {
+    return new Promise((resolve, reject) => {
+      if (dbrec.type !== 'engine') {
+        return reject(this.isInvalidType(dbrec._id, dbrec.type, 'engine'));
+      }
+      this._engine = dbrec._id;
       this.update()
         .then(() => dbrec.update())
         .then(() => resolve(this));

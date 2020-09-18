@@ -10,10 +10,14 @@ const // helpers
   isFormat = (format) => formats.indexOf(format) > -1 ? true : false,
   unique = (value, index, self) => { return self.indexOf(value) === index; };
 
-var allHeaders = ['_', '_id'];
+var allHeaders = ['_id'];
 (function () {
   types.forEach((type) => {allHeaders = allHeaders.concat(Object.keys((new config.Schema)[type]))})
   allHeaders = allHeaders.filter(unique);
+  let allUnderbars = allHeaders.filter((header) => header[0] === '_');
+  allHeaders = allHeaders.filter((header) => header[0] !== '_');
+  allHeaders = allHeaders.concat(allUnderbars);
+  allHeaders.unshift('_');
 })();
 
 const format2csv = (req, res, next) => {
