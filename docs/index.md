@@ -10,6 +10,7 @@
 
 ## pages/flotsam
   - [Test post to DB](?md=pages/flotsam/posttest.md)
+  - [Format records as dropdown tree](?md=pages/flotsam/tree.md)
 
 ## pages/proposal
   - [LCA Work Order System](?md=pages/proposal/database.md)
@@ -24,6 +25,7 @@
 
 ## pages/reports
   - [Log Entries Report](?md=pages/reports/logentries.md)
+  - [Work Order Form](?md=pages/reports/workorderform.md)
 
 ## server/calendar
   - [Calendar Event Scheduler](?md=server/calendar/event.md)

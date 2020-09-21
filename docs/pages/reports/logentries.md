@@ -10,7 +10,7 @@ Select a work order to print:
 ----
 
 <script>
-poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/workorder`)
+poc2go.fetch.json(`${poc2go.config.lca.db}/list/workorder`)
 .then(data => {
   let options = [];
   for (const item of data) {
@@ -32,7 +32,7 @@ poc2go.dom['print-report'].addEventListener("click", () => {
 poc2go.dom['workorder-dropdown'].addEventListener("change", (evt) => {
   poc2go.fetch.text('pages/reports/LogEntries.html')
   .then((content) => {
-    poc2go.fetch.json(`${poc2go.config.lca.workorderDb}json/workorder/${evt.target.value}`)
+    poc2go.fetch.json(`${poc2go.config.lca.db}/json/workorder/${evt.target.value}`)
     .then((data) => {
       data = data[0];
       let placeholders = content.match(/\{\{.*\}\}/g);

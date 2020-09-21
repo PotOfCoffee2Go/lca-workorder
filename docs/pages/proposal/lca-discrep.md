@@ -7,3 +7,6 @@
   
 A test with background color added and text.
   - [A test document](svg/LCA_Discrepancy_Form_Rev_2_pg_1_test.svg)
+
+Test of text insertion
+  - [plain_LCA_WO_Form_rev_2](svg/plain_LCA_WO_Form_rev_2.svg)

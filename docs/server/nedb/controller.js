@@ -6,6 +6,7 @@ const // helpers
   schema = new config.Schema,
   types = Object.keys(schema),
   _subdocs = config._subdocs,
+  _required = config._required,
   isType = (type) => types.indexOf(type) > -1 ? true : false,
   makeDbClass = (type) => type[0].toUpperCase() + type.substr(1);
 
@@ -25,6 +26,12 @@ const makeFindQry = (id) => {
     })
   }
   return findQry;
+}
+
+const verify_required = (rec) => {
+  
+
+  return true;
 }
 
 exports.get_schema = (req, res, next) => {
@@ -55,11 +62,17 @@ exports.post_qry = async (req, res, next) => {
     if (Array.isArray(keys[key]) && key[0] !== '_') { delete keys[key]; }
   }
   dr.setData(rec);
-  let ins = await dr.insert(rec);
-  dr = new model.DataRecord; // get record without subdocs
-  let upd = await dr.find({ _id: ins[0]._id, type: ins[0].type });
-  res.poc2go.body = upd;
-  console.log('uuu',upd);
+  if (!verify_required(rec)) {
+    res.poc2go.body = rec;
+    res.poc2go.error = new Error('Missing required field');
+  }
+  else {
+    let ins = await dr.insert(rec);
+    dr = new model.DataRecord; // get record without subdocs
+    let upd = await dr.find({ _id: ins[0]._id, type: ins[0].type });
+    res.poc2go.body = upd;
+    console.log('uuu',upd);
+  }
   next();
 }
 

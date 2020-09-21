@@ -106,7 +106,7 @@
       projection: projection ? projection : { _id : 1, name: 1 },
     }
 
-    postData(poc2go.config.lca.workorderDb, apireq)
+    postData(poc2go.config.lca.db, apireq)
     .then(data => {
       ns.list[type] = {};
       ns.list[type].recs = data;

@@ -63,7 +63,7 @@ poc2go.dom['workorder-dropdown'].addEventListener("change", (evt) => {
 
 poc2go.dom['submit-db'].addEventListener('click', (event) => {
 let value = poc2go.dom['tsv-data'].value;
-  postText(`${poc2go.config.lca.workorderDb}sheet/update`, value)
+  postText(`${poc2go.config.lca.db}/sheet/update`, value)
   .then(txt => poc2go.dom['tsv-data'].value = txt)
 }, false);
 
@@ -90,7 +90,7 @@ let value = poc2go.dom['tsv-data'].value;
 
 
 const listAllCompanies = () => {
-poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/company`)
+poc2go.fetch.json(`${poc2go.config.lca.db}/list/company`)
 .then(data => {
   let options = [`<option value="workorders">(select company or workorder)</option>`];
   for (const item of data) {
@@ -101,7 +101,7 @@ poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/company`)
 }
 
 const listAllAircraft = () => {
-poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/aircraft`)
+poc2go.fetch.json(`${poc2go.config.lca.db}/list/aircraft`)
   .then(data => {
   let options = [`<option value="none">(Not selected)</option>`];
   for (const item of data) {
@@ -112,7 +112,7 @@ poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/aircraft`)
 }
 
 const listAllWorkorders = () => {
-poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/workorder`)
+poc2go.fetch.json(`${poc2go.config.lca.db}/list/workorder`)
   .then(data => {
   let options = [`<option value="companies">(company)</option>`];
   for (const item of data) {
@@ -123,8 +123,11 @@ poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/workorder`)
 }
 
 const changeCompany = (value) => {
-  if (value === 'workorders') return listAllWorkorders();
-  poc2go.fetch.text(`${poc2go.config.lca.workorderDb}sheet/company/${value}`)
+  if (value === 'workorders') {
+    poc2go.dom['tsv-data'].value = '';
+    return listAllWorkorders();
+  }
+  poc2go.fetch.text(`${poc2go.config.lca.db}/sheet/company/${value}`)
   .then((content) => {
   console.log('company value', value);
     poc2go.dom['tsv-data'].value = content;
@@ -145,7 +148,7 @@ const changeWorkorder = (value) => {
     changeCompany(poc2go.dom['company-dropdown'].value);
     return;	
   }
-  poc2go.fetch.text(`${poc2go.config.lca.workorderDb}sheet/workorder/${value}`)
+  poc2go.fetch.text(`${poc2go.config.lca.db}/sheet/workorder/${value}`)
   .then((content) => {
     poc2go.dom['tsv-data'].value = content;
   })

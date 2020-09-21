@@ -1,6 +1,11 @@
 // Order on worksheets
 exports._subdocs = ['contacts', 'aircrafts', 'engines',
       'workorders', 'tasks', 'associates', 'company']      
+
+exports._required = { company: [], contact: [], associate: [],
+  aircraft: ['_company'], engine: ['_aircraft'], 
+  workorder:['_company', '_aircraft'], task: ['_workorder']
+}
       
 exports.Schema = class Schema {
   constructor() {this.init();}
@@ -53,6 +58,7 @@ exports.Schema = class Schema {
       name: '', workorder_no: '', date: '', preliminary_inspection: '',
       hidden_damage_inspection: '', in_progress_inspection: '',
       start_date: '',completed_date: '', signed_date: '',
+      work_requested: '', inspection_discrepancies: '',
       notes: '',
       _company: '', _aircraft: '',
       }

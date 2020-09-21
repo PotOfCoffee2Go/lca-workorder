@@ -145,7 +145,7 @@ const db = {
     console.log('filter', filter);
     let qry = JSON.stringify(setFilter({type: curType}, filter));
     let response = await $.ajax({
-      url: `https://lca.ngrok.io/json/qry/${qry}`,
+      url: `${poc2go.config.lca.db}/json/qry/${qry}`,
       dataType: "json"
     });
     console.log(response);
@@ -156,7 +156,7 @@ const db = {
     item.type = curType;
     let response = await $.ajax({
       type: "POST",
-      url: `https://lca.ngrok.io/json/qry/{}`,
+      url: `${poc2go.config.lca.db}/json/qry/{}`,
       dataType: "json",
       data: item
     });
@@ -168,7 +168,7 @@ const db = {
   updateItem: async (item) => {
     let response = await $.ajax({
       type: "PUT",
-      url: `https://lca.ngrok.io/json/qry/${item._id}`,
+      url: `${poc2go.config.lca.db}/json/qry/${item._id}`,
       dataType: "json",
       data: item
     });
@@ -180,7 +180,7 @@ const db = {
   deleteItem: async (item) => {
     let response = await $.ajax({
       type: "DELETE",
-      url: `https://lca.ngrok.io/json/qry/${item._id}`,
+      url: `${poc2go.config.lca.db}/json/qry/${item._id}`,
       dataType: "json",
       data: item
     });
@@ -316,7 +316,7 @@ $(function() {
 });
 
 const listAll = (type) => {
-poc2go.fetch.json(`${poc2go.config.lca.workorderDb}list/${type}`)
+poc2go.fetch.json(`${poc2go.config.lca.db}/list/${type}`)
   .then(data => {
   let options = [`<option value=""></option>`];
   for (const item of data) {
@@ -405,7 +405,7 @@ const setAssociateOpts = (task) => {
 }
 
 const fetchCompany = (id) => {
-poc2go.fetch.json(`${poc2go.config.lca.workorderDb}json/company/${id}`)
+poc2go.fetch.json(`${poc2go.config.lca.db}/json/company/${id}`)
   .then(data => {
     console.log(JSON.stringify(data, null, 2));
     let company = active.company = data[0];
