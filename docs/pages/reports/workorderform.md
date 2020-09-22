@@ -46,11 +46,6 @@ poc2go.dom['workorder-dropdown'].addEventListener("change", (evt) => {
   })
 }, false);
 
-const getBlobUrl = (code, type) => {
-  const blob = new Blob([code], { type })
-  return URL.createObjectURL(blob)
-}
-
 const getDataFields = () => {
   let company = woData.company[0];
   let aircraft = woData.aircrafts[0];
@@ -81,9 +76,7 @@ const getDataFields = () => {
 
 };
 
-const getReport = async (filepath) => {
-  let report = await poc2go.fetch.text(filepath);
-  let blobUrl = getBlobUrl(report, 'text/html');
+const getReport = (filepath) => {
   const iframe = poc2go.dom['report'];
   iframe.onload = () => {
     var doc = iframe.contentDocument || iframe.contentWindow.document;
@@ -95,7 +88,7 @@ const getReport = async (filepath) => {
       if (rptfld) rptfld.innerHTML = jdoc[fld];
     }
   };
-  iframe.src = blobUrl;  
+  iframe.src = filepath;  
 };
 
 </script>
