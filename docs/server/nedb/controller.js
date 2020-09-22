@@ -3,8 +3,10 @@ const model = require('./model'),
 	config = require('./config');
 
 const // helpers
-  types = Object.keys((new config.Schema)),
-  _subdocs = types.filter((type) => type !== 'company').map((type) => type + 's'),
+  schema = new config.Schema,
+  types = Object.keys(schema),
+  _subdocs = config._subdocs,
+  _required = config._required,
   isType = (type) => types.indexOf(type) > -1 ? true : false,
   makeDbClass = (type) => type[0].toUpperCase() + type.substr(1);
 
@@ -26,12 +28,20 @@ const makeFindQry = (id) => {
   return findQry;
 }
 
+const verify_required = (rec) => {
+  
+
+  return true;
+}
+
 exports.get_schema = (req, res, next) => {
-  res.poc2go.body = model.read_schema();
+  req.poc2go.params = Object.assign({},req.params); 
+  res.poc2go.body = [schema];
   next();
 }
 
-exports.get_all = (req, res, next) => {
+exports.get_qry = (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
   let id = makeFindQry(req.params.id);
   let dr = new model.DataRecord;
   dr.find(id)
@@ -39,13 +49,77 @@ exports.get_all = (req, res, next) => {
   .catch((err) => {next(err);})
 }
 
+exports.post_qry = async (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
+  if (req.poc2go.params.format !== 'json') {
+    throw "Format for POST /{format}/qry must be 'json'"
+  }
+  let rec = req.body; 
+  let dbClass = makeDbClass(rec.type);
+  let dr = new model[dbClass];
+  let keys = Object.keys(rec);
+  for (const key in keys) { // remove any subdocs
+    if (Array.isArray(keys[key]) && key[0] !== '_') { delete keys[key]; }
+  }
+  dr.setData(rec);
+  if (!verify_required(rec)) {
+    res.poc2go.body = rec;
+    res.poc2go.error = new Error('Missing required field');
+  }
+  else {
+    let ins = await dr.insert(rec);
+    dr = new model.DataRecord; // get record without subdocs
+    let upd = await dr.find({ _id: ins[0]._id, type: ins[0].type });
+    res.poc2go.body = upd;
+    console.log('uuu',upd);
+  }
+  next();
+}
+
+exports.put_qry = async (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
+  if (req.poc2go.params.format !== 'json') {
+    throw "Format for PUT /{format}/qry must be 'json'"
+  }
+  let rec = req.body; 
+  let dbClass = makeDbClass(rec.type);
+  let dr = new model[dbClass];
+  let keys = Object.keys(rec);
+  for (const key in keys) { // remove any subdocs
+    if (Array.isArray(keys[key]) && key[0] !== '_') { delete keys[key]; }
+  }
+  dr.setData(rec);
+  await dr.update(rec);
+  dr = new model.DataRecord; // get record without subdocs
+  let upd = await dr.find(rec._id);
+  res.poc2go.body = upd;
+  next();
+}
+
+exports.delete_qry = async (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
+  if (req.poc2go.params.format !== 'json') {
+    throw "Format for PUT /{format}/qry must be 'json'"
+  }
+  let rec = req.body; 
+  let dbClass = makeDbClass(rec.type);
+  let dr = new model[dbClass];
+  let keys = Object.keys(rec);
+  for (const key in keys) { // remove any subdocs
+    if (Array.isArray(keys[key]) && key[0] !== '_') { delete keys[key]; }
+  }
+  dr.setData(rec);
+  let rmv = await dr.remove(rec._id);
+  res.poc2go.body = rmv;
+  next();
+}
+
 exports.get_requested_type = (req, res, next) => {
   req.poc2go.params = Object.assign({},req.params); 
-  if (req.params.format === 'sheet') {
-    get_sheet(req, res, next);
-    return;
-  }
-  if (isType(req.params.type)) {
+  if (res.poc2go.body) {next();}
+  else if (req.params.format === 'list') {get_list(req, res, next);}
+  else if (req.params.format === 'sheet') {get_sheet(req, res, next);}
+  else if (isType(req.params.type)) {
     let dbClass = makeDbClass(req.params.type);
     let id = makeFindQry(req.params.id);
     let dr = new model[dbClass];
@@ -54,6 +128,15 @@ exports.get_requested_type = (req, res, next) => {
     .catch((err) => {next(err);})
   }
   else {next();}
+}
+
+const get_list = (req, res, next) => {
+  let id = makeFindQry(req.params.id);
+  if (req.params.type) id = Object.assign(id, {type: req.params.type ? req.params.type : /.*/});
+  let dr = new model.DataRecord;
+  dr.find(id, {_id:1, name:1, type:1})
+  .then((recs) => {res.poc2go.body = recs; next();})
+  .catch((err) => {next(err);})
 }
 
 function linearRecs(docs, stack) {
@@ -70,30 +153,54 @@ const get_sheet = async (req, res, next) => {
   let id = makeFindQry(req.params.id);
   let dr = new model[dbClass];
   const recs = await dr.find(id);
-  linearRecs(recs, linearSubDocs);
+  recs.forEach((rec) => {linearSubDocs.push({}); linearRecs([rec], linearSubDocs);});
   linearSubDocs.reverse();
   res.poc2go.body = linearSubDocs;
   next();
 }
- /* 
-  if (isType(req.params.type)) {
-    let dbClass = 'DataRecord'; // Get records without subdocs
-    let id = makeFindQry(req.params.id);
-    let dr = new model[dbClass];
-    dr.find(id)
-    .then((recs) => {
-      let rec = recs[0];
-      Object.keys(rec).forEach((key) => {
-      if (key[0] === '_') {}
-      
-      })
-    })
-    .catch((err) => {next(err);})
-  }
-  else {next();}
+
+const format2json = (req, res, next) => {
+  const parse = require('csv-parse/lib/sync')
+  let input = req.body;
+  const records = parse(input, {
+    columns: true,
+    skip_empty_lines: true,
+    delimiter: '\t'
+  })
+  return records;
 }
-    
-*/
+
+
+exports.post_sheet_update = async (req, res, next) => {
+  req.poc2go.params = Object.assign({},req.params); 
+  req.poc2go.params.format = 'sheet';
+  let curCo = {}, curWo = {};
+  let changed = [], linearSubDocs = [];
+  let recs = format2json(req, res, next);
+  for (const rec of recs) {
+    if (rec.type === 'company') curCo = rec;
+    if (rec.type === 'workorder') curWo = rec;
+    if (rec._.toLowerCase() === 'u') {
+      delete rec._;
+      Object.keys(rec).forEach((fld) => {
+        if (rec[fld] === '(---)') rec[fld] = '';
+        if (fld !== '_id' && typeof schema[rec.type][fld] === 'undefined') delete rec[fld];
+        if (fld[0] === '_' && Array.isArray(schema[rec.type][fld])) rec[fld] = rec[fld].split(',');
+      })
+      let dbClass = makeDbClass(rec.type);
+      let dr = new model[dbClass];
+      dr.setData(rec);
+      await dr.update(rec);
+      dr = new model.DataRecord; // get record without subdocs
+      let upd = await dr.find(rec._id);
+      changed.push(upd[0]);
+    }
+  }
+  res.poc2go.body = changed;
+  next();
+}
+
+
 return;
 
 let ccon = new cl.Contact;

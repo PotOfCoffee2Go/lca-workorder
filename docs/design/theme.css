@@ -1,6 +1,10 @@
 /* Import fonts and site styles */
-@import url('https://fonts.googleapis.com/css?family=Handlee|Dancing+Script&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Handlee|Sacramento&display=swap');
 @import "site.css";
+/*
+@import url('https://fonts.googleapis.com/css?family=Handlee|Dancing+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
+*/
 
 html, body,
  #navDiv, #panel,

@@ -10,10 +10,14 @@ const // helpers
   isFormat = (format) => formats.indexOf(format) > -1 ? true : false,
   unique = (value, index, self) => { return self.indexOf(value) === index; };
 
-var allHeaders = ['_', '_id'];
+var allHeaders = ['_id'];
 (function () {
   types.forEach((type) => {allHeaders = allHeaders.concat(Object.keys((new config.Schema)[type]))})
   allHeaders = allHeaders.filter(unique);
+  let allUnderbars = allHeaders.filter((header) => header[0] === '_');
+  allHeaders = allHeaders.filter((header) => header[0] !== '_');
+  allHeaders = allHeaders.concat(allUnderbars);
+  allHeaders.unshift('_');
 })();
 
 const format2csv = (req, res, next) => {
@@ -22,6 +26,9 @@ const format2csv = (req, res, next) => {
   json.forEach((rec) => {
     Object.keys(rec).forEach((fld) => {
       if (rec[fld] === '') rec[fld] = '(---)';
+      if (fld[0] === '_' && Array.isArray(rec[fld])) {
+        rec[fld] = rec[fld].join(',');
+      }
     })
   })
   return stringify(json,{header: true, columns: allHeaders, delimiter: '\t'})
@@ -30,8 +37,9 @@ const format2csv = (req, res, next) => {
 
 module.exports =
   function view(req, res, next) {
+  if (!req.poc2go.params) return next();
   if (req.poc2go.params.format === 'sheet') {
-    res.send('<pre>' + format2csv(req, res, next) + '</pre>')
+    res.send(format2csv(req, res, next));
     return;
   }   
 
@@ -39,7 +47,9 @@ module.exports =
 
   if (typeof res.poc2go.body === 'undefined') { return next() }
   if (typeof res.poc2go.body === 'object') {
-    res.poc2go.body = '<pre>' + JSON.stringify(res.poc2go.body, null, 2) + '</pre>';
+    res.json(res.poc2go.body);
+    return;
+//    res.poc2go.body = JSON.stringify(res.poc2go.body, null, 2);
   }
   if (typeof res.poc2go.body === 'string') {
     res.format({
@@ -53,7 +63,7 @@ module.exports =
 
       // To-do: fix above so this works!
       'application/json': function () {
-        res.json(res.poc2go.body);
+        res.send(res.poc2go.body);
       },
 
       default: function () {

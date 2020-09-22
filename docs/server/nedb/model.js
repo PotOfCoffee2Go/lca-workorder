@@ -3,10 +3,6 @@ const schema = new config.Schema;
 const Nedb = require('nedb');
 var db = new Nedb({ filename: './databases/test.db', autoload: true, timestampData: true }); // localStoreage
 
-//module.exports = function () {
-  
-exports.read_schema = () => { return schema; }  
-  
 exports.DataRecord = class DataRecord {
   constructor() {}
 
@@ -72,6 +68,14 @@ exports.DataRecord = class DataRecord {
     return err;
   }
 
+  isNotRemoved(id, dbrecType) {
+    let err = new Error();
+    err.message = 'Not removed! DB returned 0 records removed.';
+    err.key =  '';
+    err.errorType = 'NotRemoved';
+    return err;
+  }
+
   isInvalidType(id, got, needed) {
     let err = new Error();
     err.message = `Not asssigned! Invalid record type '${got}'! needed '${needed}'.`;
@@ -84,26 +88,21 @@ exports.DataRecord = class DataRecord {
   // Database acccess
 
   // Get record from the database, given _id(ob)  
-  find(id, opts = {}) {
+  find(id, prj = {}) {
     return new Promise((resolve, reject) => {
       let qry = {};
       if (typeof id === 'string') id = [id];
       if (Array.isArray(id)) qry = {_id: {$in: id }}; else qry = id;
-      qry.type = this.getSchema().type;
-      db.find(qry, (err, docs) => {
+      if (!qry.type) qry.type = this.getSchema().type;
+      db.find(qry, prj, (err, docs) => {
         if (err) {return reject(err);}
-        /*if (opts.raw) { // use class DataRecords for raw records
-          this.removeSubDocs();
-          this.setData(docs[0]);
-          return resolve([this]);
-        }*/
         this.insertSubDocs(docs)
           .then((dbRecs)=>resolve(dbRecs));
       })
     }) // Promise
   }
 
-  insert(opts = {}) {
+  insert() {
     return new Promise((resolve, reject) => {
       //delete this.data._id; // should be done before insert called
       if (this._id) {return reject(this.hasRecordId());}
@@ -111,13 +110,13 @@ exports.DataRecord = class DataRecord {
       let qryInsert = Object.assign({},this);
       db.insert(qryInsert, (err, doc) => {
         if (err) {return reject(err);}
-        this.find(doc._id, opts)
+        this.find(doc._id)
           .then((dbRec) => resolve(dbRec));
       })
     }) // Promise
   }
 
-  update(opts = {}) {
+  update() {
     return new Promise((resolve, reject) => {
       if (!this._id) {return reject(this.hasNoRecordId())}
       let qryFind = { _id: this._id };
@@ -126,12 +125,28 @@ exports.DataRecord = class DataRecord {
       db.update(qryFind, qrySet, {}, (err, numReplaced) => {
         if (!err && numReplaced === 0) err = this.isNotUpdated(this._id, numReplaced);
         if (err) {return reject(err);}
-        this.find(this._id, opts)
+        this.find(this._id)
           .then((dbRec) => resolve(dbRec));
       })
     }) // Promise
   }
-  
+
+  remove() {
+    return new Promise((resolve, reject) => {
+      if (!this._id) {return reject(this.hasNoRecordId())}
+      let qryRemove = { _id: this._id };
+      this.removeSubDocs(); // get rid of subdoc data - just keep the keys
+      let qrySet = { $set: this };
+      db.remove(qryRemove, {}, (err, numRemoved) => {
+        if (!err && numRemoved === 0) err = this.isNotRemoved(this._id, numReplaced);
+        if (err) {return reject(err);}
+        this.find(this._id)
+          .then((dbRec) => resolve(dbRec));
+      })
+    }) // Promise
+  }
+
+
   change(fields) {
     return new Promise((resolve, reject) => {
       Object.assign(this, fields);
@@ -158,29 +173,28 @@ exports.Company = class Company extends exports.DataRecord {
   getSchema() {return schema.company;}
 
   // Insert the contact sub-docs
-  insertSubDocs(docs) {
-    return new Promise((resolve, reject) => {
-      if (docs.length === 0) return resolve(docs);
-      let companies = [];
-      docs.forEach((doc, idx) => {
-        let company = new Company;
-        company.setData(doc);
-        companies.push(company);
-        Promise.all([
-         // Array References to contacts
-          (new exports.Contact).find(company._contacts)
-            .then((sdocs) => {company.contacts = sdocs}),
-          // workorders and aircraft have a single reference a company
-          (new exports.Workorder).find({ _company: company._id, type: 'workorder' })
-            .then((sdocs) => {company.workorders = sdocs}),
-          (new exports.Aircraft).find({ _company: company._id, type: 'aircraft' })
-            .then((sdocs) => {company.aircrafts = sdocs}),
-          ])
-          .then(()=>this.setData(companies[0]))
-          .then(()=>{if (idx+1 === docs.length) resolve(companies)})
-          .catch((err) => reject(err));
-      })
-    })
+  async insertSubDocs(docs) {
+    if (docs.length === 0) return docs;
+    let companies = [];
+    for (const doc of docs) {
+      let company = new Company;
+      Object.assign(doc,{contacts: [], aircrafts: [], workorders: []});
+      company.setData(doc);
+      await Promise.all([
+       // Array References to contacts
+        (new exports.Contact).find(company._contacts)
+          .then((sdocs) => {company.contacts = sdocs}),
+        // workorders and aircraft have a single reference a company
+        (new exports.Workorder).find({ _company: company._id, type: 'workorder' })
+          .then((sdocs) => {company.workorders = sdocs}),
+        (new exports.Aircraft).find({ _company: company._id, type: 'aircraft' })
+          .then((sdocs) => {company.aircrafts = sdocs}),
+        ])
+        .then(()=>companies.push(company))
+        .catch((err) => reject(err));
+    }
+    this.setData(companies[0]);
+    return companies;
   }
 
   attachContact(dbrec) {
@@ -212,18 +226,16 @@ exports.Contact = class Contact extends exports.DataRecord {
   getSchema() {return schema.contact;}
 
   // Contacts have no sub-docs - so just return
-  insertSubDocs(docs) {
-    return new Promise((resolve, reject) => {
-      if (docs.length === 0) return resolve(docs);
-      let contacts = [];
-      docs.forEach((doc) => {
-        let contact = new Contact;
-        contacts.push(contact);
-        contact.setData(doc);
-      })
-      this.setData(contacts[0]);
-      resolve(contacts);
-    })
+  async insertSubDocs(docs) {
+    if (docs.length === 0) return docs;
+    let contacts = [];
+    for (const doc of docs) {
+      let contact = new Contact;
+      contact.setData(doc);
+      contacts.push(contact);
+    }
+    this.setData(contacts[0]);
+    return contacts;
   }
 
 }
@@ -236,18 +248,16 @@ exports.Associate = class Associate extends exports.DataRecord {
   getSchema() {return schema.associate;}
 
   // Associates have no sub-docs - so just return
-  insertSubDocs(docs) {
-    return new Promise((resolve, reject) => {
-      if (docs.length === 0) return resolve(docs);
-      let associates = [];
-      docs.forEach((doc) => {
-        let associate = new Associate;
-        associates.push(associate);
-        associate.setData(doc);
-      })
-      this.setData(associates[0]);
-      resolve(associates);
-    })
+  async insertSubDocs(docs) {
+    if (docs.length === 0) return docs;
+    let associates = [];
+    for (const doc of docs) {
+      let associate = new Associate;
+      associate.setData(doc);
+      associates.push(associate);
+    }
+    this.setData(associates[0]);
+    return associates;
   }
 }
 
@@ -259,18 +269,16 @@ exports.Engine = class Engine extends exports.DataRecord {
   getSchema() {return schema.engine;}
 
   // Engines have no sub-docs - so just return
-  insertSubDocs(docs) {
-    return new Promise((resolve, reject) => {
-      if (docs.length === 0) return resolve(docs);
-      let engines = [];
-      docs.forEach((doc) => {
-        let engine = new Engine;
-        engines.push(engine);
-        engine.setData(doc);
-      })
-      this.setData(engines[0]);
-      resolve(engines);
-    })
+  async insertSubDocs(docs) {
+    if (docs.length === 0) return docs;
+    let engines = [];
+    for (const doc of docs) {
+      let engine = new Engine;
+      engine.setData(doc);
+      engines.push(engine);
+    }
+    this.setData(engines[0]);
+    return engines;
   }
 
   assignAircraft(dbrec) {
@@ -294,23 +302,22 @@ exports.Aircraft = class Aircraft extends exports.DataRecord {
   getSchema() {return schema.aircraft;}
 
   // Aircraft have no sub-docs - so just return
-  insertSubDocs(docs) {
-    return new Promise((resolve, reject) => {
-      if (docs.length === 0) return resolve(docs);
-      let aircrafts = [];
-      docs.forEach((doc, idx) => {
-        let aircraft = new Aircraft;
-        aircraft.setData(doc);
-        aircrafts.push(aircraft);
-        Promise.all([
+  async insertSubDocs(docs) {
+    if (docs.length === 0) return docs;
+    let aircrafts = [];
+    for (const doc of docs) {
+      let aircraft = new Aircraft;
+      Object.assign(doc,{engines: []});
+      aircraft.setData(doc);
+      await Promise.all([
           (new exports.Engine).find({_aircraft: aircraft._id, type: 'engine'})
             .then((sdocs) => {aircraft.engines = sdocs}),
         ])
-        .then(()=>this.setData(aircrafts[0]))
-        .then(()=>{if (idx+1 === docs.length) resolve(aircrafts)})
+        .then(()=>aircrafts.push(aircraft))
         .catch((err) => reject(err));
-      })
-    })
+    }
+    this.setData(aircrafts[0]);
+    return aircrafts;
   }
 
   assignCompany(dbrec) {
@@ -333,24 +340,25 @@ exports.Task = class Task extends exports.DataRecord {
 
   getSchema() {return schema.task;}
 
-  // Insert the contact sub-docs
-  insertSubDocs(docs) {
-    return new Promise((resolve, reject) => {
-      if (docs.length === 0) return resolve(docs);
-      let tasks = [];
-      docs.forEach((doc, idx) => {
-        let task = new Task;
-        task.setData(doc);
-        tasks.push(task);
-        Promise.all([
+  // Insert the associate sub-docs
+  async insertSubDocs(docs) {
+    if (docs.length === 0) return docs;
+    let tasks = [];
+    for (const doc of docs) {
+      let task = new Task;
+      Object.assign(doc,{associates: []});
+      task.setData(doc);
+      await Promise.all([
           (new exports.Associate).find(task._associates)
             .then((sdocs) => {task.associates = sdocs}),
+        (new exports.Engine).find({ _id: task._engine, type: 'engine' })
+          .then((sdocs) => {task.engines = sdocs}),
         ])
-        .then(()=>this.setData(tasks[0]))
-        .then(()=>{if (idx+1 === docs.length) resolve(tasks)})
+        .then(()=>tasks.push(task))
         .catch((err) => reject(err));
-      })
-    })
+    }
+    this.setData(tasks[0]);
+    return tasks;
   }
 
   assignWorkorder(dbrec) {
@@ -359,6 +367,18 @@ exports.Task = class Task extends exports.DataRecord {
         return reject(this.isInvalidType(dbrec._id, dbrec.type, 'workorder'));
       }
       this._workorder = dbrec._id;
+      this.update()
+        .then(() => dbrec.update())
+        .then(() => resolve(this));
+    })
+  }
+
+  assignEngine(dbrec) {
+    return new Promise((resolve, reject) => {
+      if (dbrec.type !== 'engine') {
+        return reject(this.isInvalidType(dbrec._id, dbrec.type, 'engine'));
+      }
+      this._engine = dbrec._id;
       this.update()
         .then(() => dbrec.update())
         .then(() => resolve(this));
@@ -391,24 +411,27 @@ exports.Workorder = class Workorder extends exports.DataRecord {
 
   getSchema() {return schema.workorder;}
 
-  // Workorder have no sub-docs - so just return
-  insertSubDocs(docs) {
-    return new Promise((resolve, reject) => {
-      if (docs.length === 0) return resolve(docs);
-      let workorders = [];
-      docs.forEach((doc, idx) => {
-        let workorder = new Workorder;
-        workorder.setData(doc);
-        workorders.push(workorder);
-        Promise.all([
+  // Workorder have sub-docs
+  async insertSubDocs(docs) {
+    if (docs.length === 0) return docs;
+    let workorders = [];
+    for (const doc of docs) {
+      let workorder = new Workorder;
+      Object.assign(doc,{company:[], aircrafts:[], tasks: []});
+      workorder.setData(doc);
+      await Promise.all([
+          (new exports.DataRecord).find({_id: workorder._company, type: 'company'})
+            .then((sdocs) => {workorder.company = sdocs}),
+          (new exports.Aircraft).find({_id: workorder._aircraft, type: 'aircraft'})
+            .then((sdocs) => {workorder.aircrafts = sdocs}),
           (new exports.Task).find({_workorder: workorder._id, type: 'task'})
             .then((sdocs) => {workorder.tasks = sdocs}),
-          ])
-          .then(()=>this.setData(workorders[0]))
-          .then(()=>{if (idx+1 === docs.length) resolve(workorders)})
-          .catch((err) => reject(err));
-      })
-    })
+        ])
+        .then(()=>workorders.push(workorder))
+        .catch((err) => reject(err));
+    }
+    this.setData(workorders[0]);
+    return workorders;
   }
 
   assignCompany(dbrec) {
