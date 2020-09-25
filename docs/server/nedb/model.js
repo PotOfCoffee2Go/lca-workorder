@@ -165,6 +165,81 @@ exports.DataRecord = class DataRecord {
 
 }
 
+const fnNextOrderNbr = async () => {
+  let config = await db.findOne({ _id: 'config'});
+  if(!config) {
+    await db.insert({_id: 'config', nextOrder: 3002});
+    config = await db.findOne({ _id: 'config'});
+  }
+  await db.update({_id: 'config', nextOrder: config.nextOrder+1});
+  
+  let tdy = new Date();
+  return `LC${tdy.getFullYear().substr(2)}-${config.nextOrder}`;
+};
+
+const fnOrderForm = async (inp) => {
+    let co = new DataRecord, ac = new DataRecord;
+    coFind = { type: 'company', name: inp.companyname, phone: inp.phone, email: inp.email };
+    acFind = { type: 'aircraft', name: inp.aircraftname, registration_no: inp.registration_no};
+
+    await co.find(coFind);
+    await ac.find(acFind);
+    if (co._id && ac._id && ac._company === co._id) {
+      let wo = new Workorder;
+      let nbr = fnNextOrderNbr();
+      wo.setData({
+        name: nbr,
+        workorder_no: nbr,
+        _company: co._id,
+        _aircraft: ac._id,
+      });
+      let neworder = await wo.insert();
+      return neworder;
+    }
+
+};
+
+exports.Orderform = class Orderform extends exports.DataRecord {
+  constructor(){super(); this.init()}
+  
+  init() {super.reset();}
+
+  getSchema() {return schema.orderform;}
+
+  // Overload of database insert/update/remove
+  update() {return reject(this.isNotUpdated());}
+  remove() {return reject(this.isNotRemoved());}
+
+  // Break the new workorder into company/aircraft/workorder records
+  // If any do not exist - insert them
+  insert() {
+    return new Promise((resolve, reject) => {
+      // When have work order nbr - just return the requested work order
+      woFind = { type: 'workorder', workorder_no: this.workorder_no };
+      if (this.workorder_no) return resolve( (new Workorder).find(woFind) );
+      
+      // Process new order request - adding company and aircraft if need be
+      resolve(fnOrderForm(this));
+    })
+  }
+s
+
+  // Contacts have no sub-docs - so just return
+  async insertSubDocs(docs) {
+    if (docs.length === 0) return docs;
+    let neworders = [];
+    for (const doc of docs) {
+      let neworder = new Neworder;
+      neworder.setData(doc);
+      neworders.push(neworder);
+    }
+    this.setData(neworders[0]);
+    return neworders;
+  }
+}
+
+
+
 exports.Company = class Company extends exports.DataRecord {
   constructor(){super();this.init()}
 

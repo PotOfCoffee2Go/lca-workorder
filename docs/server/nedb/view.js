@@ -10,6 +10,7 @@ const // helpers
   isFormat = (format) => formats.indexOf(format) > -1 ? true : false,
   unique = (value, index, self) => { return self.indexOf(value) === index; };
 
+
 var allHeaders = ['_id'];
 (function () {
   types.forEach((type) => {allHeaders = allHeaders.concat(Object.keys((new config.Schema)[type]))})
@@ -18,6 +19,16 @@ var allHeaders = ['_id'];
   allHeaders = allHeaders.filter((header) => header[0] !== '_');
   allHeaders = allHeaders.concat(allUnderbars);
   allHeaders.unshift('_');
+})();
+
+var orderformHeaders = [];
+(function () {
+  orderformHeaders = orderformHeaders.concat(Object.keys(new config.Orderform));
+  orderformHeaders = orderformHeaders.filter(unique);
+  let allUnderbars = orderformHeaders.filter((header) => header[0] === '_');
+  orderformHeaders = orderformHeaders.filter((header) => header[0] !== '_');
+  orderformHeaders = orderformHeaders.concat(allUnderbars);
+  orderformHeaders.unshift('_');
 })();
 
 const format2csv = (req, res, next) => {

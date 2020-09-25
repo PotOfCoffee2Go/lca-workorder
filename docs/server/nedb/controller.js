@@ -170,30 +170,38 @@ const format2json = (req, res, next) => {
   return records;
 }
 
-
 exports.post_sheet_update = async (req, res, next) => {
   req.poc2go.params = Object.assign({},req.params); 
   req.poc2go.params.format = 'sheet';
+  let recs = format2json(req, res, next);
   let curCo = {}, curWo = {};
   let changed = [], linearSubDocs = [];
-  let recs = format2json(req, res, next);
   for (const rec of recs) {
-    if (rec.type === 'company') curCo = rec;
-    if (rec.type === 'workorder') curWo = rec;
-    if (rec._.toLowerCase() === 'u') {
-      delete rec._;
-      Object.keys(rec).forEach((fld) => {
-        if (rec[fld] === '(---)') rec[fld] = '';
-        if (fld !== '_id' && typeof schema[rec.type][fld] === 'undefined') delete rec[fld];
-        if (fld[0] === '_' && Array.isArray(schema[rec.type][fld])) rec[fld] = rec[fld].split(',');
-      })
-      let dbClass = makeDbClass(rec.type);
-      let dr = new model[dbClass];
-      dr.setData(rec);
-      await dr.update(rec);
-      dr = new model.DataRecord; // get record without subdocs
-      let upd = await dr.find(rec._id);
-      changed.push(upd[0]);
+    let upd;
+    if (rec.type === 'orderform') {
+      let orderForm = new Orderform;
+      orderForm.setData(rec);
+      upd = await orderForm.insert();
+      changed.push(upd);
+    }
+    else {
+      if (rec.type === 'company') curCo = rec;
+      if (rec.type === 'workorder') curWo = rec;
+      if (rec._.toLowerCase() === 'u') {
+        delete rec._;
+        Object.keys(rec).forEach((fld) => {
+          if (rec[fld] === '(---)') rec[fld] = '';
+          if (fld !== '_id' && typeof schema[rec.type][fld] === 'undefined') delete rec[fld];
+          if (fld[0] === '_' && Array.isArray(schema[rec.type][fld])) rec[fld] = rec[fld].split(',');
+        })
+        let dbClass = makeDbClass(rec.type);
+        let dr = new model[dbClass];
+        dr.setData(rec);
+        await dr.update(rec);
+        dr = new model.DataRecord; // get record without subdocs
+        upd = await dr.find(rec._id);
+        changed.push(upd[0]);
+      }
     }
   }
   res.poc2go.body = changed;

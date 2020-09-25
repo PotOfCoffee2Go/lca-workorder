@@ -6,7 +6,24 @@ exports._required = { company: [], contact: [], associate: [],
   aircraft: ['_company'], engine: ['_aircraft'], 
   workorder:['_company', '_aircraft'], task: ['_workorder']
 }
-      
+
+exports.Orderform = class Orderform {
+  constructor() {this.init();}
+
+  init() { Object.assign(this, {
+    type: 'orderform',
+    companyname: '', address: '', city: '', state: '', zip: '',
+    phone: '', email: '',
+    aircraft_name: '', make: '', model: '', series: '', serial_no: '',
+    registration_no: '', time_in_service: '',
+    workorder_name: '', workorder_no: '', date: '', preliminary_inspection: '',
+    hidden_damage_inspection: '', in_progress_inspection: '',
+    start_date: '',completed_date: '', signed_date: '',
+    work_requested: '', inspection_discrepancies: ''
+  })}
+};
+
+
 exports.Schema = class Schema {
   constructor() {this.init();}
 
@@ -40,7 +57,7 @@ exports.Schema = class Schema {
     },
     aircraft: {
       type: 'aircraft',
-      name: '', model: '', make: '', serial_no: '',
+      name: '', make: '', model: '', series: '', serial_no: '',
       registration_no: '', time_in_service: '',
       notes: '',
       _company: '',
