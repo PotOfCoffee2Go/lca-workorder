@@ -82,8 +82,8 @@ this.config = {
             'codemirror@5.52.0/theme/' },
   },
   lca: {
-    db: 'https://lcadb.poc2go.com'
-//    db: 'https://flylca.ngrok.io'
+//    db: 'https://lcadb.poc2go.com'
+    db: 'https://flylca.ngrok.io'
   }
 }
 
