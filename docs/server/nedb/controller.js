@@ -139,7 +139,41 @@ const get_list = (req, res, next) => {
   .catch((err) => {next(err);})
 }
 
-function linearRecs(docs, stack) {
+const fnOrderForm = async (req, res, next) => {
+  let orderforms = [], co = new model['Company'], ac = new model['Aircraft'];
+  let companies = await co.find(req.params.id ? req.params.id : {});
+
+  for (const company of companies) {
+    for (const aircraft of company.aircrafts) {
+      company.company_name = company.name; company.company_notes = company.notes;
+      company.company_id = company._id;
+      aircraft.aircraft_name = aircraft.name;
+      aircraft.aircraft_notes = aircraft.notes;
+      aircraft.aircraft_id = aircraft._id;
+      orderforms.push(Object.assign({}, company, aircraft, {type: 'orderform'}));
+    }
+  }
+
+  for (const company of companies) {
+    for (const workorder of company.workorders) {
+      let aircraft = workorder.aircrafts[0];
+      workorder.workorder_name = workorder.name; workorder.workorder_notes = workorder.notes;
+      workorder.workorder_id = workorder._id;
+
+      company.company_name = company.name; company.company_notes = company.notes;
+      company.company_id = company._id;
+      aircraft.aircraft_name = aircraft.name;
+      aircraft.aircraft_notes = aircraft.notes;
+      aircraft.aircraft_id = aircraft._id;
+
+      orderforms.push(Object.assign({}, company, aircraft, workorder, {type: 'orderform'}));
+    }
+  }
+  res.poc2go.headers = 'orderforms';
+  res.poc2go.body = orderforms;
+}
+
+const linearRecs = (docs, stack) => {
   docs.forEach((doc) => {
     const fields = Object.keys(doc).filter((key) => _subdocs.indexOf(key) > -1);
     fields.forEach((field) => {linearRecs(doc[field], stack); })
@@ -148,6 +182,10 @@ function linearRecs(docs, stack) {
 }
 
 const get_sheet = async (req, res, next) => {
+  if (req.params.type === 'orderform') {
+    await fnOrderForm(req, res, next);
+    return next();
+  }
   let linearSubDocs = [];
   let dbClass = makeDbClass(req.params.type);
   let id = makeFindQry(req.params.id);
@@ -155,6 +193,7 @@ const get_sheet = async (req, res, next) => {
   const recs = await dr.find(id);
   recs.forEach((rec) => {linearSubDocs.push({}); linearRecs([rec], linearSubDocs);});
   linearSubDocs.reverse();
+  res.poc2go.headers = 'all';
   res.poc2go.body = linearSubDocs;
   next();
 }
@@ -170,10 +209,28 @@ const format2json = (req, res, next) => {
   return records;
 }
 
+const fnUpdateOrderForm = async (req, res, next) => {
+  let curCo = {}, curWo = {};
+  let changed = [], linearSubDocs = [];
+  let recs = format2json(req, res, next);
 
-exports.post_sheet_update = async (req, res, next) => {
-  req.poc2go.params = Object.assign({},req.params); 
-  req.poc2go.params.format = 'sheet';
+  let dr = new model['Workorder'];
+  for (const rec of recs) {
+    let keys = Object.keys(dr);
+    for (const key in dr) {
+      if (key === 'name') dr[key] = rec.workorder_name === '(---)' ? '' : rec.workorder_name;
+      else if (key === 'notes') dr[key] = rec.workorder_notes === '(---)' ? '' : rec.workorder_notes;
+      else if (key === '_company') dr[key] = rec.company_id;
+      else if (key === '_aircraft') dr[key] = rec.aircraft_id;
+      else dr[key] = rec[key] === '(---)' ? '' : rec[key];
+    }
+    dr.type = 'workorder';
+    await dr.insert();
+    await fnOrderForm(req, res, next);
+  }
+}
+
+const fnUpateByType = async (req, res, next) => {
   let curCo = {}, curWo = {};
   let changed = [], linearSubDocs = [];
   let recs = format2json(req, res, next);
@@ -197,9 +254,19 @@ exports.post_sheet_update = async (req, res, next) => {
     }
   }
   res.poc2go.body = changed;
-  next();
 }
 
+exports.post_sheet_update = async (req, res, next) => {
+  req.poc2go.params = Object.assign({}, req.params); 
+  req.poc2go.params.format = 'sheet';
+  if (req.params.type === 'orderform') {
+    await fnUpdateOrderForm(req, res, next);
+  }
+  else {
+    await fnUpateByType(req, res, next);
+  }
+  next();
+}
 
 return;
 

@@ -20,6 +20,27 @@ var allHeaders = ['_id'];
   allHeaders.unshift('_');
 })();
 
+var orderformHeaders = [];
+(function () {
+  types.forEach((type) => {
+    if (['company', 'aircraft', 'workorder'].includes(type)) {
+      let keys = Object.keys((new config.Schema)[type]);
+      for (let i=0; i<keys.length; i++) {
+        if (['name','notes'].includes(keys[i])) {
+          keys[i] = `${type}_${keys[i]}`;
+        } 
+      }
+      orderformHeaders = orderformHeaders.concat(keys);
+    }
+  })
+  orderformHeaders = orderformHeaders.filter(unique);
+  let allUnderbars = orderformHeaders.filter((header) => header[0] === '_');
+  orderformHeaders = orderformHeaders.filter((header) => header[0] !== '_');
+  orderformHeaders = orderformHeaders.concat(['company_id', 'aircraft_id', 'workorder_id']);
+  orderformHeaders = orderformHeaders.concat(allUnderbars);
+  orderformHeaders.unshift('_');
+})();
+
 const format2csv = (req, res, next) => {
   const stringify = require('csv-stringify/lib/sync')
   let json = res.poc2go.body;
@@ -31,7 +52,10 @@ const format2csv = (req, res, next) => {
       }
     })
   })
-  return stringify(json,{header: true, columns: allHeaders, delimiter: '\t'})
+  return stringify(json,{
+    header: true,
+    columns: res.poc2go.headers === 'orderforms' ? orderformHeaders : allHeaders,
+    delimiter: '\t'})
 }
 
 

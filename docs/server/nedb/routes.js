@@ -21,7 +21,7 @@ const controller = require('./controller');
   app.route('/:format/:type/:id?')
     .get(controller.get_requested_type);
 
-  app.route('/sheet/update')
+  app.route('/sheet/update/:type')
     .post(controller.post_sheet_update);
 
 

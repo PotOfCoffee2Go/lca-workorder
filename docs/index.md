@@ -9,6 +9,7 @@
   - [LCA Database Server](?md=pages/dc/code/server.md)
 
 ## pages/flotsam
+  - [ LCA Work Order Form Import/Export](?md=pages/flotsam/orderformtsv.md)
   - [Test post to DB](?md=pages/flotsam/posttest.md)
   - [Format records as dropdown tree](?md=pages/flotsam/tree.md)
 
@@ -24,6 +25,7 @@
   - [LCA Worksheets](?md=pages/proposal/worksheets.md)
 
 ## pages/reports
+  - [Discrepancy Report](?md=pages/reports/discrepancy..md)
   - [Log Entries Report](?md=pages/reports/logentries.md)
   - [Work Order Form](?md=pages/reports/workorderform.md)
 
