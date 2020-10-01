@@ -127,6 +127,9 @@ exports.get_requested_type = (req, res, next) => {
     .then((recs) => {res.poc2go.body = recs; next();})
     .catch((err) => {next(err);})
   }
+  else if (req.params.type === 'orderform') {
+    fnOrderForm(req, res, next).then(() => {next();});
+  }
   else {next();}
 }
 
@@ -146,10 +149,8 @@ const fnOrderForm = async (req, res, next) => {
   for (const company of companies) {
     for (const aircraft of company.aircrafts) {
       company.company_name = company.name; company.company_notes = company.notes;
-      company.company_id = company._id;
-      aircraft.aircraft_name = aircraft.name;
-      aircraft.aircraft_notes = aircraft.notes;
-      aircraft.aircraft_id = aircraft._id;
+      company.company_id = company._id; aircraft.aircraft_name = aircraft.name;
+      aircraft.aircraft_notes = aircraft.notes; aircraft.aircraft_id = aircraft._id;
       orderforms.push(Object.assign({}, company, aircraft, {type: 'orderform'}));
     }
   }
@@ -169,7 +170,6 @@ const fnOrderForm = async (req, res, next) => {
       orderforms.push(Object.assign({}, company, aircraft, workorder, {type: 'orderform'}));
     }
   }
-  res.poc2go.headers = 'orderforms';
   res.poc2go.body = orderforms;
 }
 
@@ -184,6 +184,7 @@ const linearRecs = (docs, stack) => {
 const get_sheet = async (req, res, next) => {
   if (req.params.type === 'orderform') {
     await fnOrderForm(req, res, next);
+    res.poc2go.headers = 'orderforms';
     return next();
   }
   let linearSubDocs = [];
@@ -267,67 +268,3 @@ exports.post_sheet_update = async (req, res, next) => {
   }
   next();
 }
-
-return;
-
-let ccon = new cl.Contact;
-let tcon = new cl.Company;
-let rcon = new cl.Company;
-let econ = new cl.Engine;
-let acon = new cl.Aircraft;
-let wcon = new cl.Workorder;
-let scon = new cl.Associate;
-let kcon = new cl.Task;
-
-console.log('hi');
-tcon.change({name:'kim'})
-.then(() => tcon.insert())
-
-.then(()=>ccon.change({notes: 'new cl.contact'}))
-.then(() => ccon.insert())
-.then (() => tcon.attachContact(ccon))
-
-.then (() => rcon.find(tcon._id))
-.then(()=>console.log('rcon',rcon))
-
-
-.then(()=>econ.change({notes: 'new cl.engine'}))
-.then (() => econ.insert())
-//.then (() => econ.assignAircraft(tcon))
-.then(()=>console.log('econ',econ))
-
-.then(()=>acon.change({notes: 'new cl.aircraft'}))
-.then (() => acon.insert())
-.then (() => acon.assignCompany(tcon))
-.then(()=>console.log('acon',acon))
-
-//.then(()=> tcon.find(tcon._id))
-//.then((withaircraft)=>{tcon=withaircraft[0]})
-.then(()=> console.log('see if aircraft',tcon))
-
-.then (() => econ.assignAircraft(acon))
-.then(()=>console.log('econ2',econ))
-
-
-.then(()=>scon.change({notes: 'new associate'}))
-.then(() => scon.insert())
-
-.then(()=>kcon.change({notes: 'new task'}))
-.then(() => kcon.insert())
-.then (() => kcon.attachAssociate(scon))
-
-
-.then(()=>wcon.change({notes: 'new workorder'}))
-.then (() => wcon.insert())
-.then (() => kcon.assignWorkorder(wcon))
-.then (() => wcon.assignAircraft(acon))
-.then (() => wcon.assignCompany(tcon))
-.then(()=>console.log('kcon',kcon))
-.then(()=>console.log('wcon',wcon))
-.then(()=>console.log('tcon',JSON.stringify(tcon, null, 2)))
-.then(()=>tcon.find(tcon._id,{raw:true}))
-.then(()=>console.log('tcon-raw',tcon))
-
-
-.catch ((err) => dberr(err));
-
